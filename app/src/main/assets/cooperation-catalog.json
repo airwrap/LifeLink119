@@ -1,0 +1,17 @@
+{
+  "version": "0.4.0",
+  "syntheticOnly": true,
+  "coordinateSystem": "DEMO_GRID",
+  "scenarios": [
+    {"id":"EARLY_HELP","title":"도심 · 가까운 차량이 먼저 돕는 상황","purpose":"119가 지정한 현장 초기대응 지원","baselineSeconds":480,"activationSeconds":45,"requiredCapability":"CPR_TRAINED","available":true},
+    {"id":"EMS_FIRST","title":"구급대가 더 먼저 도착하는 상황","purpose":"시간 이득이 없는 대조 조건","baselineSeconds":120,"activationSeconds":45,"requiredCapability":"CPR_TRAINED","available":true},
+    {"id":"NO_RESPONDER","title":"참여 가능한 협력 차량이 없는 상황","purpose":"참여 불가 시 기존 대응을 유지하는 대조 조건","baselineSeconds":480,"activationSeconds":45,"requiredCapability":"CPR_TRAINED","available":false}
+  ],
+  "vehicles": [
+    {"id":"DEMO-HELPER-A","name":"가상 협력 차량 A","travelSeconds":150,"capabilities":["CPR_TRAINED","AED_CARRIER"],"optedIn":true,"available":true,"x":70,"y":60},
+    {"id":"DEMO-HELPER-B","name":"가상 차량 B · 교육 이력 없음","travelSeconds":40,"capabilities":[],"optedIn":true,"available":true,"x":120,"y":90},
+    {"id":"DEMO-HELPER-C","name":"가상 차량 C · 참여 동의 안 함","travelSeconds":90,"capabilities":["CPR_TRAINED"],"optedIn":false,"available":true,"x":100,"y":140},
+    {"id":"DEMO-HELPER-D","name":"가상 협력 차량 D","travelSeconds":270,"capabilities":["CPR_TRAINED"],"optedIn":true,"available":true,"x":250,"y":180}
+  ],
+  "assumptions":"도착 시간·교육·장비·참여 가능 여부는 고정 가상 자료입니다. 45초 조율 시간은 실험 가정입니다. 생존율이나 실제 출동 효과를 예측하지 않습니다."
+}

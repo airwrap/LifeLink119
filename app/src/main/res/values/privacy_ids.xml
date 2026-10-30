@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="privacy_pin" type="id" />
+    <item name="privacy_confirm" type="id" />
+    <item name="privacy_status" type="id" />
+    <item name="privacy_unlock" type="id" />
+    <item name="privacy_lock" type="id" />
+    <item name="privacy_settings" type="id" />
+    <item name="privacy_reset" type="id" />
+    <item name="privacy_state" type="id" />
+</resources>

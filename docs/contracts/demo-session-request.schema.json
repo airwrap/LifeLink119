@@ -1,0 +1,318 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lifelink119:demo-session-request:1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "syntheticOnly",
+    "scenario",
+    "consent",
+    "vehicle",
+    "location",
+    "videoLink"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "syntheticOnly": {
+      "const": true
+    },
+    "scenario": {
+      "enum": [
+        "MEDICAL",
+        "VIDEO",
+        "TRANSPORT",
+        "POLICE",
+        "WELLBEING"
+      ]
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "vehicle",
+        "location",
+        "video"
+      ],
+      "properties": {
+        "vehicle": {
+          "type": "boolean"
+        },
+        "location": {
+          "type": "boolean"
+        },
+        "video": {
+          "type": "boolean"
+        }
+      }
+    },
+    "vehicle": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "name",
+            "batteryPercent"
+          ],
+          "properties": {
+            "id": {
+              "const": "DEMO-CAR-01"
+            },
+            "name": {
+              "const": "가상 차량 A"
+            },
+            "batteryPercent": {
+              "const": 72
+            }
+          }
+        }
+      ]
+    },
+    "location": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coordinateSystem",
+            "label",
+            "x",
+            "y"
+          ],
+          "properties": {
+            "coordinateSystem": {
+              "const": "DEMO_GRID"
+            },
+            "label": {
+              "const": "가상 훈련장 A구역"
+            },
+            "x": {
+              "const": 120
+            },
+            "y": {
+              "const": 80
+            }
+          }
+        }
+      ]
+    },
+    "videoLink": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^demo://video/DEMO-[0-9]{4,}$",
+          "maxLength": 64
+        }
+      ]
+    },
+    "caseCode": {
+      "enum": [
+        "MEDICAL_FAMILY_A",
+        "MEDICAL_FAMILY_B",
+        "VIDEO_SCENE_A",
+        "VIDEO_SCENE_B",
+        "TRANSPORT_MEET_A",
+        "TRANSPORT_REVIEW_B",
+        "POLICE_REVIEW_A",
+        "POLICE_MEET_B",
+        "WELLBEING_TALK_A",
+        "WELLBEING_FAMILY_B"
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "consent": {
+            "properties": {
+              "vehicle": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "vehicle": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent": {
+            "properties": {
+              "location": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent": {
+            "properties": {
+              "video": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "videoLink": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "MEDICAL"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "MEDICAL_FAMILY_A",
+              "MEDICAL_FAMILY_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "VIDEO"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "VIDEO_SCENE_A",
+              "VIDEO_SCENE_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "TRANSPORT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "TRANSPORT_MEET_A",
+              "TRANSPORT_REVIEW_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "POLICE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "POLICE_REVIEW_A",
+              "POLICE_MEET_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "WELLBEING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "WELLBEING_TALK_A",
+              "WELLBEING_FAMILY_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "not": {
+              "const": "VIDEO"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "videoLink": {
+            "type": "null"
+          },
+          "consent": {
+            "properties": {
+              "video": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    }
+  ]
+}

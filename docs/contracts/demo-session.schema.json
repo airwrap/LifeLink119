@@ -1,0 +1,552 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "urn:lifelink119:demo-session:1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schemaVersion",
+    "syntheticOnly",
+    "scenario",
+    "consent",
+    "vehicle",
+    "location",
+    "videoLink",
+    "id",
+    "agency",
+    "status",
+    "createdAt",
+    "updatedAt",
+    "caseCode",
+    "timeline",
+    "route"
+  ],
+  "properties": {
+    "signalPreview": {
+      "type":"object", "additionalProperties":false,
+      "required":["state","authority","approvalId","remainingSeconds","previewEnabled","hardwareConnected","simulationOnly"],
+      "properties": {
+        "state":{"enum":["OFF","REQUESTED","CONFIRMED","APPROVED","PREVIEW_ACTIVE","REVOKED","REJECTED","EXPIRED"]},
+        "authority":{"enum":[null,"119","112"]},
+        "approvalId":{"oneOf":[{"type":"null"},{"type":"string","pattern":"^SIM-LIGHT-DEMO-[0-9]+-[0-9]+$"}]},
+        "remainingSeconds":{"type":"integer","minimum":0,"maximum":120},
+        "previewEnabled":{"type":"boolean"}, "hardwareConnected":{"const":false}, "simulationOnly":{"const":true}
+      }
+    },
+    "schemaVersion": {
+      "const": "1.0"
+    },
+    "syntheticOnly": {
+      "const": true
+    },
+    "scenario": {
+      "enum": [
+        "MEDICAL",
+        "VIDEO",
+        "TRANSPORT",
+        "POLICE",
+        "WELLBEING"
+      ]
+    },
+    "consent": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "vehicle",
+        "location",
+        "video"
+      ],
+      "properties": {
+        "vehicle": {
+          "type": "boolean"
+        },
+        "location": {
+          "type": "boolean"
+        },
+        "video": {
+          "type": "boolean"
+        }
+      }
+    },
+    "vehicle": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "id",
+            "name",
+            "batteryPercent"
+          ],
+          "properties": {
+            "id": {
+              "const": "DEMO-CAR-01"
+            },
+            "name": {
+              "const": "가상 차량 A"
+            },
+            "batteryPercent": {
+              "const": 72
+            }
+          }
+        }
+      ]
+    },
+    "location": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coordinateSystem",
+            "label",
+            "x",
+            "y"
+          ],
+          "properties": {
+            "coordinateSystem": {
+              "const": "DEMO_GRID"
+            },
+            "label": {
+              "const": "가상 훈련장 A구역"
+            },
+            "x": {
+              "const": 120
+            },
+            "y": {
+              "const": 80
+            }
+          }
+        }
+      ]
+    },
+    "videoLink": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "string",
+          "pattern": "^demo://video/DEMO-[0-9]{4,}$",
+          "maxLength": 64
+        }
+      ]
+    },
+    "caseCode": {
+      "enum": [
+        "MEDICAL_FAMILY_A",
+        "MEDICAL_FAMILY_B",
+        "VIDEO_SCENE_A",
+        "VIDEO_SCENE_B",
+        "TRANSPORT_MEET_A",
+        "TRANSPORT_REVIEW_B",
+        "POLICE_REVIEW_A",
+        "POLICE_MEET_B",
+        "WELLBEING_TALK_A",
+        "WELLBEING_FAMILY_B"
+      ]
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^DEMO-[0-9]{4,}$",
+      "maxLength": 32
+    },
+    "agency": {
+      "enum": [
+        "119 (모의)",
+        "112 (모의)",
+        "109 (모의)"
+      ]
+    },
+    "status": {
+      "enum": [
+        "DEMO_CONNECTED",
+        "DEMO_RECEIVED",
+        "DEMO_REVIEWING",
+        "DEMO_GUIDANCE",
+        "DEMO_CLOSED"
+      ]
+    },
+    "createdAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "updatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "timeline": {
+      "type": "array",
+      "minItems": 1,
+      "maxItems": 10,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "status",
+          "label",
+          "message",
+          "at"
+        ],
+        "properties": {
+          "status": {
+            "enum": [
+              "DEMO_CONNECTED",
+              "DEMO_RECEIVED",
+              "DEMO_REVIEWING",
+              "DEMO_GUIDANCE",
+              "DEMO_CLOSED"
+            ]
+          },
+          "label": {
+            "type": "string",
+            "maxLength": 40
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 200
+          },
+          "at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      }
+    },
+    "route": {
+      "oneOf": [
+        {
+          "type": "null"
+        },
+        {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "coordinateSystem",
+            "destination",
+            "points",
+            "simulationOnly"
+          ],
+          "properties": {
+            "coordinateSystem": {
+              "const": "DEMO_GRID"
+            },
+            "destination": {
+              "const": "가상 만남 지점 B"
+            },
+            "points": {
+              "const": [
+                [
+                  120,
+                  80
+                ],
+                [
+                  180,
+                  80
+                ],
+                [
+                  180,
+                  160
+                ],
+                [
+                  240,
+                  160
+                ]
+              ]
+            },
+            "simulationOnly": {
+              "const": true
+            }
+          }
+        }
+      ]
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "consent": {
+            "properties": {
+              "vehicle": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "vehicle": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent": {
+            "properties": {
+              "location": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "location": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent": {
+            "properties": {
+              "video": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "videoLink": {
+            "type": "null"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "MEDICAL"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "MEDICAL_FAMILY_A",
+              "MEDICAL_FAMILY_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "VIDEO"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "VIDEO_SCENE_A",
+              "VIDEO_SCENE_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "TRANSPORT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "TRANSPORT_MEET_A",
+              "TRANSPORT_REVIEW_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "POLICE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "POLICE_REVIEW_A",
+              "POLICE_MEET_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "WELLBEING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "caseCode": {
+            "enum": [
+              "WELLBEING_TALK_A",
+              "WELLBEING_FAMILY_B"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "not": {
+              "const": "VIDEO"
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "videoLink": {
+            "type": "null"
+          },
+          "consent": {
+            "properties": {
+              "video": {
+                "const": false
+              }
+            }
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "MEDICAL"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "agency": {
+            "const": "119 (모의)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "VIDEO"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "agency": {
+            "const": "119 (모의)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "TRANSPORT"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "agency": {
+            "const": "119 (모의)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "POLICE"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "agency": {
+            "const": "112 (모의)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "scenario": {
+            "const": "WELLBEING"
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "agency": {
+            "const": "109 (모의)"
+          }
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "consent": {
+            "properties": {
+              "location": {
+                "const": false
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "properties": {
+          "route": {
+            "type": "null"
+          }
+        }
+      }
+    }
+  ]
+}

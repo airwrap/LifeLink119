@@ -1,0 +1,487 @@
+{
+  "schemaVersion": 1,
+  "syntheticOnly": true,
+  "notice": "완전한 가상 예시 · 실제 개인정보 입력·신고·촬영·GPS 수집 없음",
+  "scenarios": [
+    {
+      "id": "S01",
+      "title": "어린이 호흡곤란",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "CARD",
+        "VIDEO",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-1",
+      "observation": "BREATH",
+      "context": "아이의 가상 응급정보와 합성 스마트폰 영상으로 연결을 연습합니다."
+    },
+    {
+      "id": "S02",
+      "title": "심한 알레르기 반응 의심",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "CARD",
+        "GUARDIAN",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-1",
+      "observation": "ALLERGY",
+      "context": "알레르기·가상 처방 참고를 선택해 전문 상담원에게 보여줍니다."
+    },
+    {
+      "id": "S03",
+      "title": "고령자 의식 저하·뇌졸중 의심",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "SUMMARY",
+        "CARD",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-2",
+      "observation": "CONSCIOUS",
+      "context": "발견 시각과 관찰 내용을 사용자가 선택합니다. 앱은 진단하지 않습니다."
+    },
+    {
+      "id": "S04",
+      "title": "심장질환자의 흉통",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "CARD",
+        "SUMMARY",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-2",
+      "observation": "CHEST",
+      "context": "가상 병력·복용약을 동의한 항목만 공유합니다."
+    },
+    {
+      "id": "S05",
+      "title": "당뇨병 환자의 의식 변화",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "SUMMARY",
+        "CARD",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-10",
+      "observation": "GLUCOSE",
+      "context": "가상 혈당 수치를 입력해 요약에 넣을 수 있습니다. 해석·투약 판단은 하지 않습니다."
+    },
+    {
+      "id": "S06",
+      "title": "발작 발생",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "SUMMARY",
+        "VIDEO",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-4",
+      "observation": "SEIZURE",
+      "context": "관찰 시작 시각과 내용을 전문가 연결 후 선택합니다."
+    },
+    {
+      "id": "S07",
+      "title": "임산부 응급상황",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "CARD",
+        "LOCATION",
+        "SUMMARY"
+      ],
+      "profileHint": "DEMO-P-7",
+      "observation": "PREGNANT",
+      "context": "가상의 임신 참고정보와 차량 위치를 선택합니다."
+    },
+    {
+      "id": "S08",
+      "title": "청각장애인의 신고",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "TEXT",
+        "SIGN",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-3",
+      "observation": "COMMUNICATION",
+      "context": "정형 문구와 가상 수어통역 연결로 의사소통을 연습합니다."
+    },
+    {
+      "id": "S09",
+      "title": "언어장애인의 신고",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "PHRASES",
+        "TEXT",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-9",
+      "observation": "COMMUNICATION",
+      "context": "큰 의사표현 카드로 설명을 선택합니다."
+    },
+    {
+      "id": "S10",
+      "title": "시각장애인의 위기",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "VOICE",
+        "CARD",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-5",
+      "observation": "VISION",
+      "context": "명확한 읽기 순서와 소리 없는 음성 안내 모형을 제공합니다."
+    },
+    {
+      "id": "S11",
+      "title": "휠체어 이용자 이동지원",
+      "target": "CONSULT_119",
+      "priorities": [
+        "MOBILITY",
+        "CARD",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-6",
+      "observation": "MOBILITY",
+      "context": "휠체어·승하차 도움이 필요하다는 가상 정보를 선택합니다."
+    },
+    {
+      "id": "S12",
+      "title": "인지장애인의 위기",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "EASY",
+        "GUARDIAN",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-8",
+      "observation": "CONFUSED",
+      "context": "짧은 단계 안내와 보호자 도움을 선택합니다. 112로 직접 전환할 수 있습니다."
+    },
+    {
+      "id": "S13",
+      "title": "심리위기·폭력 위협",
+      "target": "COUNSEL_109",
+      "priorities": [
+        "PRIVACY",
+        "TEXT",
+        "SUMMARY"
+      ],
+      "profileHint": null,
+      "observation": "WORRIED",
+      "context": "109 상담 또는 사용자가 선택한 112·119 긴급 경로로 전환합니다. 자동 가족 알림은 없습니다."
+    },
+    {
+      "id": "S14",
+      "title": "교통사고·차량 고립",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "VEHICLE",
+        "VIDEO",
+        "POLICE"
+      ],
+      "profileHint": null,
+      "observation": "ACCIDENT",
+      "context": "전·후방 합성 영상, 차량·위치, 공동대응 및 만남 장소를 연습합니다."
+    },
+    {
+      "id": "E01",
+      "title": "전기차 정전·V2L 준비",
+      "target": "CONSULT_119",
+      "priorities": [
+        "POWER",
+        "VEHICLE",
+        "SUMMARY"
+      ],
+      "profileHint": "DEMO-P-4",
+      "observation": "POWER",
+      "context": "차량을 제어하지 않고 가상 조건에 따른 전력량·사용 시간을 계산합니다."
+    },
+    {
+      "id": "E02",
+      "title": "전문가 안내에 따른 이송·112 협조",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "POLICE",
+        "NAVIGATION",
+        "SUMMARY"
+      ],
+      "profileHint": "DEMO-P-2",
+      "observation": "TRANSFER",
+      "context": "가상 기관의 검토·승인 또는 거절, 사용자 목적지 확인을 거칩니다."
+    },
+    {
+      "id": "E03",
+      "title": "어린이·고령 부모와 함께 탑승",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "CARD",
+        "GUARDIAN",
+        "LOCATION"
+      ],
+      "profileHint": "DEMO-P-1",
+      "observation": "FAMILY",
+      "context": "하늘·민수는 가상 동승자 예시입니다. 도움이 필요한 분을 직접 선택하며 식별·공유를 자동화하지 않습니다."
+    },
+    {
+      "id": "E04",
+      "title": "일반 미등록 승객",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "CARD",
+        "LOCATION",
+        "SUMMARY"
+      ],
+      "profileHint": null,
+      "observation": "HELP",
+      "context": "프로필·등록·민감정보 동의 없이 연결 시연을 끝까지 진행합니다."
+    }
+  ],
+  "profiles": [
+    {
+      "id": "DEMO-P-1",
+      "aliasKey": "HANEUL",
+      "ageKey": "CHILD",
+      "conditions": [
+        "ALLERGY"
+      ],
+      "medications": [
+        "RX_A"
+      ],
+      "allergies": [
+        "FOOD"
+      ],
+      "pregnancyKey": "NONE",
+      "guardianKey": "CONTACT_A",
+      "access": [],
+      "largeText": false,
+      "easy": false,
+      "safeCallRegistered": true
+    },
+    {
+      "id": "DEMO-P-2",
+      "aliasKey": "MINSU",
+      "ageKey": "OLDER",
+      "conditions": [
+        "HEART",
+        "STROKE"
+      ],
+      "medications": [
+        "RX_B"
+      ],
+      "allergies": [],
+      "pregnancyKey": "NONE",
+      "guardianKey": "CONTACT_B",
+      "access": [],
+      "largeText": false,
+      "easy": false,
+      "safeCallRegistered": true
+    },
+    {
+      "id": "DEMO-P-3",
+      "aliasKey": "JIEUN",
+      "ageKey": "ADULT",
+      "conditions": [],
+      "medications": [],
+      "allergies": [],
+      "pregnancyKey": "NONE",
+      "guardianKey": "NONE",
+      "access": [
+        "HEARING"
+      ],
+      "largeText": false,
+      "easy": false,
+      "safeCallRegistered": false
+    },
+    {
+      "id": "DEMO-P-4",
+      "aliasKey": "PASSENGER",
+      "ageKey": "ADULT",
+      "conditions": [],
+      "medications": [],
+      "allergies": [],
+      "pregnancyKey": "NONE",
+      "guardianKey": "NONE",
+      "access": [],
+      "largeText": false,
+      "easy": false,
+      "safeCallRegistered": false
+    },
+    {
+      "id": "DEMO-P-5",
+      "aliasKey": "VISION",
+      "ageKey": "ADULT",
+      "conditions": [],
+      "medications": [],
+      "allergies": [],
+      "pregnancyKey": "NONE",
+      "guardianKey": "NONE",
+      "access": [
+        "VISION"
+      ],
+      "largeText": true,
+      "easy": false,
+      "safeCallRegistered": false
+    },
+    {
+      "id": "DEMO-P-6",
+      "aliasKey": "MOBILITY",
+      "ageKey": "ADULT",
+      "conditions": [],
+      "medications": [],
+      "allergies": [],
+      "pregnancyKey": "NONE",
+      "guardianKey": "NONE",
+      "access": [
+        "MOBILITY"
+      ],
+      "largeText": false,
+      "easy": false,
+      "safeCallRegistered": false
+    },
+    {
+      "id": "DEMO-P-7",
+      "aliasKey": "PREGNANT",
+      "ageKey": "ADULT",
+      "conditions": [],
+      "medications": [],
+      "allergies": [],
+      "pregnancyKey": "WEEK_30",
+      "guardianKey": "NONE",
+      "access": [],
+      "largeText": false,
+      "easy": false,
+      "safeCallRegistered": false
+    },
+    {
+      "id": "DEMO-P-8",
+      "aliasKey": "COGNITIVE",
+      "ageKey": "ADULT",
+      "conditions": [],
+      "medications": [],
+      "allergies": [],
+      "pregnancyKey": "NONE",
+      "guardianKey": "CONTACT_A",
+      "access": [
+        "COGNITIVE"
+      ],
+      "largeText": false,
+      "easy": true,
+      "safeCallRegistered": false
+    },
+    {
+      "id": "DEMO-P-9",
+      "aliasKey": "LANGUAGE",
+      "ageKey": "ADULT",
+      "conditions": [],
+      "medications": [],
+      "allergies": [],
+      "pregnancyKey": "NONE",
+      "guardianKey": "NONE",
+      "access": [
+        "LANGUAGE"
+      ],
+      "largeText": false,
+      "easy": false,
+      "safeCallRegistered": false
+    },
+    {
+      "id": "DEMO-P-10",
+      "aliasKey": "DIABETES",
+      "ageKey": "ADULT",
+      "conditions": [
+        "DIABETES"
+      ],
+      "medications": [
+        "RX_B"
+      ],
+      "allergies": [],
+      "pregnancyKey": "NONE",
+      "guardianKey": "NONE",
+      "access": [],
+      "largeText": false,
+      "easy": false,
+      "safeCallRegistered": false
+    }
+  ],
+  "words": {
+    "aliases": {
+      "HANEUL": "김하늘 · 가상 어린이",
+      "MINSU": "박민수 · 가상 고령자",
+      "JIEUN": "이지은 · 가상 청각장애인",
+      "PASSENGER": "일반 승객 · 가상",
+      "VISION": "시각장애 예시 · 가상",
+      "MOBILITY": "휠체어 이용 예시 · 가상",
+      "PREGNANT": "임산부 예시 · 가상",
+      "COGNITIVE": "쉬운 안내 예시 · 가상",
+      "LANGUAGE": "의사표현 예시 · 가상",
+      "DIABETES": "혈당 관리 예시 · 가상",
+      "NEW_A": "새 가족 A · 가상",
+      "NEW_B": "새 가족 B · 가상"
+    },
+    "ages": {
+      "CHILD": "어린이",
+      "ADULT": "성인",
+      "OLDER": "고령자"
+    },
+    "conditions": {
+      "ALLERGY": "가상 알레르기 병력",
+      "HEART": "가상 심장질환 병력",
+      "STROKE": "가상 뇌혈관 병력",
+      "DIABETES": "가상 당뇨병 병력"
+    },
+    "medications": {
+      "RX_A": "가상 처방 참고 A · 투약 안내 아님",
+      "RX_B": "가상 처방 참고 B · 투약 안내 아님"
+    },
+    "allergies": {
+      "FOOD": "가상 식품 알레르기",
+      "DRUG": "가상 약물 알레르기"
+    },
+    "pregnancy": {
+      "NONE": "참고정보 없음",
+      "WEEK_30": "가상 임신 30주 참고",
+      "WEEK_38": "가상 임신 38주 참고"
+    },
+    "guardians": {
+      "NONE": "등록 없음",
+      "CONTACT_A": "가상 보호자 A · DEMO-CONTACT-A · 실제 연락 불가",
+      "CONTACT_B": "가상 보호자 B · DEMO-CONTACT-B · 실제 연락 불가"
+    },
+    "access": {
+      "HEARING": "문자·수어 중심",
+      "LANGUAGE": "의사표현 카드 중심",
+      "VISION": "스크린리더·큰 글씨",
+      "COGNITIVE": "쉬운 단계 안내",
+      "MOBILITY": "휠체어·승하차 도움"
+    },
+    "observations": {
+      "HELP": "도움이 필요해요(가상)",
+      "BREATH": "호흡이 불편한 상황(가상)",
+      "ALLERGY": "알레르기 반응이 의심되는 상황(가상)",
+      "CONSCIOUS": "의식 변화가 있는 상황(가상)",
+      "CHEST": "흉통을 호소하는 상황(가상)",
+      "GLUCOSE": "혈당 관련 참고가 필요한 상황(가상)",
+      "SEIZURE": "발작을 관찰한 상황(가상)",
+      "PREGNANT": "임신 관련 응급 상황(가상)",
+      "COMMUNICATION": "말·소리로 설명하기 어려운 상황(가상)",
+      "VISION": "주변 상황을 보기 어려운 상황(가상)",
+      "MOBILITY": "이동·승하차 도움이 필요한 상황(가상)",
+      "CONFUSED": "쉬운 설명과 보호자 도움이 필요한 상황(가상)",
+      "WORRIED": "심리적 어려움을 상담하려는 상황(가상)",
+      "ACCIDENT": "교통사고·차량 고립 상황(가상)",
+      "POWER": "정전 중 전력 사용을 가정하는 상황",
+      "TRANSFER": "전문가 안내에 따른 만남 장소 확인(가상)",
+      "FAMILY": "어린이·고령 가족과 동행하는 상황(가상)"
+    },
+    "phrases": {
+      "HELP": "도움이 필요해요.",
+      "ACCIDENT": "사고가 났어요.",
+      "CANNOT_SPEAK": "말로 설명하기 어려워요.",
+      "TEXT_PLEASE": "문자로 안내해 주세요.",
+      "WHEELCHAIR": "휠체어·승하차 도움이 필요해요.",
+      "PRIVACY": "다른 사람에게 알리지 않고 상담하고 싶어요."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.lifelink119.verify">
+    <uses-sdk android:minSdkVersion="28" android:targetSdkVersion="34" />
+    <application android:label="LifeLink UI verification" android:debuggable="true" />
+    <instrumentation android:name="com.lifelink119.verify.SnapshotInstrumentation"
+        android:targetPackage="com.lifelink119.verify" android:functionalTest="true" />
+</manifest>

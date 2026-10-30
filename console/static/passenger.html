@@ -1,0 +1,116 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LifeLink119 탑승자 데모</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/signal.js" defer></script>
+    <script src="/passenger.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="notice">
+        시연 모드 | 실제 신고·상담 연결 아님 · Android 없이 체험하는 가상 탑승자
+        화면
+      </div>
+      <div class="head">
+        <div>
+          <h1>LifeLink 119 · 가족을 위한 응급지원</h1>
+          <p>이동 중 응급상황에서도 동의와 모의 상담 연결을 연습합니다.</p>
+        </div>
+        <a href="/" target="_blank" rel="noopener">모의 상담센터 열기 ↗</a>
+      </div>
+    </header>
+    <main class="wide">
+      <p><a href="/manual">기본 응급상황 매뉴얼</a></p>
+      <section class="panel safety">
+        <label for="motion-state">시연 상황</label>
+        <select id="motion-state">
+          <option value="UNKNOWN">이동 상태 선택 전</option>
+          <option value="DRIVING">이동 중 응급상황</option>
+          <option value="PARKED">정차 상황</option>
+        </select>
+        <p id="driving-status" class="status" role="status">
+          응급지원 바로 사용 가능 · 실제 차량 상태 감지 아님
+        </p>
+      </section>
+      <div id="error" class="error" role="alert" hidden></div>
+      <div class="steps" aria-label="진행 단계">
+        <span id="step-1" class="active">1 상황 선택</span
+        ><span id="step-2">2 정보 확인</span
+        ><span id="step-3">3 모의 연결</span>
+      </div>
+      <fieldset id="controls">
+        <section id="intro" class="panel">
+          <h2>어떤 상황을 체험할까요?</h2>
+          <div class="field">
+            <label for="scenario">시나리오</label
+            ><select id="scenario">
+              <option value="MEDICAL">119 응급의료상담</option>
+              <option value="VIDEO">현장 영상 공유 (합성 예시)</option>
+              <option value="TRANSPORT">이송·구조 지원</option>
+              <option value="POLICE">112 경찰 협조</option>
+              <option value="WELLBEING">109 심리위기 상담</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="case">가상 상황</label
+            ><select id="case"></select>
+            <p id="case-summary" class="muted"></p>
+          </div>
+          <p>
+            개인정보·증상·실제 위치는 입력하지 않습니다. 실제 위급상황은 직접
+            119 또는 112로 신고하세요.
+          </p>
+          <button id="next" class="primary">정보 확인으로</button>
+        </section>
+        <section id="review" class="panel" hidden>
+          <h2>공유할 가상 정보만 선택하세요</h2>
+          <p>
+            모든 선택은 기본 OFF입니다. 아무것도 선택하지 않아도 모의 연결할 수
+            있습니다.
+          </p>
+          <label class="check"
+            ><input id="vehicle" type="checkbox" />고정 가상 차량 정보
+            포함</label
+          ><label class="check"
+            ><input id="location" type="checkbox" />가짜 격자 위치 포함 (실제
+            GPS 아님)</label
+          ><label id="video-option" class="check" hidden
+            ><input id="video" type="checkbox" />합성 영상 예시 포함 (실제
+            촬영·전송 없음)</label
+          >
+          <div id="preview" class="card preview"></div>
+          <div class="actions">
+            <button id="back">이전</button
+            ><button id="connect" class="primary">
+              로컬 모의 상담센터 연결
+            </button>
+          </div>
+        </section>
+        <section id="connected" class="panel" hidden>
+          <h2 id="ticket"></h2>
+          <p id="session-state" class="badge" role="status"></p>
+          <p>
+            같은 PC의 상담센터에서 접수·검토·안내를 누르면 이 화면에도
+            반영됩니다.
+          </p>
+          <p id="shared" class="preview card"></p>
+          <section id="passenger-signal" class="card signal-panel" aria-label="기관 승인형 표시 시연"></section>
+          <ol id="timeline" class="timeline"></ol>
+          <div class="actions">
+            <button id="refresh">상태 새로고침</button
+            ><button id="close">모의 세션 종료</button
+            ><button id="revoke">공유 철회</button
+            ><button id="new" class="primary">새로운 상황 체험</button>
+          </div>
+        </section>
+      </fieldset>
+    </main>
+    <footer class="footer">
+      localhost에 고정 가짜 정보만 전송 · 실제 카메라·GPS·긴급기관 연결 없음 ·
+      이동 상태는 시연 상황 선택이며 실제 차량 상태 감지가 아닙니다. 상세 조작은 동승자 역할로 시연합니다.
+    </footer>
+  </body>
+</html>

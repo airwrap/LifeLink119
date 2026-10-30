@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="coop_time">가상 임무 남은 시간 %1$d초 · 실제 시연 경과 %2$d초</string>
+    <string name="coop_beacon_time">표시 승인 남은 시간 %1$d초</string>
+    <string name="value_caption">%1$s: %2$s</string>
+</resources>

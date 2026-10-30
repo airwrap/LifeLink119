@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="ko">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>LifeLink119 모의 상담센터</title>
+    <link rel="stylesheet" href="/style.css" />
+    <script src="/signal.js" defer></script>
+    <script src="/app.js" defer></script>
+  </head>
+  <body>
+    <header>
+      <div class="notice">
+        모의 상황실 | 실제 119·112·109 연결 아님 · 완전한 가짜 데이터만 표시
+      </div>
+      <div class="head">
+        <div>
+          <h1>LifeLink 119 · 모의 상담센터</h1>
+          <p>접수부터 안내까지, 가족 응급지원 절차를 연습합니다.</p>
+        </div>
+        <a href="/passenger" target="_blank" rel="noopener"
+          >탑승자 데모 열기 ↗</a
+        >
+      </div>
+    </header>
+    <main>
+      <p><a href="/cooperation">주변 차량 응급협력 PoC 열기 ↗</a> · <a href="/manual">기본 응급상황 매뉴얼</a></p>
+      <div class="toolbar">
+        <span id="connection" class="status" role="status"
+          >로컬 연결 확인 중…</span
+        ><button id="refresh">새로고침</button
+        ><button id="reset" class="danger">가상 기록 초기화</button>
+      </div>
+      <div id="error" class="error" role="alert" hidden></div>
+      <div class="layout">
+        <aside class="panel">
+          <h2>가상 세션 <span id="count" class="badge">0</span></h2>
+          <div class="field">
+            <label for="filter">시나리오</label
+            ><select id="filter">
+              <option value="">전체</option>
+              <option value="MEDICAL">119 응급상담</option>
+              <option value="VIDEO">합성 영상 공유</option>
+              <option value="TRANSPORT">이송 협력</option>
+              <option value="POLICE">112 협조</option>
+              <option value="WELLBEING">109 상담</option>
+            </select>
+          </div>
+          <div id="sessions" class="session-list"></div>
+        </aside>
+        <section class="panel" aria-label="선택한 세션 상세">
+          <div id="empty" class="empty">
+            <h2>아직 세션이 없습니다</h2>
+            <p>
+              Android 앱에서 로컬 공유를 누르거나<br /><a href="/passenger"
+                >탑승자 데모</a
+              >에서 모의 연결을 시작하세요.
+            </p>
+          </div>
+          <div id="detail" hidden>
+            <div class="inline">
+              <h2 id="ticket"></h2>
+              <span
+                id="state"
+                class="badge"
+                role="status"
+                aria-live="polite"
+              ></span>
+            </div>
+            <p id="summary" class="muted"></p>
+            <div id="actions" class="actions"></div>
+            <section id="operator-signal" class="card signal-panel" aria-label="기관 승인 역할 시연"></section>
+            <div class="grid">
+              <article class="card">
+                <h3>차량 정보</h3>
+                <p id="vehicle"></p>
+              </article>
+              <article class="card">
+                <h3>위치 정보</h3>
+                <p id="location"></p>
+              </article>
+              <article class="card">
+                <h3>합성 영상 예시</h3>
+                <p id="video-status"></p>
+                <div id="video" class="synthetic" hidden>
+                  <span
+                    >합성 도형 애니메이션<br />실제 카메라·사고 영상 아님</span
+                  >
+                </div>
+              </article>
+              <article class="card">
+                <h3>가상 만남 지점</h3>
+                <p id="route-status"></p>
+                <svg
+                  id="map"
+                  class="map"
+                  viewBox="0 0 320 220"
+                  role="img"
+                  aria-label="실제 지도가 아닌 가짜 격자 경로"
+                  hidden
+                ></svg>
+              </article>
+            </div>
+            <h3>모의 진행 기록</h3>
+            <ol id="timeline" class="timeline"></ol>
+          </div>
+        </section>
+      </div>
+    </main>
+    <footer class="footer">
+      localhost 전용 · 메모리 보관 60분/최대 50개 · 재시작 시 삭제 ·
+      의료·출동·이송·경찰 호송 결정을 하지 않습니다.
+    </footer>
+  </body>
+</html>

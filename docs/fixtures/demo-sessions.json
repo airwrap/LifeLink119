@@ -1,0 +1,99 @@
+[
+  {
+    "schemaVersion": "1.0",
+    "syntheticOnly": true,
+    "id": "DEMO-0001",
+    "scenario": "MEDICAL",
+    "agency": "119 (모의)",
+    "status": "DEMO_CONNECTED",
+    "consent": {
+      "vehicle": false,
+      "location": false,
+      "video": false
+    },
+    "vehicle": null,
+    "location": null,
+    "videoLink": null,
+    "createdAt": "2026-10-25T00:00:00Z",
+    "caseCode": "MEDICAL_FAMILY_A",
+    "updatedAt": "2026-10-25T00:00:00Z",
+    "route": null,
+    "timeline": [
+      {
+        "status": "DEMO_CONNECTED",
+        "label": "모의 예시",
+        "message": "완전한 가상 테스트 세션입니다.",
+        "at": "2026-10-25T00:00:00Z"
+      }
+    ]
+  },
+  {
+    "schemaVersion": "1.0",
+    "syntheticOnly": true,
+    "id": "DEMO-0002",
+    "scenario": "VIDEO",
+    "agency": "119 (모의)",
+    "status": "DEMO_CONNECTED",
+    "consent": {
+      "vehicle": true,
+      "location": true,
+      "video": true
+    },
+    "vehicle": {
+      "id": "DEMO-CAR-01",
+      "name": "가상 차량 A",
+      "batteryPercent": 72
+    },
+    "location": {
+      "coordinateSystem": "DEMO_GRID",
+      "label": "가상 훈련장 A구역",
+      "x": 120,
+      "y": 80
+    },
+    "videoLink": "demo://video/DEMO-0002",
+    "createdAt": "2026-10-25T00:01:00Z",
+    "caseCode": "VIDEO_SCENE_A",
+    "updatedAt": "2026-10-25T00:01:00Z",
+    "route": null,
+    "timeline": [
+      {
+        "status": "DEMO_CONNECTED",
+        "label": "모의 예시",
+        "message": "완전한 가상 테스트 세션입니다.",
+        "at": "2026-10-25T00:01:00Z"
+      }
+    ]
+  },
+  {
+    "schemaVersion": "1.0",
+    "syntheticOnly": true,
+    "id": "DEMO-0003",
+    "scenario": "WELLBEING",
+    "agency": "109 (모의)",
+    "status": "DEMO_CLOSED",
+    "consent": {
+      "vehicle": true,
+      "location": false,
+      "video": false
+    },
+    "vehicle": {
+      "id": "DEMO-CAR-01",
+      "name": "가상 차량 A",
+      "batteryPercent": 72
+    },
+    "location": null,
+    "videoLink": null,
+    "createdAt": "2026-10-25T00:02:00Z",
+    "caseCode": "WELLBEING_TALK_A",
+    "updatedAt": "2026-10-25T00:02:00Z",
+    "route": null,
+    "timeline": [
+      {
+        "status": "DEMO_CLOSED",
+        "label": "모의 예시",
+        "message": "완전한 가상 테스트 세션입니다.",
+        "at": "2026-10-25T00:02:00Z"
+      }
+    ]
+  }
+]

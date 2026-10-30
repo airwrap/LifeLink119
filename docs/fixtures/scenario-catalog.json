@@ -1,0 +1,22 @@
+{
+  "MEDICAL": [
+    {"code":"MEDICAL_FAMILY_A","label":"가상 상황 A · 동승자 도움 요청","summary":"훈련용 동승자가 전문 상담 연결 과정을 연습합니다."},
+    {"code":"MEDICAL_FAMILY_B","label":"가상 상황 B · 가족과 상황 설명 연습","summary":"정차한 차량에서 가상 상담원에게 상황을 전달하는 연습입니다."}
+  ],
+  "VIDEO": [
+    {"code":"VIDEO_SCENE_A","label":"가상 상황 A · 현장 공유 연습","summary":"실제 카메라 대신 합성 영상 예시를 선택적으로 표시합니다."},
+    {"code":"VIDEO_SCENE_B","label":"가상 상황 B · 정보 선택 확인 연습","summary":"실제 촬영 없이 가상 정보의 공유 여부를 선택하는 연습입니다."}
+  ],
+  "TRANSPORT": [
+    {"code":"TRANSPORT_MEET_A","label":"가상 상황 A · 만남 지점 확인","summary":"전문기관 판단이 필요한 이송 협력 절차를 시연합니다."},
+    {"code":"TRANSPORT_REVIEW_B","label":"가상 상황 B · 공동대응 검토","summary":"지원 검토 과정을 시연하며 배차·이송 승인을 뜻하지 않습니다."}
+  ],
+  "POLICE": [
+    {"code":"POLICE_REVIEW_A","label":"가상 상황 A · 공동대응 검토 요청","summary":"가상 상담원에게 경찰 협조 검토 요청을 표시합니다."},
+    {"code":"POLICE_MEET_B","label":"가상 상황 B · 만남 지점 안내 연습","summary":"경찰 출동·호송·우선통행 승인을 보장하지 않는 안내 연습입니다."}
+  ],
+  "WELLBEING": [
+    {"code":"WELLBEING_TALK_A","label":"가상 상황 A · 전문상담 요청 연습","summary":"개인적인 이야기나 증상을 입력하지 않고 연결 흐름을 체험합니다."},
+    {"code":"WELLBEING_FAMILY_B","label":"가상 상황 B · 가족과 도움 요청 연습","summary":"전문 상담원의 역할을 소개하는 가상 시연이며 위험도 판정을 하지 않습니다."}
+  ]
+}

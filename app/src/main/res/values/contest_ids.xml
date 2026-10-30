@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="x_coop_center" type="id" />
+    <item name="x_coop_intro" type="id" />
+    <item name="x_coop_consent" type="id" />
+    <item name="x_coop_request" type="id" />
+    <item name="x_coop_case_early" type="id" />
+    <item name="x_coop_case_ems" type="id" />
+    <item name="x_coop_case_none" type="id" />
+    <item name="x_coop_status" type="id" />
+    <item name="x_coop_review" type="id" />
+    <item name="x_coop_invite_a" type="id" />
+    <item name="x_coop_invite_d" type="id" />
+    <item name="x_coop_accept" type="id" />
+    <item name="x_coop_decline" type="id" />
+    <item name="x_coop_authorize" type="id" />
+    <item name="x_coop_time" type="id" />
+    <item name="x_coop_beacon_status" type="id" />
+    <item name="x_coop_beacon_time" type="id" />
+    <item name="x_coop_request_119" type="id" />
+    <item name="x_coop_request_112" type="id" />
+    <item name="x_coop_beacon_review" type="id" />
+    <item name="x_coop_beacon_approve" type="id" />
+    <item name="x_coop_beacon_reject" type="id" />
+    <item name="x_coop_beacon_start" type="id" />
+    <item name="x_coop_preview" type="id" />
+    <item name="x_coop_beacon_revoke" type="id" />
+    <item name="x_coop_arrive" type="id" />
+    <item name="x_coop_handover" type="id" />
+    <item name="x_coop_cancel" type="id" />
+    <item name="x_coop_restart" type="id" />
+    <item name="x_driver_1" type="id" />
+    <item name="x_driver_2" type="id" />
+    <item name="x_profile_edit_1" type="id" />
+    <item name="x_profile_edit_11" type="id" />
+    <item name="x_narrow_preview" type="id" />
+</resources>
