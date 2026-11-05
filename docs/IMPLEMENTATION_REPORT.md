@@ -1,5 +1,7 @@
 # LifeLink 119 v0.6.0-demo · 공모전 시연 확장 및 의료정보 보호
 
+> 현재 v0.11은 [현재 구성과 검증](PROJECT_STATUS_V11.md)을 참조한다. 주행 중 긴급 호출은 [v0.7 보고서](IMPLEMENTATION_REPORT_V07.md)에 있다. 아래 내용과 검증 수치는 v0.6 당시의 기록이다.
+
 작업일: 2026-10-28. 기준은 [통합 UX 지침](LIFELINK_EXPANSION_PROMPT.md), [작업계획](CONTEST_COMPLETION_PLAN.md), 후속 의료정보 보호 요청이다. 이전 구현·검증 기록은 [v0.5 보고서](IMPLEMENTATION_REPORT_V05.md)에 보존했다. 확장 전 소스는 `verification/backups/before-contest-completion-20261028.zip`에 보관했다.
 
 ## 결과

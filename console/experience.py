@@ -15,7 +15,7 @@ class ExperienceError(Exception):
         self.status, self.code, self.message = status, code, message
 
 
-SCENARIOS = {f'S{i:02d}' for i in range(1, 15)} | {f'E{i:02d}' for i in range(1, 5)}
+SCENARIOS = {f'S{i:02d}' for i in range(1, 15)} | {f'E{i:02d}' for i in range(1, 5)} | {'D01'}
 TARGETS = {'EMERGENCY_119', 'CONSULT_119', 'EMERGENCY_112', 'COUNSEL_109'}
 STATUSES = {'REQUESTING', 'DEMO_CONNECTED', 'SUPPORT_IN_PROGRESS', 'FAILED', 'COMPLETED', 'CANCELLED'}
 FIELDS = {'ALIAS', 'CONDITIONS', 'MEDICATIONS', 'ALLERGIES', 'PREGNANCY', 'ACCESS', 'GUARDIAN',

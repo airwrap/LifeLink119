@@ -95,7 +95,7 @@ data class EmergencySession(
     val videoSource: VideoSource = VideoSource.PHONE, val police: PoliceStatus = PoliceStatus.NONE,
     val navigation: NavigationStatus = NavigationStatus.NONE, val destination: String? = null,
     val sign: SignStatus = SignStatus.OFF, val guidance: Boolean = false, val safeCall: String = "NOT_REQUESTED",
-    val voice: String = "OFF", val messages: List<String> = emptyList(), val events: List<String> = listOf("REQUESTED"), val revision: Int = 1
+    val voice: String = "OFF", val messages: List<String> = emptyList(), val events: List<String> = listOf("REQUESTED"), val revision: Int = 1, val driving: DrivingEmergencyState? = null
 ) {
     val active get() = status in setOf(LinkStatus.DEMO_CONNECTED, LinkStatus.SUPPORT_IN_PROGRESS)
     val ended get() = status in setOf(LinkStatus.COMPLETED, LinkStatus.CANCELLED)
@@ -121,12 +121,28 @@ class SessionEngine(val catalog: ExperienceCatalog, initialProfiles: List<Person
         current = next.copy(revision=(current?.revision ?: 0)+1, events=(next.events + event).takeLast(40)); onChange()
     }
     fun start(id: String, target: ConnectionTarget, scenarioId: String = "E04", personId: String? = null) {
-        require(id.matches(Regex("DEMO-[0-9]{4,}"))); catalog.scenario(scenarioId)
+        require(id.matches(Regex("DEMO-[0-9]{4,}"))); catalog.scenario(scenarioId);require(scenarioId!="D01" || target==ConnectionTarget.EMERGENCY_119)
         privateUnlocked=false;videoPreview=false
-        current=EmergencySession(id,target,scenarioId,personId=personId?.takeIf { id2 -> profiles.any { it.id==id2 } },observation=catalog.scenario(scenarioId).observation)
+        current=EmergencySession(id,target,scenarioId,personId=personId?.takeIf { id2 -> profiles.any { it.id==id2 } },observation=catalog.scenario(scenarioId).observation,driving=if(scenarioId=="D01")DrivingEmergencyState()else null)
         cooperation.attach(id)
         onChange()
     }
+    /** Repeated shortcuts reopen the same pending/active driving demo, including failure recovery. */
+    fun startDriving(id: String, trigger: DrivingTrigger = DrivingTrigger.TOUCH) {
+        if(current?.scenarioId=="D01" && current?.ended==false)return
+        check(trigger!=DrivingTrigger.VOICE_EXAMPLE || !restrictions.complexBlocked)
+        start(id,ConnectionTarget.EMERGENCY_119,"D01")
+        update("DRIVING_DEMO_STARTED",requireNotNull(current).copy(driving=DrivingEmergencyState(trigger)))
+    }
+    private fun drivingChange(event: String, change: (DrivingEmergencyState)->DrivingEmergencyState) {
+        val s=active();check(!restrictions.complexBlocked) { "플랫폼 제한 중에는 상세 역할 시연을 사용할 수 없습니다." }
+        update(event,s.copy(driving=change(requireNotNull(s.driving))))
+    }
+    fun drivingSend()=drivingChange("DRIVING_REPORT_SENT") { it.send() }
+    fun drivingAcknowledge()=drivingChange("DRIVING_OPERATOR_ACKNOWLEDGED") { it.acknowledge() }
+    fun drivingStopped()=drivingChange("DRIVING_STOP_REPORTED") { it.stopped() }
+    fun drivingSafe()=drivingChange("DRIVING_SAFETY_REPORTED") { it.safe() }
+    fun drivingHandover()=drivingChange("DRIVING_MOCK_HANDOVER") { it.handover() }
     fun answer() { val s=current ?: return;check(s.status==LinkStatus.REQUESTING)
         if(failNextConnection){failNextConnection=false;update("CONNECTION_FAILED",s.copy(status=LinkStatus.FAILED))}
         else update("MOCK_OPERATOR_ANSWERED",s.copy(status=LinkStatus.DEMO_CONNECTED))
@@ -138,7 +154,7 @@ class SessionEngine(val catalog: ExperienceCatalog, initialProfiles: List<Person
         val s=active();require(id==null || profiles.any { it.id==id });privateUnlocked=false;videoPreview=false;cooperation.invalidate()
         update("PERSON_SELECTED",s.copy(personId=id,shared=s.shared.filterKeys { it in setOf(ShareField.LOCATION,ShareField.VEHICLE) },observation=catalog.scenario(s.scenarioId).observation,discovered="NOW",demoGlucose=null,video=VideoStatus.STOPPED,sign=SignStatus.OFF,messages=emptyList(),safeCall="NOT_REQUESTED",navigation=NavigationStatus.NONE,destination=null,guidance=false,police=PoliceStatus.NONE))
     }
-    fun selectCase(id: String) { val s=active();val c=catalog.scenario(id);videoPreview=false;cooperation.invalidate();update("CONTEXT_SELECTED",s.copy(scenarioId=id,observation=c.observation,discovered="NOW",demoGlucose=null,shared=s.shared-setOf(ShareField.SUMMARY,ShareField.VIDEO),video=VideoStatus.STOPPED,navigation=NavigationStatus.NONE,destination=null,guidance=false,police=PoliceStatus.NONE)) }
+    fun selectCase(id: String) { val s=active();val c=catalog.scenario(id);require(id!="D01" || s.target==ConnectionTarget.EMERGENCY_119);videoPreview=false;cooperation.invalidate();update("CONTEXT_SELECTED",s.copy(scenarioId=id,driving=if(id=="D01")DrivingEmergencyState()else null,observation=c.observation,discovered="NOW",demoGlucose=null,shared=s.shared-setOf(ShareField.SUMMARY,ShareField.VIDEO),video=VideoStatus.STOPPED,navigation=NavigationStatus.NONE,destination=null,guidance=false,police=PoliceStatus.NONE)) }
     fun unlockPrivate(confirmed: Boolean) { check(confirmed);check(!restrictions.complexBlocked);privateUnlocked=true;onChange() }
     fun lockPrivate() { privateUnlocked=false;videoPreview=false;onChange() }
     fun setRestrictions(value: DrivingRestrictions) { restrictions=value;if(value.videoBlocked)videoPreview=false;if(value.complexBlocked)privateUnlocked=false;if(value.videoBlocked || value.complexBlocked)cooperation.pausePreview();onChange() }
@@ -213,7 +229,7 @@ class SessionEngine(val catalog: ExperienceCatalog, initialProfiles: List<Person
         val s=current ?: return;privateUnlocked=false;videoPreview=false
         cooperation.clear()
         update("SESSION_DATA_CLEARED",s.copy(status=if(cancelled)LinkStatus.CANCELLED else LinkStatus.COMPLETED,personId=null,shared=emptyMap(),observation="HELP",demoGlucose=null,
-            video=VideoStatus.STOPPED,police=PoliceStatus.NONE,navigation=NavigationStatus.NONE,destination=null,sign=SignStatus.OFF,voice="OFF",messages=emptyList(),safeCall="NOT_REQUESTED",guidance=false,discovered="NOW"))
+            video=VideoStatus.STOPPED,police=PoliceStatus.NONE,navigation=NavigationStatus.NONE,destination=null,sign=SignStatus.OFF,voice="OFF",messages=emptyList(),safeCall="NOT_REQUESTED",guidance=false,discovered="NOW",driving=null))
     }
 }
 

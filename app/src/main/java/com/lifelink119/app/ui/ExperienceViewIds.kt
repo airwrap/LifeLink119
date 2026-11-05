@@ -9,7 +9,7 @@ import com.lifelink119.app.core.SupportAction
 object ExperienceViewIds {
     private val cases=listOf(R.id.x_case_s01,R.id.x_case_s02,R.id.x_case_s03,R.id.x_case_s04,R.id.x_case_s05,R.id.x_case_s06,R.id.x_case_s07,R.id.x_case_s08,R.id.x_case_s09,R.id.x_case_s10,R.id.x_case_s11,R.id.x_case_s12,R.id.x_case_s13,R.id.x_case_s14,R.id.x_case_e01,R.id.x_case_e02,R.id.x_case_e03,R.id.x_case_e04)
     private val people=listOf(R.id.x_person_1,R.id.x_person_2,R.id.x_person_3,R.id.x_person_4,R.id.x_person_5,R.id.x_person_6,R.id.x_person_7,R.id.x_person_8,R.id.x_person_9,R.id.x_person_10,R.id.x_person_11,R.id.x_person_12)
-    fun scenario(id: String): Int {val n=id.drop(1).toIntOrNull() ?: return View.NO_ID;return cases.getOrNull(if(id.startsWith("S"))n-1 else n+13) ?: View.NO_ID}
+    fun scenario(id: String): Int {if(id=="D01")return R.id.x_case_d01;val n=id.drop(1).toIntOrNull() ?: return View.NO_ID;return cases.getOrNull(if(id.startsWith("S"))n-1 else n+13) ?: View.NO_ID}
     fun person(id: String)=people.getOrNull((id.removePrefix("DEMO-P-").toIntOrNull() ?: 0)-1) ?: View.NO_ID
     fun action(value: SupportAction)=when(value){
         SupportAction.CARD->R.id.x_action_card;SupportAction.VIDEO->R.id.x_action_video;SupportAction.LOCATION->R.id.x_action_location;SupportAction.TEXT->R.id.x_action_text

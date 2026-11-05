@@ -35,3 +35,15 @@ __pycache__/
 .venv/
 venv/
 .tools/
+node_modules/
+
+# Presentation render caches; keep authoring scripts, inputs and final outputs.
+/docs/presentation/**/.build/draft.pptx*
+/docs/presentation/**/.build/slide-*.png
+/docs/presentation/**/.build/old-*.png
+/docs/presentation/**/.build/review-*.jpg
+/docs/presentation/**/.build/html-page.png
+/docs/presentation/**/.build/montage.jpg
+/docs/presentation/**/.build/screens-montage.jpg
+/docs/presentation/**/.build/validation.json
+/docs/presentation/**/.build/screens/capture-report.json

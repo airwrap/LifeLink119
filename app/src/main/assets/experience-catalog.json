@@ -236,6 +236,19 @@
       "profileHint": null,
       "observation": "HELP",
       "context": "프로필·등록·민감정보 동의 없이 연결 시연을 끝까지 진행합니다."
+    },
+    {
+      "id": "D01",
+      "title": "주행 중 차 안의 위험 · 119 빠른 호출",
+      "target": "EMERGENCY_119",
+      "priorities": [
+        "LOCATION",
+        "TEXT",
+        "MANUAL"
+      ],
+      "profileHint": null,
+      "context": "정차·등록·PIN 없이 요청하고 가상 상황실과 안전 확보·인계를 시연합니다.",
+      "observation": "HELP"
     }
   ],
   "profiles": [

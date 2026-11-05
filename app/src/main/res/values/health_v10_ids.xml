@@ -1,0 +1,12 @@
+<resources>
+    <item name="x_my_health_edit" type="id" />
+    <item name="x_my_health_delete" type="id" />
+    <item name="x_my_health_save" type="id" />
+    <item name="x_my_health_cancel" type="id" />
+    <item name="x_my_health_family" type="id" />
+    <item name="x_my_health_status" type="id" />
+    <item name="x_my_health_name" type="id" />
+    <item name="x_my_health_conditions" type="id" />
+    <item name="x_my_health_allergies" type="id" />
+    <item name="x_my_health_medications" type="id" />
+</resources>

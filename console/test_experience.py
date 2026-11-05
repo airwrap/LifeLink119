@@ -18,12 +18,12 @@ def snapshot(**changes):
 
 
 class ExperienceTests(unittest.TestCase):
-    def test_all_eighteen_scenarios_have_synthetic_fixture_and_three_actions(self):
+    def test_all_nineteen_scenarios_have_synthetic_fixture_and_three_actions(self):
         root=Path(__file__).resolve().parents[1]
         catalog=json.loads((root/'app/src/main/assets/experience-catalog.json').read_text(encoding='utf-8'))
         self.assertTrue(catalog['syntheticOnly'])
         self.assertEqual({s['id'] for s in catalog['scenarios']},SCENARIOS)
-        self.assertEqual(len(catalog['scenarios']),18)
+        self.assertEqual(len(catalog['scenarios']),19)
         for case in catalog['scenarios']:
             self.assertEqual(len(set(case['priorities'])),3)
             store=ExperienceStore();store.publish(snapshot(scenarioId=case['id'],target=case['target']))

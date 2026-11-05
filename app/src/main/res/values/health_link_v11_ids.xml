@@ -1,0 +1,8 @@
+<resources>
+    <item name="x_health_link" type="id" />
+    <item name="x_health_consent" type="id" />
+    <item name="x_health_continue" type="id" />
+    <item name="x_health_example" type="id" />
+    <item name="x_health_revoke" type="id" />
+    <item name="x_health_back" type="id" />
+</resources>

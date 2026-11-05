@@ -1,4 +1,4 @@
-# 새 PC에서 개발 시작하기 · LifeLink 119 v0.6
+# 새 PC에서 개발 시작하기 · LifeLink 119 v0.11
 
 **시연 모드 | 실제 신고·상담 연결 아님**
 
@@ -93,7 +93,9 @@ powershell -NoProfile -ExecutionPolicy Bypass -File scripts/check-env.ps1
 
 실제 serial은 `& "$env:ANDROID_HOME\platform-tools\adb.exe" devices`로 확인합니다. 여러 기기가 있으면 serial을 지정합니다. AVD 이름만으로 공식 이미지 여부가 보장되지는 않으므로 Device Manager에서도 확인합니다.
 
-새 18개 Android 시나리오는 PC 서버 없이 앱 안에서도 실행됩니다. PC 보조 화면 게시만 별도 동의·ADB 터널이 필요하며 **상태·항목 이름만** 전송합니다. 의료정보는 시스템 인증 또는 직접 설정한 앱 PIN으로 보호합니다. 기본 PIN은 없습니다. `docs/DEMO_SCRIPT.md`, `docs/MEDICAL_PRIVACY.md`를 따릅니다.
+19개 Android 시나리오(S01~S14, E01~E04, D01)는 PC 서버 없이 앱 안에서도 실행됩니다. PC 보조 화면 게시만 별도 동의·ADB 터널이 필요하며 **상태·항목 이름만** 전송합니다. 의료정보는 시스템 인증 또는 직접 설정한 앱 PIN으로 보호합니다. 기본 PIN은 없습니다. `docs/DEMO_SCRIPT.md`, `docs/MEDICAL_PRIVACY.md`를 따릅니다.
+
+v0.11은 밝은 화면 UI, 주행 중 긴급 요청, 합성 영상 안내, 직접 입력한 건강정보의 기기 내 암호화 저장, 건강정보 고속도로 가입 동의·투약 예시를 포함합니다. 실제 의료기관 가입·조회·전송은 연결되지 않았습니다. 전체 기능 발표자료는 `docs/presentation/complete-functions-v11/output/`에서 내려받아 볼 수 있습니다.
 
 종료는 앱/에뮬레이터 홈, 에뮬레이터 창 X, `Stop-Local-Demo.cmd`로 합니다. AVD 재시작 뒤에는 ADB reverse도 다시 연결합니다.
 

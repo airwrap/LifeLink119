@@ -47,12 +47,12 @@ import com.lifelink119.app.vehicle.DrivingRestrictionsGateway
 /** Consultation sessions contain synthetic fixtures and stay in memory. */
 class MainActivity : Activity() {
     private enum class Page { HOME, SCENARIO, REVIEW, CONNECTED, VEHICLE, ROUTE, MANUAL, MANUAL_DETAIL, COOPERATION }
-    private val bgColor = Color.rgb(9, 20, 35)
-    private val surfaceColor = Color.rgb(22, 39, 58)
-    private val accentColor = Color.rgb(85, 225, 208)
-    private val textColor = Color.rgb(243, 249, 253)
-    private val mutedColor = Color.rgb(183, 201, 216)
-    private val warningColor = Color.rgb(255, 210, 140)
+    private val bgColor = Color.rgb(246, 248, 252)
+    private val surfaceColor = Color.WHITE
+    private val accentColor = Color.rgb(36, 82, 170)
+    private val textColor = Color.rgb(25, 38, 57)
+    private val mutedColor = Color.rgb(77, 94, 115)
+    private val warningColor = Color.rgb(137, 57, 30)
     private val camera = UnavailableCameraGateway()
     private lateinit var mock: MockDispatchGateway
     private lateinit var vehicle: PleosVehicleGateway
@@ -117,6 +117,7 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         window.statusBarColor = bgColor
         window.navigationBarColor = bgColor
+        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
         mock = MockDispatchGateway(savedInstanceState?.getInt("sequence") ?: 0)
         vehicle = PleosVehicleGateway(this)
         savedInstanceState?.let { saved ->
@@ -338,7 +339,7 @@ class MainActivity : Activity() {
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
     private fun shape(color: Int, focus: Boolean = false) = GradientDrawable().apply {
         setColor(color); cornerRadius = dp(20).toFloat()
-        setStroke(dp(if (focus) 3 else 1), if (focus) accentColor else Color.rgb(49, 70, 91))
+        setStroke(dp(if (focus) 3 else 1), if (focus) accentColor else if(color==surfaceColor) Color.rgb(207,217,229) else color)
     }
     private fun interactiveBackground(color: Int) = StateListDrawable().apply {
         addState(intArrayOf(android.R.attr.state_pressed), shape(color, true))
@@ -381,7 +382,7 @@ class MainActivity : Activity() {
         root.add(label("시연 모드 | 실제 신고·상담 연결 아님\n이동 중 응급상황도 시연 가능 · 실제 차량 속도 감지 미연동", 18f, warningColor, true).apply {
             id = R.id.safety_banner; gravity = Gravity.CENTER
             setPadding(dp(20), dp(10), dp(20), dp(10))
-            setBackgroundColor(Color.rgb(39, 41, 47))
+            setBackgroundColor(Color.rgb(255, 244, 230))
         })
         val nav = LinearLayout(this).apply {
             gravity = Gravity.CENTER_VERTICAL
