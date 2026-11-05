@@ -1,18 +1,60 @@
-# LifeLink 119 · 가족을 위한 차량형 응급지원 데모 v0.6.0
+# LifeLink 119 · 가족을 위한 차량형 응급지원 데모 v0.11.0
 
 **시연 모드 | 실제 신고·상담 연결 아님**
 
 비공개 개발 저장소: <https://github.com/airwrap/LifeLink119> · [새 PC 실행 가이드](docs/OTHER_PC_GUIDE.md) · [협업 규칙](CONTRIBUTING.md) · [20개 개선 검토 항목](docs/reviews/20261030/README.md)
 
+현재 버전의 변경·검증·공유 범위는 [v0.11 현재 구성](docs/PROJECT_STATUS_V11.md)을 참고하세요.
+
+## 전체 기능 발표자료 · v0.11
+
+[PowerPoint · 41장](docs/presentation/complete-functions-v11/output/LifeLink119_전체기능_UI_소개_v11.pptx) · [PDF](docs/presentation/complete-functions-v11/output/LifeLink119_전체기능_UI_소개_v11.pdf) · [브라우저 보기](docs/presentation/complete-functions-v11/output/LifeLink119_전체기능_UI_소개_v11.html) · [발표 메모](docs/presentation/complete-functions-v11/output/LifeLink119_전체기능_발표메모_v11.md) · [실제 UI 원본 30개](docs/presentation/complete-functions-v11/output/LifeLink119_실제_UI_화면모음_v11.zip)
+
+긴급 요청·상담부터 안심콜·건강정보, 접근성, 주변 차량 협력과 차량 기능까지 화면별로 설명합니다. 설치된 v0.11 앱의 실제 화면 30개를 포함합니다. 개인정보 보호로 캡처가 제한된 화면 7개와 캡처하지 못한 주변 차량 협력 후반 2단계는 설명용 도식으로 구분했습니다. HTML은 내려받아 브라우저로 열고, PPTX·PDF는 발표 또는 열람에 사용합니다. [자료 구성과 재생성 조건](docs/presentation/complete-functions-v11/README.md)
+
 Git에는 소스·테스트·문서·Gradle wrapper를 관리합니다. APK·SDK·AVD·JDK·빌드 캐시·가상환경·`local.properties`·비밀키·로컬 검증 기록은 제외합니다. 아래 과거 기록 중 `verification/`와 `artifacts/` 링크는 원래 개발 PC의 로컬 파일이며 저장소에서 제공하지 않습니다. 새 PC에서는 소스로 APK를 빌드합니다.
 
-내 차가 나와 가족을 위한 응급지원 공간이 되는 아이디어를 체험하는 Pleos Connect Android 앱입니다. 홈의 **지금 긴급해요 / 상담받고 싶어요** 두 행동에서 시작합니다. 긴급 연결 시연은 등록·정보 제공 없이 두 번 누르면 시작되며, 연결 후 필요한 사람과 지원을 선택합니다.
+내 차가 나와 가족을 위한 응급지원 공간이 되는 아이디어를 체험하는 Pleos Connect Android 앱입니다. 홈에서 **119 구조·구급 바로 요청**, **상담받고 싶어요**, **112 긴급신고 시연**을 구분합니다. 119 구조·구급은 등록이나 인증 없이 한 번에 시연하며, 상담은 119 의료상담과 109 심리상담 중 선택합니다.
+
+## 건강정보 고속도로 가입 동의 예시 · v0.11
+
+`우리 가족 안심콜 → 건강정보 고속도로 가입·연결`에서 가입 동의를 선택하면 가상 투약 내역을 확인하고 동의를 철회할 수 있습니다. 실제 가입·조회·정보 전송은 하지 않습니다. 예시 동의는 앱을 벗어나면 초기화되며 직접 입력한 건강정보와 구분합니다. [기능과 검증 범위](docs/HEALTH_LINK_EXAMPLE_V11.md)
+
+[v0.11 APK (로컬)](artifacts/LifeLink119-v0.11.0-health-link-demo.apk) · [SHA-256 (로컬)](artifacts/LifeLink119-v0.11.0-health-link-demo.apk.sha256)
+
+## 우리 가족 안심콜 · v0.10
+
+홈의 **우리 가족 안심콜**에서 인증 후 본인이 직접 입력한 이름·병력·알레르기·투약 내역을 기기에 암호화해 저장·조회·수정·삭제할 수 있습니다. 기존 가족 예시는 별도이며, 입력한 정보는 119나 가상 상황실에 자동 제공되지 않습니다. 공식 119 안심콜 등록·조회와 건강정보 고속도로 자동 조회는 연결되지 않았습니다. 공모전용 개발 빌드이며 실사용 의료정보 저장 전 별도 보안·운영 검증이 필요합니다. [구현 및 연계 범위](docs/PERSONAL_HEALTH_V10.md)
+
+[v0.10 APK (로컬)](artifacts/LifeLink119-v0.10.0-family-health-demo.apk) · [SHA-256 (로컬)](artifacts/LifeLink119-v0.10.0-family-health-demo.apk.sha256)
+
+## 밝은 화면 디자인 · v0.9
+
+밝은 배경, 흰색 카드와 차분한 파란색을 사용하는 화면으로 정리했습니다. 홈에서 119 구조·구급 요청은 붉은색으로 구분하고 상담·112·가족정보는 별도 행동으로 표시합니다. 웹 서비스처럼 보이지만 화면은 Android 앱에서 직접 구현해 기존 인증과 차량 제한을 유지합니다. [화면과 검증 기록](docs/WEB_STYLE_UI_V09.md)
+
+[v0.9 APK (로컬)](artifacts/LifeLink119-v0.9.0-light-ui-demo.apk) · [SHA-256 (로컬)](artifacts/LifeLink119-v0.9.0-light-ui-demo.apk.sha256)
+
+## UI 개선과 영상 안내 · v0.8
+
+119 연결 시연 후 **상황실 영상 안내 보기**에서 합성 영상 사용 동의 → 시작 → 안내 문구 확인 → 중단·동의 철회를 시연할 수 있습니다. 실제 상황실 연결이나 카메라·마이크 사용·영상 전송은 없습니다. 플랫폼이 영상을 제한하면 사용할 수 없고 앱을 벗어나면 미리보기를 중단합니다. [UI 점검과 검증](docs/UX_VIDEO_GUIDANCE_V08.md)
+
+[v0.8 APK (로컬)](artifacts/LifeLink119-v0.8.0-ux-demo.apk) · [SHA-256 (로컬)](artifacts/LifeLink119-v0.8.0-ux-demo.apk.sha256)
+
+## 주행 중 긴급 호출 · v0.7
+
+홈의 **119 구조·구급 바로 요청** 또는 다른 화면 상단의 **119 바로 요청** 한 번으로 정차·등록·PIN·위치 확인 없이 호출을 시연합니다. 위험 종류를 미리 고르지 않고 **차 안의 위급 상황**으로 가상 상황실 전달 → 확인 → 안전 확보 알림 → 인계 → 공유정보 정리까지 진행합니다. 실제 발신·녹음·음성 인식은 없습니다. 음성 요청은 별도의 예시 버튼으로 구분합니다.
+
+[이전 v0.7 APK](artifacts/LifeLink119-v0.7.0-driving-demo.apk) · [SHA-256](artifacts/LifeLink119-v0.7.0-driving-demo.apk.sha256) · [v0.7 검증 기록](verification/v07/validation.json)
+
+[발표 순서·실패 시연·구현 범위](docs/DRIVING_EMERGENCY_DEMO.md)를 참고하세요. 실제 차량 플랫폼 제한은 유지하며 의료정보와 위치·차량 공유는 별도 동의를 따릅니다.
+
+[가족 안전 서비스 작동 흐름 · 10장 슬라이드](docs/presentation/family-safety-20261101/LifeLink119_Family_Safety_Flow.html) · [PowerPoint](docs/presentation/family-safety-20261101/LifeLink119_Family_Safety_Flow.pptx) · [PDF](docs/presentation/family-safety-20261101/LifeLink119_Family_Safety_Flow.pdf)
 
 ## 공모전에서 시연할 수 있는 것
 
-- `지금 긴급해요 → 119 구조·구급 / 112 긴급신고`, `상담받고 싶어요 → 119 의료상담 / 109 심리위기 상담`을 목적별로 구분했습니다.
-- 가상 가족정보 등록·수정·삭제, 민감정보 인증 잠금, 항목별 공유·철회가 앱 내 가상 상황실에 동기화됩니다. 실제 개인정보 입력은 지원하지 않습니다.
-- 어린이·고령자·임산부·장애 접근성·심리위기·교통사고 등 **S01~S14 + E01~E04 총 18개**를 JSON 갤러리에서 실행합니다. 상황별 기본 행동은 최대 세 개입니다.
+- `119 구조·구급 바로 요청`, `112 긴급신고`, `상담받고 싶어요 → 119 의료상담 / 109 심리위기 상담`을 목적별로 구분했습니다.
+- 직접 입력한 본인 건강정보는 인증 뒤 기기에 암호화해 보관하고 삭제할 수 있습니다. 기존 가상 가족 예시의 항목별 공유·철회는 앱 내 가상 상황실에서 별도 시연합니다.
+- 어린이·고령자·임산부·장애 접근성·심리위기·교통사고 등 **S01~S14 + E01~E04 + D01 총 19개**를 JSON 갤러리에서 실행합니다. 상황별 기본 행동은 최대 세 개입니다.
 - 문자/수어/전·후방·스마트폰 합성 영상, 가상 위치·차량, 전문가 안내와 사용자 확인을 거치는 모의 목적지, 경찰 요청·검토·가상 승인/거절, 안심콜·디지털키 모형을 연결했습니다.
 - 검토·수정 가능한 전달 요약, 가상 혈당 참고 입력, EV/V2L 가정 계산과 비지원 fallback을 제공합니다.
 - 기존 Vehicle SDK 2.3.2 도어·배터리 진단, 기본 매뉴얼, 주변 차량 협력·승인형 화면 표시를 더보기에서 유지합니다.
@@ -22,12 +64,12 @@ Git에는 소스·테스트·문서·Gradle wrapper를 관리합니다. APK·SDK
 
 대표 경로:
 
-1. 홈 → 지금 긴급해요 → 119 또는 112 연결 시연. 프로필 없이 시작합니다.
+1. 홈 → 119 구조·구급 바로 요청 또는 112 긴급신고 시연. 프로필 없이 시작합니다.
 2. 연결 후 사람 선택 → 필요한 정보에 동의 → 가상 상황실에서 확인 → 종료·공유정보 정리.
 3. 더보기 → 설정·시연 도구 → 시나리오 갤러리 → S01/S08/S14 등 선택.
 4. 더보기 → 차량 안전 준비 → EV/V2L 계산. 기존 기능은 설정·시연 도구에 있습니다.
 
-[구현·검증 보고서](docs/IMPLEMENTATION_REPORT.md) · [기능별 시연 체크리스트](docs/CONTEST_DEMO_CHECKLIST.md) · [의료정보 보호](docs/MEDICAL_PRIVACY.md)
+[현재 구현·검증 보고서](docs/IMPLEMENTATION_REPORT_V07.md) · [기능별 시연 체크리스트](docs/CONTEST_DEMO_CHECKLIST.md) · [의료정보 보호](docs/MEDICAL_PRIVACY.md)
 
 의료정보를 처음 열 때 PIN을 직접 설정하세요. PIN을 채팅으로 보낼 필요는 없습니다. 자동 검사에서 사용한 임시 PIN은 검사 종료 후 제거합니다. 잠금 중에도 긴급 연결 시연을 시작할 수 있습니다.
 
@@ -56,9 +98,11 @@ GitHub Actions는 Python 테스트·계약 검사와 Android debug 빌드·JVM �
 
 [전체 기능 매트릭스](docs/FEATURE_MATRIX.md), [UX 사양](docs/UX_SPEC.md), [SDK 확인·미연계](docs/SDK_GAPS.md), [확장 전 감사](docs/FEATURE_AUDIT.md)에 근거와 제한을 구분했습니다. 새 빌드·테스트·네이티브 화면 검사 결과는 [현재 구현 보고서](docs/IMPLEMENTATION_REPORT.md)를 기준으로 합니다.
 
-v0.6 검증: Android 단위 **129개**, Python **68개**, lint **오류0·경고0**. 의료정보 보호 **11항목**, 공모전 **16항목·18개 사례**, 대표 회귀 **13항목**, 복구 **5항목**을 통과했습니다. 공식 콘솔의 가상 주행과 실제 CarUX 콜백 **0→80→0**, PC 게시·철회, 도어·배터리 SDK 원본 조회도 확인했습니다. 검사·설치·배포 APK 해시는 일치하며 임시 검사 PIN은 제거했습니다. [최종 근거 JSON](verification/v06/artifact-report.json)
+v0.7 검증: Android 단위 **143개**, Python **68개**, lint **오류0·경고0**, 주행 중 긴급 호출 네이티브 화면 **11항목 통과**. 실제 발신·기관 연결은 모의 시연이다. [v0.7 보고서](docs/IMPLEMENTATION_REPORT_V07.md)
 
-현재 소프트웨어 에뮬레이터에서 앱 PIN 설정·확인은 약26~27초가 걸립니다. 확인 중 취소·긴급 연결 복귀는 가능합니다. 기본 시스템 인증이 등록되지 않은 AVD여서 앱 PIN 경로를 네이티브로 검증했으며, OEM 시스템 인증 화면과 실기기 속도는 별도 확인 대상입니다.
+v0.6 당시 검증: Android 단위 **129개**, Python **68개**, lint **오류0·경고0**. 의료정보 보호 **11항목**, 공모전 **16항목·18개 사례**, 대표 회귀 **13항목**, 복구 **5항목**을 통과했습니다. 공식 콘솔의 가상 주행과 실제 CarUX 콜백 **0→80→0**, PC 게시·철회, 도어·배터리 SDK 원본 조회도 확인했습니다. 검사·설치·배포 APK 해시는 일치하며 임시 검사 PIN은 제거했습니다. [최종 근거 JSON](verification/v06/artifact-report.json)
+
+v0.6 검증 당시 소프트웨어 에뮬레이터에서 앱 PIN 설정·확인은 약26~27초가 걸립니다. 확인 중 취소·긴급 연결 복귀는 가능합니다. 기본 시스템 인증이 등록되지 않은 AVD여서 앱 PIN 경로를 네이티브로 검증했으며, OEM 시스템 인증 화면과 실기기 속도는 별도 확인 대상입니다.
 
 실제 119/112/109 통화·문자, GPS/카메라/마이크 수집, 안심콜·수어·경찰·디지털키·실제 내비·차량 등화/V2L 제어는 연결하지 않았습니다. 외부 기관 연계, 실차 주행, TalkBack 전체 품질, OEM 앱 심사는 별도 검증과 협력이 필요합니다. 이전 HTML/PPTX는 과거 버전 소개 자료이며 현재 기능은 위 문서를 따릅니다.
 

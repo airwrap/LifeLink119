@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="x_case_d01" type="id"/>
+    <item name="x_driving_quick" type="id"/>
+    <item name="x_driving_setup" type="id"/>
+    <item name="x_driving_touch" type="id"/>
+    <item name="x_driving_voice" type="id"/>
+    <item name="x_driving_context" type="id"/>
+    <item name="x_driving_trigger" type="id"/>
+    <item name="x_driving_report" type="id"/>
+    <item name="x_driving_send" type="id"/>
+    <item name="x_driving_ack" type="id"/>
+    <item name="x_driving_safety" type="id"/>
+    <item name="x_driving_stopped" type="id"/>
+    <item name="x_driving_safe" type="id"/>
+    <item name="x_driving_handover" type="id"/>
+    <item name="x_driving_finish" type="id"/>
+    <item name="x_driving_shared" type="id"/>
+    <item name="x_driving_location" type="id"/>
+    <item name="x_driving_vehicle" type="id"/>
+    <item name="x_driving_revoke" type="id"/>
+    <item name="x_driving_restricted" type="id"/>
+    <item name="x_driving_reconfirm" type="id"/>
+    <item name="x_driving_extra" type="id"/>
+</resources>

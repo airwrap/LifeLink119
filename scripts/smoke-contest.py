@@ -1,4 +1,4 @@
-"""Native contest feature gate: 18 gallery cases, all A-M modules and offline collaboration."""
+"""Native contest feature gate: 19 gallery cases, all A-M modules and offline collaboration."""
 import argparse
 import json
 import os
@@ -9,20 +9,24 @@ from ui_snapshot_client import verify_installed_apk
 
 root=Path(__file__).resolve().parents[1];p=argparse.ArgumentParser(description=__doc__);p.add_argument('--serial',default='emulator-5580');a=p.parse_args();assert a.serial.startswith('emulator-')
 sdk=Path(os.environ.get('ANDROID_HOME',Path(os.environ['LOCALAPPDATA'])/'Android/Sdk'));adb=[str(sdk/'platform-tools/adb.exe'),'-s',a.serial]
-out=root/'verification/v06/native';checks=[];cases=[]
+out=root/'verification/v07/native';checks=[];cases=[]
 def mark(name):checks.append(name);print('PASS',name,flush=True)
 result={'status':'FAIL'}
 try:
  with ContestUI(adb,out) as ui:
     catalog=json.loads((root/'app/src/main/assets/experience-catalog.json').read_text(encoding='utf-8'))
     for case in catalog['scenarios']:
+        if case['id']=='D01':
+            ui.gallery('D01');ui.expect('x_driving_safety','주행 중');ui.expect('x_driving_shared','없음')
+            ui.snap('case-D01');cases.append({'id':'D01','flow':'driving','actions':case['priorities'],'status':'PASS'})
+            ui.tap('x_end');ui.expect('x_finished','공유정보');continue
         ui.gallery(case['id']);ui.expect('x_case_title',case['title'])
         labels=[ui.expect(f'x_primary_{i}','') for i in range(1,4)];assert all(labels) and len(set(labels))==3
         for i in range(1,4):
             n=ui.node(f'x_primary_{i}');assert n.get('content-desc') and n.get('enabled')=='true'
         ui.snap('case-'+case['id']);cases.append({'id':case['id'],'actions':labels,'status':'PASS'})
         ui.tap('x_end');ui.expect('x_finished','공유정보')
-    mark('All 18 scenarios execute, expose three labelled actions, and finish')
+    mark('All 19 scenarios execute and finish; D01 uses the dedicated driving flow')
     # Distinct routes and no prerequisite profile.
     ui.home();ui.tap('x_emergency');ui.tap('x_112');ui.expect('x_session_status','가상 상담원 응답');ui.expect('x_person','미등록 승객');mark('Direct 112 without profile or 119 prerequisite')
     ui.home();ui.tap('x_consult');ui.tap('x_medical');ui.expect('x_session_status','가상 상담원 응답');ui.snap('medical-consultation');mark('119 medical consultation route')
@@ -54,7 +58,7 @@ try:
     # Existing manual and diagnostic entry remain reachable.
     ui.home();ui.tap('x_more');ui.tap('x_tools');ui.tap('x_manual');ui.snap('manual');ui.tap('x_home');mark('Existing offline emergency manual')
     ui.home()
-    result={'status':'PASS','checks':checks,'scenarios':cases,'apkSha256':verify_installed_apk(adb,root/'app/build/outputs/apk/debug/app-debug.apk',sdk,'0.6.0-demo'),'limitations':['External agency, media, location and vehicle actuation are synthetic. Narrow preview is not an OEM window certification.']}
+    result={'status':'PASS','checks':checks,'scenarios':cases,'apkSha256':verify_installed_apk(adb,root/'app/build/outputs/apk/debug/app-debug.apk',sdk,'0.7.0-demo'),'limitations':['External agency, media, location and vehicle actuation are synthetic. Narrow preview is not an OEM window certification.']}
 except Exception as e:
  result={'status':'FAIL','checks':checks,'scenarios':cases,'error':str(e)};print('FAIL',str(e),flush=True)
  try:

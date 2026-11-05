@@ -1,0 +1,13 @@
+<resources>
+    <item name="x_home_112" type="id" />
+    <item name="x_guided_video" type="id" />
+    <item name="x_guide_request" type="id" />
+    <item name="x_guide_consent" type="id" />
+    <item name="x_guide_start" type="id" />
+    <item name="x_guide_preview" type="id" />
+    <item name="x_guide_message" type="id" />
+    <item name="x_guide_next" type="id" />
+    <item name="x_guide_resume" type="id" />
+    <item name="x_guide_stop" type="id" />
+    <item name="x_guide_back" type="id" />
+</resources>
