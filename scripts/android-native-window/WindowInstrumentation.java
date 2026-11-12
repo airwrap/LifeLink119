@@ -14,8 +14,14 @@ import org.xmlpull.v1.XmlSerializer;
 
 /** External recording harness: real installed APK, public windows only. */
 public final class WindowInstrumentation extends Instrumentation {
-  private Activity activity;
+  private volatile Activity activity;
   private String backend="native_view_draw";
+  // AAOS can recreate the Activity when its application panel is resized.
+  // Follow the actual resumed Activity rather than drawing a detached old View.
+  @Override public void callActivityOnResume(Activity current){
+    super.callActivityOnResume(current);
+    if("com.lifelink119.app".equals(current.getPackageName()))activity=current;
+  }
   @Override public void onCreate(Bundle b){super.onCreate(b);start();}
   @Override public void onStart(){
     try {
@@ -53,6 +59,10 @@ public final class WindowInstrumentation extends Instrumentation {
             if("PING".equals(command)){result.put("ready",true);result.put("backend",backend);result.put("secureRefused",secure());}
             else if(command.startsWith("CLICK ")){
               final boolean[] clicked={false};runOnMainSync(()->{View v=find(command.substring(6));if(v!=null && v.isEnabled() && visible(v)){boolean before=v instanceof CompoundButton && ((CompoundButton)v).isChecked();clicked[0]=v.performClick();if(v instanceof CompoundButton)clicked[0]=clicked[0] || before!=((CompoundButton)v).isChecked();}});result.put("clicked",Boolean.toString(clicked[0]));
+            }else if(command.startsWith("FOCUS ")){
+              final boolean[] focused={false};runOnMainSync(()->{View v=find(command.substring(6));if(!secureOnMain() && v!=null && v.isEnabled() && visible(v))focused[0]=v.requestFocusFromTouch();});result.put("focused",focused[0]);
+            }else if("CANCEL_AUTH".equals(command)){
+              result.put("cancelled",cancelOwnAuthentication());
             }else if(command.startsWith("GET ") || "DUMP".equals(command)){
               final String[] xml={"<hierarchy/>"};runOnMainSync(()->{try{View v="DUMP".equals(command)?activity.getWindow().getDecorView():find(command.substring(4));xml[0]=dump(v);}catch(Exception e){throw new RuntimeException(e);}});result.put("hierarchy",xml[0]);
             }else if(command.startsWith("SCROLL_")){
@@ -66,7 +76,24 @@ public final class WindowInstrumentation extends Instrumentation {
     }catch(Exception e){Bundle b=new Bundle();b.putString("error",e.toString());finish(Activity.RESULT_CANCELED,b);}
   }
   private View find(String key){int id=getTargetContext().getResources().getIdentifier(key,"id","com.lifelink119.app");return activity.findViewById(id);}
-  private boolean secureOnMain(){return (activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_SECURE)!=0;}
+  /** Only click our own standard Cancel button. Never read fields or submit credentials. */
+  private boolean cancelOwnAuthentication(){
+    android.app.UiAutomation automation=getUiAutomation();
+    android.accessibilityservice.AccessibilityServiceInfo info=automation.getServiceInfo();
+    info.flags|=android.accessibilityservice.AccessibilityServiceInfo.FLAG_RETRIEVE_INTERACTIVE_WINDOWS|android.accessibilityservice.AccessibilityServiceInfo.FLAG_REPORT_VIEW_IDS;
+    automation.setServiceInfo(info);
+    for(android.view.accessibility.AccessibilityWindowInfo window:automation.getWindows()){
+      android.view.accessibility.AccessibilityNodeInfo root=window.getRoot();
+      if(root==null || !"com.lifelink119.app".contentEquals(root.getPackageName()))continue;
+      for(android.view.accessibility.AccessibilityNodeInfo button:root.findAccessibilityNodeInfosByViewId("android:id/button2")){
+        CharSequence label=button.getText();
+        if(button.isEnabled() && button.isVisibleToUser() && ("취소".contentEquals(label) || "Cancel".contentEquals(label)))
+          return button.performAction(android.view.accessibility.AccessibilityNodeInfo.ACTION_CLICK);
+      }
+    }
+    return false;
+  }
+  private boolean secureOnMain(){return activity==null || activity.isDestroyed() || activity.isFinishing() || (activity.getWindow().getAttributes().flags & WindowManager.LayoutParams.FLAG_SECURE)!=0;}
   private boolean secure(){final boolean[] b={true};runOnMainSync(()->b[0]=secureOnMain());return b[0];}
   private boolean visible(View v){Rect r=new Rect();return v.getGlobalVisibleRect(r) && r.width()>0 && r.height()>0;}
   private boolean isBlank(Bitmap b){
@@ -84,6 +111,26 @@ public final class WindowInstrumentation extends Instrumentation {
     if(v instanceof EditText)text="[PROTECTED]";
     xml.startTag(null,"node");xml.attribute(null,"resource-id",id);xml.attribute(null,"text",text);xml.attribute(null,"class",v.getClass().getName());xml.attribute(null,"enabled",Boolean.toString(v.isEnabled()));xml.attribute(null,"clickable",Boolean.toString(v.isClickable()));
     xml.attribute(null,"checked",Boolean.toString(v instanceof CompoundButton && ((CompoundButton)v).isChecked()));
+    xml.attribute(null,"focused",Boolean.toString(v.isFocused()));
+    if(v instanceof TextView){
+      TextView t=(TextView)v;
+      xml.attribute(null,"gravity",Integer.toString(t.getGravity()));
+      xml.attribute(null,"text-size-px",Float.toString(t.getTextSize()));
+      xml.attribute(null,"text-color",Integer.toHexString(t.getCurrentTextColor()));
+      xml.attribute(null,"typeface-weight",Integer.toString(t.getTypeface()==null?400:t.getTypeface().getWeight()));
+      if(t.getBackground()!=null && t.getBackground().getCurrent() instanceof android.graphics.drawable.GradientDrawable){
+        android.content.res.ColorStateList colors=((android.graphics.drawable.GradientDrawable)t.getBackground().getCurrent()).getColor();
+        if(colors!=null)xml.attribute(null,"background-color",Integer.toHexString(colors.getDefaultColor()));
+      }
+      android.text.Layout layout=t.getLayout();
+      int ellipses=0;boolean horizontalClipped=false;
+      if(layout!=null)for(int i=0;i<layout.getLineCount();i++){
+        ellipses+=layout.getEllipsisCount(i);
+        horizontalClipped|=layout.getLineMax(i)>t.getWidth()-t.getCompoundPaddingLeft()-t.getCompoundPaddingRight()+1;
+      }
+      xml.attribute(null,"ellipsis-count",Integer.toString(ellipses));
+      xml.attribute(null,"text-clipped",Boolean.toString(layout!=null && (horizontalClipped || layout.getHeight()>t.getHeight()-t.getCompoundPaddingTop()-t.getCompoundPaddingBottom()+1)));
+    }
     xml.attribute(null,"bounds","["+(p[0]-origin[0])+","+(p[1]-origin[1])+"]["+(p[0]-origin[0]+v.getWidth())+","+(p[1]-origin[1]+v.getHeight())+"]");
     if(v instanceof ViewGroup){ViewGroup group=(ViewGroup)v;for(int i=0;i<group.getChildCount();i++)write(xml,group.getChildAt(i));}xml.endTag(null,"node");
   }

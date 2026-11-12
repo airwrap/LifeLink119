@@ -112,6 +112,9 @@ class SessionEngine(val catalog: ExperienceCatalog, initialProfiles: List<Person
     var failNextConnection = false
     var privateUnlocked = false; private set
     var videoPreview = false; private set
+    val safeCallLink = SafeCallLink()
+    // Ephemeral local-only telemetry: deliberately outside EmergencySession/JSON/PC payloads.
+    var vehicleContextShare: VehicleContextShare? = null; private set
     var onChange: () -> Unit = {}
     val cooperation=OfflineCooperationEngine(cooperationCatalog,clock,
         allowed={current?.active==true && current?.target!=ConnectionTarget.COUNSEL_109 && ShareField.LOCATION in current!!.shared && locationAvailable},
@@ -122,8 +125,9 @@ class SessionEngine(val catalog: ExperienceCatalog, initialProfiles: List<Person
     }
     fun start(id: String, target: ConnectionTarget, scenarioId: String = "E04", personId: String? = null) {
         require(id.matches(Regex("DEMO-[0-9]{4,}"))); catalog.scenario(scenarioId);require(scenarioId!="D01" || target==ConnectionTarget.EMERGENCY_119)
-        privateUnlocked=false;videoPreview=false
+        privateUnlocked=false;videoPreview=false;vehicleContextShare=null
         current=EmergencySession(id,target,scenarioId,personId=personId?.takeIf { id2 -> profiles.any { it.id==id2 } },observation=catalog.scenario(scenarioId).observation,driving=if(scenarioId=="D01")DrivingEmergencyState()else null)
+        safeCallLink.attach(id,current?.personId)
         cooperation.attach(id)
         onChange()
     }
@@ -151,21 +155,28 @@ class SessionEngine(val catalog: ExperienceCatalog, initialProfiles: List<Person
     private fun active(): EmergencySession = requireNotNull(current).also { check(it.active) { "가상 상담원 응답 후 이용하세요." } }
     fun person() = current?.personId?.let { id -> profiles.find { it.id==id } }
     fun selectPerson(id: String?) {
-        val s=active();require(id==null || profiles.any { it.id==id });privateUnlocked=false;videoPreview=false;cooperation.invalidate()
+        val s=active();require(id==null || profiles.any { it.id==id });privateUnlocked=false;videoPreview=false;vehicleContextShare=null;cooperation.invalidate()
+        safeCallLink.attach(s.id,id)
         update("PERSON_SELECTED",s.copy(personId=id,shared=s.shared.filterKeys { it in setOf(ShareField.LOCATION,ShareField.VEHICLE) },observation=catalog.scenario(s.scenarioId).observation,discovered="NOW",demoGlucose=null,video=VideoStatus.STOPPED,sign=SignStatus.OFF,messages=emptyList(),safeCall="NOT_REQUESTED",navigation=NavigationStatus.NONE,destination=null,guidance=false,police=PoliceStatus.NONE))
     }
-    fun selectCase(id: String) { val s=active();val c=catalog.scenario(id);require(id!="D01" || s.target==ConnectionTarget.EMERGENCY_119);videoPreview=false;cooperation.invalidate();update("CONTEXT_SELECTED",s.copy(scenarioId=id,driving=if(id=="D01")DrivingEmergencyState()else null,observation=c.observation,discovered="NOW",demoGlucose=null,shared=s.shared-setOf(ShareField.SUMMARY,ShareField.VIDEO),video=VideoStatus.STOPPED,navigation=NavigationStatus.NONE,destination=null,guidance=false,police=PoliceStatus.NONE)) }
+    fun selectCase(id: String) { val s=active();val c=catalog.scenario(id);require(id!="D01" || s.target==ConnectionTarget.EMERGENCY_119);videoPreview=false;cooperation.invalidate();safeCallLink.attach(s.id,s.personId);update("CONTEXT_SELECTED",s.copy(scenarioId=id,safeCall="NOT_REQUESTED",driving=if(id=="D01")DrivingEmergencyState()else null,observation=c.observation,discovered="NOW",demoGlucose=null,shared=s.shared-setOf(ShareField.SUMMARY,ShareField.VIDEO),video=VideoStatus.STOPPED,navigation=NavigationStatus.NONE,destination=null,guidance=false,police=PoliceStatus.NONE)) }
     fun unlockPrivate(confirmed: Boolean) { check(confirmed);check(!restrictions.complexBlocked);privateUnlocked=true;onChange() }
-    fun lockPrivate() { privateUnlocked=false;videoPreview=false;onChange() }
-    fun setRestrictions(value: DrivingRestrictions) { restrictions=value;if(value.videoBlocked)videoPreview=false;if(value.complexBlocked)privateUnlocked=false;if(value.videoBlocked || value.complexBlocked)cooperation.pausePreview();onChange() }
-    fun background() { val changed=privateUnlocked || videoPreview;privateUnlocked=false;videoPreview=false;cooperation.foreground(false);if(changed)onChange() }
+    fun lockPrivate() { privateUnlocked=false;videoPreview=false;safeCallLink.lock();current=current?.copy(safeCall="NOT_REQUESTED");onChange() }
+    fun setRestrictions(value: DrivingRestrictions) { restrictions=value;if(value.videoBlocked)videoPreview=false;if(value.complexBlocked){privateUnlocked=false;vehicleContextShare=null;safeCallLink.lock();current=current?.copy(safeCall="NOT_REQUESTED")};if(value.videoBlocked || value.complexBlocked)cooperation.pausePreview();onChange() }
+    fun background() { val changed=privateUnlocked || videoPreview || vehicleContextShare!=null || safeCallLink.outcome!=SafeCallOutcome.NOT_REQUESTED;safeCallLink.lock();current=current?.copy(safeCall="NOT_REQUESTED");privateUnlocked=false;videoPreview=false;vehicleContextShare=null;cooperation.foreground(false);if(changed)onChange() }
     fun foreground(){cooperation.foreground(true);cooperation.tick()}
     fun addProfile(p: PersonProfile) { require(catalog.validProfile(p));require(profiles.none { it.id==p.id });check(profiles.size<12);profiles=profiles+p;onChange() }
     fun editProfile(p: PersonProfile) { require(catalog.validProfile(p));require(profiles.any { it.id==p.id });profiles=profiles.map { if(it.id==p.id)p else it };if(current?.personId==p.id && current?.active==true)selectPerson(p.id) else onChange() }
     fun deleteProfile(id: String) { profiles=profiles.filterNot { it.id==id };if(driverProfileId==id)driverProfileId=null;if(current?.personId==id && current?.active==true)selectPerson(null) else onChange() }
     fun restoreProfiles() { profiles=catalog.profiles;driverProfileId=null;if(current?.active==true)selectPerson(null) else onChange() }
     fun selectDriver(id: String?) { require(id==null || profiles.any { it.id==id });driverProfileId=id;onChange() }
-    fun restore(s: EmergencySession?, driver: String?) { require(s==null || (s.id.matches(Regex("DEMO-[0-9]{4,}")) && catalog.scenarios.any { it.id==s.scenarioId }));current=s;cooperation.attach(s?.id);driverProfileId=driver?.takeIf { id -> profiles.any { it.id==id } };privateUnlocked=false;videoPreview=false }
+    fun restore(s: EmergencySession?, driver: String?) { require(s==null || (s.id.matches(Regex("DEMO-[0-9]{4,}")) && catalog.scenarios.any { it.id==s.scenarioId }));current=s;safeCallLink.attach(s?.id,s?.personId);vehicleContextShare=null;cooperation.attach(s?.id);driverProfileId=driver?.takeIf { id -> profiles.any { it.id==id } };privateUnlocked=false;videoPreview=false }
+    fun shareVehicleContext(snapshot: VehicleContextSnapshot,consent: Boolean,now: Long) {
+        val s=active();check(s.target!=ConnectionTarget.COUNSEL_109);check(!restrictions.complexBlocked)
+        vehicleContextShare=VehicleContextPolicy.consent(snapshot,s.id,consent,now);onChange()
+    }
+    fun revokeVehicleContext(){vehicleContextShare=null;onChange()}
+    fun expireVehicleContext(now: Long){if(vehicleContextShare?.fresh(now)==false)revokeVehicleContext()}
     fun alias(p: PersonProfile) = catalog.word("aliases",p.aliasKey)
     private fun words(group: String, keys: Set<String>) = if(keys.isEmpty()) "선택 없음" else keys.joinToString(" · ") { catalog.word(group,it) }
     fun value(field: ShareField): String? {
@@ -194,6 +205,7 @@ class SessionEngine(val catalog: ExperienceCatalog, initialProfiles: List<Person
         val s=active();val fields=if(field==null)ShareField.entries.toSet() else setOf(field)
         if(ShareField.VIDEO in fields)videoPreview=false
         if(ShareField.LOCATION in fields)cooperation.invalidate()
+        if(field==null || field==ShareField.VEHICLE)vehicleContextShare=null
         update("CONSENT_REVOKED",s.copy(shared=s.shared-fields,video=if(ShareField.VIDEO in fields)VideoStatus.STOPPED else s.video,
             navigation=if(ShareField.LOCATION in fields)NavigationStatus.NONE else s.navigation,destination=if(ShareField.LOCATION in fields)null else s.destination))
     }
@@ -224,9 +236,27 @@ class SessionEngine(val catalog: ExperienceCatalog, initialProfiles: List<Person
     fun proposeNavigation(destination: String) { val s=active();check(s.guidance);check(ShareField.LOCATION in s.shared && locationAvailable);require(destination in setOf("MEET_B","HOSPITAL_A"));update("NAVIGATION_PROPOSED",s.copy(destination=destination,navigation=NavigationStatus.PROPOSED)) }
     fun confirmNavigation() { val s=active();check(s.navigation==NavigationStatus.PROPOSED);update("DESTINATION_CONFIRMED",s.copy(navigation=NavigationStatus.CONFIRMED)) }
     fun setNavigation() { val s=active();check(s.navigation==NavigationStatus.CONFIRMED && s.guidance && ShareField.LOCATION in s.shared && locationAvailable);update("MOCK_DESTINATION_SET",s.copy(navigation=NavigationStatus.SET)) }
-    fun safeCall(consent: Boolean) { val s=active();check(consent);update("MOCK_SAFE_CALL_LOOKUP",s.copy(safeCall=if(person()?.safeCallRegistered==true)"MOCK_REGISTERED" else "MOCK_NOT_REGISTERED")) }
+    fun safeCall(consent: Boolean) { val s=active();check(consent);update("MOCK_SAFE_CALL_LOOKUP",s.copy(safeCall=when(person()?.safeCallRegistered){true->"MOCK_REGISTERED";false->"MOCK_NOT_REGISTERED";null->"NOT_REQUESTED"})) }
+    fun configureSafeCall(role: RegistrationRole?=null,line: DemoCallLine?=null,authority: Boolean?=null) {
+        val s=active();check(privateUnlocked && !restrictions.complexBlocked)
+        role?.let(safeCallLink::setRole);line?.let(safeCallLink::setLine);authority?.let(safeCallLink::setAuthority)
+        update("SAFE_CALL_CONTEXT_CHANGED",s.copy(safeCall="NOT_REQUESTED"))
+    }
+    fun beginSafeCall(consent: Boolean,fault: SafeCallFault=SafeCallFault.NONE): SafeCallLookup? {
+        val s=active();check(privateUnlocked && !restrictions.complexBlocked)
+        val request=safeCallLink.begin(person()?.safeCallRegistered==true,consent,fault)
+        update("MOCK_SAFE_CALL_STARTED",s.copy(safeCall="NOT_REQUESTED"));return request
+    }
+    fun completeSafeCall(request: SafeCallLookup): Boolean {
+        if(current?.active!=true || !privateUnlocked || restrictions.complexBlocked)return false
+        if(!safeCallLink.complete(request))return false
+        val coarse=when(safeCallLink.outcome){SafeCallOutcome.MATCHED->"MOCK_REGISTERED";SafeCallOutcome.NOT_FOUND->"MOCK_NOT_REGISTERED";else->"NOT_REQUESTED"}
+        update("MOCK_SAFE_CALL_FINISHED",active().copy(safeCall=coarse));return true
+    }
+    fun revokeSafeCall(){val s=active();safeCallLink.lock();update("SAFE_CALL_CONSENT_REVOKED",s.copy(safeCall="NOT_REQUESTED"))}
     fun finish(cancelled: Boolean=false) {
-        val s=current ?: return;privateUnlocked=false;videoPreview=false
+        val s=current ?: return;privateUnlocked=false;videoPreview=false;vehicleContextShare=null
+        safeCallLink.attach(null,null)
         cooperation.clear()
         update("SESSION_DATA_CLEARED",s.copy(status=if(cancelled)LinkStatus.CANCELLED else LinkStatus.COMPLETED,personId=null,shared=emptyMap(),observation="HELP",demoGlucose=null,
             video=VideoStatus.STOPPED,police=PoliceStatus.NONE,navigation=NavigationStatus.NONE,destination=null,sign=SignStatus.OFF,voice="OFF",messages=emptyList(),safeCall="NOT_REQUESTED",guidance=false,discovered="NOW",driving=null))

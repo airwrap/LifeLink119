@@ -73,6 +73,8 @@ public final class SnapshotInstrumentation extends Instrumentation {
                         else if (command!=null && command.startsWith("GET com.lifelink119.app:id/"))click=command;
                         else if (command!=null && command.matches("SET_TEXT com\\.lifelink119\\.app:id/x_glucose [0-9]{1,3}"))click=command;
                         else if (command!=null && command.matches("SET_TEXT com\\.lifelink119\\.app:id/privacy_(pin|confirm) [0-9]{6,12}"))click=command;
+                        else if (command!=null && command.matches("SET_TEXT com\\.lifelink119\\.app:id/x_my_health_(name|conditions|allergies|medications) QA[A-Z0-9_-]{1,64}"))click=command;
+                        else if (command!=null && command.equals("SET_TEXT com.lifelink119.app:id/x_health_phone 00000000000"))click=command;
                         else if (command!=null && command.matches("SET_PROGRESS com\\.lifelink119\\.app:id/x_ev_(capacity|soc|reserve|efficiency|load) [0-9]{1,3}"))click=command;
                         else if ("SCROLL_FORWARD".equals(command) || "SCROLL_BACKWARD".equals(command))click=command;
                         else if (!"DUMP".equals(command))throw new IllegalArgumentException("Unknown test command");

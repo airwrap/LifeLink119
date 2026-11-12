@@ -1,0 +1,71 @@
+{
+  "status": "SDK_VALUE_CHANGES_VERIFIED",
+  "expectedVersion": "0.18.0-demo",
+  "expectedApkSha256": "486871e3109732cf1fbfab828f8545ceafaea909c49ee5c090d5047d88e104bc",
+  "installedApkSha256": "486871e3109732cf1fbfab828f8545ceafaea909c49ee5c090d5047d88e104bc",
+  "fixtureRestore": "PASS",
+  "source": "Actual app gateway/Vehicle SDK 2.3.2; Console inputs are simulated",
+  "runs": [
+    {
+      "label": "baseline",
+      "values": [
+        {
+          "metric": "DRIVER_DOOR",
+          "status": "READ",
+          "rawValue": 0
+        },
+        {
+          "metric": "BATTERY_SOC",
+          "status": "READ",
+          "rawValue": 100
+        }
+      ]
+    },
+    {
+      "label": "door_open_soc80",
+      "values": [
+        {
+          "metric": "DRIVER_DOOR",
+          "status": "READ",
+          "rawValue": 1
+        },
+        {
+          "metric": "BATTERY_SOC",
+          "status": "READ",
+          "rawValue": 80
+        }
+      ]
+    },
+    {
+      "label": "door_closed_soc15",
+      "values": [
+        {
+          "metric": "DRIVER_DOOR",
+          "status": "READ",
+          "rawValue": 0
+        },
+        {
+          "metric": "BATTERY_SOC",
+          "status": "READ",
+          "rawValue": 15
+        }
+      ]
+    },
+    {
+      "label": "restored",
+      "values": [
+        {
+          "metric": "DRIVER_DOOR",
+          "status": "READ",
+          "rawValue": 0
+        },
+        {
+          "metric": "BATTERY_SOC",
+          "status": "READ",
+          "rawValue": 100
+        }
+      ]
+    }
+  ],
+  "realVehicleTested": false
+}

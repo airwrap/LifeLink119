@@ -1,10 +1,81 @@
-# LifeLink 119 · 가족을 위한 차량형 응급지원 데모 v0.11.0
+# LifeLink 119 · 가족을 위한 차량형 응급지원 데모 v0.18.0
 
 **시연 모드 | 실제 신고·상담 연결 아님**
 
 비공개 개발 저장소: <https://github.com/airwrap/LifeLink119> · [새 PC 실행 가이드](docs/OTHER_PC_GUIDE.md) · [협업 규칙](CONTRIBUTING.md) · [20개 개선 검토 항목](docs/reviews/20261030/README.md)
 
-현재 버전의 변경·검증·공유 범위는 [v0.11 현재 구성](docs/PROJECT_STATUS_V11.md)을 참고하세요.
+최신 가족정보·안심콜 기능은 [v0.18 구현 범위](docs/SAFE_CALL_IMPLEMENTATION_V18.md), 전체 화면과 이용 흐름은 [v0.17 기준 전체 매뉴얼](docs/manual/v17/output/LifeLink119_Manual_v0.17.html)을 참고하세요.
+
+## 가족정보 관리와 공식 가입 안내 · v0.18
+
+본인·가족 건강정보 최대 12개를 인증 후 암호화 저장·조회·수정·개별 삭제합니다. 수혜자/대리자 관리 방식, 등록 연락처, 등록 여부에 대한 사용자 확인과 수정 시각을 기록합니다. 실제 119안심콜·소방청·건강정보 고속도로의 공식 사이트는 개인정보를 붙이지 않고 외부 브라우저로 연결합니다. 사이트 방문이나 사용자 체크를 공식 등록 확인 응답으로 취급하지 않습니다.
+
+긴급 연결 안에서는 **가상** 대상·신고 회선을 대조해 일치·불일치·확인 불가·공용 번호와 조회 오류를 구분합니다. 대상 미선택을 미등록으로 처리하지 않으며, 번호 불일치·조회 실패로 긴급 연결을 막지 않습니다. 실제 발신번호 확인·기관 등록/조회 API·의료정보 전송은 미연결입니다. [구현·검증 범위](docs/SAFE_CALL_IMPLEMENTATION_V18.md) · [실제 기관 연계 준비](docs/AGENCY_LINKAGE_HANDOFF.md)
+
+- [v0.18 APK (로컬)](artifacts/LifeLink119-v0.18.0-family-safecall.apk)
+- 검증: 단위 테스트 **208개**, lint **오류 0·경고 0**, 새 기능 조작 **13개 묶음**, 기존 공개 화면 **9개 묶음**, 실제 디스플레이 **1280×720·1024×600** 통과. 같은 APK에서 공식 SDK 도어·배터리 값 변경과 복구를 확인했습니다. [공개 화면·검증 증거](docs/reviews/safe-call-v18/README.md) · [APK SHA-256](artifacts/LifeLink119-v0.18.0-family-safecall.apk.sha256)
+
+## 어두운 배경과 밝은 버튼 · 전체 매뉴얼 · v0.17
+
+차콜 배경에서 누를 곳이 잘 보이도록 홈 네 메뉴·긴급 요청·상담·영상 안내·차량 상태·설정·기존 매뉴얼의 버튼을 밝은 바탕과 짙은 글자로 통일했습니다. 주요 동작은 따뜻한 흰색, 보조 동작은 밝은 청회색, 119·112 동작은 각각 옅은 빨강·파랑을 사용합니다. 네 홈 메뉴의 비중은 같고, 기관 번호는 짙은 빨강 119·파랑 112로 구분합니다. 누름·포커스·비활성 상태도 구분하며 기존 96dp 터치 영역과 가운데 정렬을 유지합니다.
+
+- [전체 이용·시연 매뉴얼 HTML](docs/manual/v17/output/LifeLink119_Manual_v0.17.html): 검색 가능한 목차·실제 앱 화면 확대·오프라인 열람.
+- [인쇄·제출용 PDF](docs/manual/v17/output/pdf/LifeLink119_Manual_v0.17.pdf): 전체 흐름과 화면별 조작법, 보호 화면의 절차 안내, 구현·연계 범위.
+- [UI 개선과 검증 기록](docs/UI_BRIGHT_CONTROLS_V17.md) · [촬영 원본·재생성 안내](docs/manual/v17/README.md).
+- [v0.17 APK (로컬)](artifacts/LifeLink119-v0.17.0-bright-controls.apk).
+
+매뉴얼의 공개 화면은 실제 APK를 표준 Android 34에서 촬영했습니다. 차량 상태 예시는 출처를 표시하고, 공식 SDK 값 비교는 별도 증거로 구분합니다. 의료정보 보호를 해제하거나 PIN·건강정보를 촬영하지 않았습니다.
+
+## 공식 에뮬레이터와 실제 SDK 값 비교 · v0.16.1
+
+실차 없이 **공식 Virtual Console → Pleos 차량 서비스 → Vehicle SDK 2.3.2 → 설치 앱의 Gateway**를 검증했습니다. 운전석 도어 `0→1→0`, 배터리 SoC `100→80→15→100%`가 Console 입력과 일치했고 원래 상태로 복구했습니다. 입력은 공식 에뮬레이터의 가상 신호이며 앱의 예시 분기는 사용하지 않았습니다. 설치본·빌드·전달 APK의 SHA-256도 일치합니다.
+
+에어백은 현재 이미지가 `ERROR_NOT_SUPPORTED_PROPERTY`를 반환해 **미지원**입니다. 정확한 SDK 오류 구분과 미지원 capability 재조회 처리를 보완했습니다. debug 빌드·단위 테스트 **166개**·lint **오류 0 / 경고 0**을 통과했습니다.
+
+[검증 범위·결과·공모전 진행 순서](docs/SDK_RUNTIME_VERIFICATION_V16.md) · [SDK 검사 실행](Verify-Pleos-SDK.cmd) · [v0.16.1 APK (로컬)](artifacts/LifeLink119-v0.16.1-pleos-sdk-poc.apk). 실행 전 JDK 17·API 34 SDK·정식 Pleos 이미지·Python 3가 필요합니다. 실제 차량이나 상담 서버는 SDK 값 비교에 필요하지 않습니다.
+
+## 차량 데이터가 긴급 지원과 계산으로 이어지는 흐름 · v0.16
+
+제공된 공모전 설명회를 소스와 대조해 [20개 개선 항목](docs/BRIEFING_GAP_ANALYSIS_V16.md)을 정리하고, SDK 진단에 머물던 값을 실제 서비스 흐름에 연결했습니다. 기존 큰 버튼·다크 UI·의료정보 잠금·CarUX 제한은 유지합니다.
+
+- **더보기 → 차량 상태**: 운전석 도어 위치·배터리 SoC·에어백 전개 신호를 공식 Vehicle SDK 2.3.2로 읽습니다. 초기화·capability·권한·null·오류를 확인합니다. 차량 제어는 없습니다.
+- **119·112 요청 → 차량 상태 → 동의 → 전달**: 출처와 수신 시각을 표시하고 수신 후 30초 이내 조회값만 앱 내 상황실에 전달합니다. 철회·만료·앱 이탈·인물/세션 변경·종료 시 삭제합니다. 실제 기관·PC 전송과 저장 JSON에는 포함하지 않습니다. 긴급 요청은 조회 성공이나 PIN을 기다리지 않습니다.
+- **EV 계산 → 최근 차량 SoC 불러오기**: 직접 선택해 조회값을 반영합니다. 용량·V2L 지원·효율·부하는 수동 가정입니다. 불러온 SoC가 만료되면 계산을 보류하고 다시 조회하거나 수동 입력을 선택합니다.
+- **실차 없이 확인**: 일반 상태/신호 변화/값 없음/오래된 값 예시를 명시적으로 선택할 수 있습니다. SDK 실패가 예시 성공으로 자동 바뀌지 않습니다. 에어백·도어 신호로 사고·환자 상태를 판단하지 않습니다.
+
+[심층 분석·적용 내용·후속 계획](docs/BRIEFING_GAP_ANALYSIS_V16.md) · [실제 새 화면 7개](docs/reviews/vehicle-context-v16/index.html) · [빌드·네이티브 검사 결과](docs/VEHICLE_CONTEXT_VALIDATION_V16.md) · [v0.16 APK (로컬)](artifacts/LifeLink119-v0.16.0-vehicle-context.apk)
+
+v0.16.0 당시 Pleos AVD의 vendor HAL 반복 종료로 보류했던 SDK 값 검사는 **v0.16.1의 별도 AVD에서 도어·SoC 변화 검증을 완료**했습니다. 당시 표준 Android에서의 명시적 예시·실패·동의·만료 검증과 이번 SDK 결과를 구분합니다. 새 PC에서는 [SDK 연동 가이드](docs/SDK_INTEGRATION.md)를 참고하세요. 위치·음성·내비 SDK는 공개되어 있지만 앱의 해당 기능은 아직 모의입니다. 기존 영상·발표자료를 v16 화면으로 재촬영한 것은 아닙니다.
+
+## 배경과 조작 영역을 구분하는 색상 · v0.15
+
+Pleos 공식 샘플·색상 체계와 Android Automotive 가이드를 검토해, 차콜 바탕·슬레이트 카드·밝은 글씨로 조정했습니다. 네 홈 카드의 비중과 큰 터치 영역은 유지하고, 작은 119 빨강·112 파랑만 의미 색으로 사용합니다. 본문·번호 색과 채움 버튼 색을 분리하고 누름·포커스·비활성 상태 및 기본 대화상자도 맞췄습니다. 현재는 고정 다크 팔레트이며 자동 주야간 전환·실차 시인성 검증을 뜻하지 않습니다.
+
+[실제 앱 화면 비교](docs/reviews/unslop-v15/index.html) · [사례·색상·검증 기록](docs/SDK_COLOR_REVIEW_V15.md) · [v0.15 APK (로컬)](artifacts/LifeLink119-v0.15.0-car-dark-theme.apk)
+
+## 네 가지 도움을 같은 비중으로 · v0.14
+
+구조·구급, 의료·심리상담, 경찰 신고, 가족 안심콜을 같은 흰색 카드와 같은 제목 크기로 표시합니다. 119 빨강·112 파랑은 보조 문구의 작은 기관 번호에만 적용해 두 긴급 버튼에만 시선이 몰리지 않도록 했습니다. 큰 터치 영역과 각 기능의 기존 연결 흐름은 유지합니다.
+
+[실제 홈 화면 비교](docs/reviews/unslop-v14/index.html) · [변경·검증 기록](docs/UNSLOP_HOME_V14.md) · [v0.14 APK (로컬)](artifacts/LifeLink119-v0.14.0-balanced-home.apk)
+
+## 크게 누르는 차량 UI · v0.13
+
+홈을 119·상담·112·안심콜의 큰 터치 영역 네 개로 바꿨습니다. 일반 버튼은 최소 96×96dp, 28sp로 확대하고 소개·반복 안내는 줄였습니다. 연결 화면에서는 핵심 동작 네 개를 먼저 보여주며, 상세 전달·공유·역할 조작은 다음 화면에서 선택합니다. 낮은 가로 화면은 네 버튼을 한 줄로 배치합니다. 의료정보 잠금·동의·실제 차량 제한은 유지합니다.
+
+[실제 앱 개선 전후](docs/reviews/unslop-v13/index.html) · [설계·검증 기록](docs/UNSLOP_CAR_TOUCH_V13.md) · [v0.13 APK (로컬)](artifacts/LifeLink119-v0.13.0-car-touch-ui.apk)
+
+표준 Android 34의 UI 검증이며, Pleos의 실제 CarUX·차량 SDK·실차 검증 완료를 뜻하지 않습니다. 적용 지침: [unslop](https://github.com/heydamir/unslop) by Damir Sokolovsky (@heydamir), CC BY 4.0.
+
+## 차분한 차량 UI · v0.12
+
+기존 밝은 화면과 119 빨강·112 파랑을 유지하면서 글씨·간격·버튼과 탐색 영역을 정돈했습니다. 홈·상담 선택의 세로 균형을 맞추고, 매뉴얼 목록은 흰색 항목으로 구분했습니다. 기본 버튼은 64dp 이상의 터치 영역과 중앙 정렬을 유지하며, 큰 글씨·좁은 화면과 포커스·비활성 상태를 고려합니다. 의료정보 인증·화면 보호와 실제 차량 제한은 유지합니다.
+
+[실제 앱 화면 개선 전후](docs/reviews/unslop-v12/index.html) · [설계·검증 기록](docs/UNSLOP_UI_V12.md) · [v0.12 APK (로컬)](artifacts/LifeLink119-v0.12.0-unslop-ui.apk)
+
+새 UI는 표준 Android 34 에뮬레이터에서 검증했습니다. Pleos 에뮬레이터는 차량 오디오 서비스 오류로 추가 검증이 남아 있으며, 실제 CarUX·차량 SDK 검증 완료를 뜻하지 않습니다.
+
+적용 지침: [unslop](https://github.com/heydamir/unslop) by Damir Sokolovsky (@heydamir), CC BY 4.0. Kotlin/Android Views와 한국어 차량 UI에 맞춰 적용했습니다.
 
 ## 전체 기능 발표자료 · v0.11
 
@@ -25,6 +96,8 @@ Git에는 소스·테스트·문서·Gradle wrapper를 관리합니다. APK·SDK
 ## 우리 가족 안심콜 · v0.10
 
 홈의 **우리 가족 안심콜**에서 인증 후 본인이 직접 입력한 이름·병력·알레르기·투약 내역을 기기에 암호화해 저장·조회·수정·삭제할 수 있습니다. 기존 가족 예시는 별도이며, 입력한 정보는 119나 가상 상황실에 자동 제공되지 않습니다. 공식 119 안심콜 등록·조회와 건강정보 고속도로 자동 조회는 연결되지 않았습니다. 공모전용 개발 빌드이며 실사용 의료정보 저장 전 별도 보안·운영 검증이 필요합니다. [구현 및 연계 범위](docs/PERSONAL_HEALTH_V10.md)
+
+[안심콜 등록·신고자·수혜자 연결 개선 검토](docs/SAFE_CALL_IDENTITY_REVIEW.md)에는 수혜자/대리자 구분, 등록 전화와 신고 회선의 불일치, 조회 실패와 개인정보 보호를 고려한 개선안을 정리했습니다. 이후 일부 항목을 [v0.18](docs/SAFE_CALL_IMPLEMENTATION_V18.md)에 구현했으며 실제 기관 등록·조회 API는 미연결입니다.
 
 [v0.10 APK (로컬)](artifacts/LifeLink119-v0.10.0-family-health-demo.apk) · [SHA-256 (로컬)](artifacts/LifeLink119-v0.10.0-family-health-demo.apk.sha256)
 

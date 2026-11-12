@@ -3,8 +3,6 @@ package com.lifelink119.app
 import android.app.Activity
 import android.graphics.Color
 import android.graphics.Typeface
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.StateListDrawable
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -41,18 +39,19 @@ import com.lifelink119.app.vehicle.PleosVehicleGateway
 import java.util.UUID
 import org.json.JSONObject
 import com.lifelink119.app.ui.ExpansionUi
+import com.lifelink119.app.ui.LifeLinkUiStyle
 import com.lifelink119.app.core.DrivingRestrictions
 import com.lifelink119.app.vehicle.DrivingRestrictionsGateway
 
 /** Consultation sessions contain synthetic fixtures and stay in memory. */
 class MainActivity : Activity() {
     private enum class Page { HOME, SCENARIO, REVIEW, CONNECTED, VEHICLE, ROUTE, MANUAL, MANUAL_DETAIL, COOPERATION }
-    private val bgColor = Color.rgb(246, 248, 252)
-    private val surfaceColor = Color.WHITE
-    private val accentColor = Color.rgb(36, 82, 170)
-    private val textColor = Color.rgb(25, 38, 57)
-    private val mutedColor = Color.rgb(77, 94, 115)
-    private val warningColor = Color.rgb(137, 57, 30)
+    private val bgColor = LifeLinkUiStyle.background
+    private val surfaceColor = LifeLinkUiStyle.surface
+    private val accentColor = LifeLinkUiStyle.accent
+    private val textColor = LifeLinkUiStyle.ink
+    private val mutedColor = LifeLinkUiStyle.secondary
+    private val warningColor = LifeLinkUiStyle.warning
     private val camera = UnavailableCameraGateway()
     private lateinit var mock: MockDispatchGateway
     private lateinit var vehicle: PleosVehicleGateway
@@ -117,7 +116,7 @@ class MainActivity : Activity() {
         super.onCreate(savedInstanceState)
         window.statusBarColor = bgColor
         window.navigationBarColor = bgColor
-        window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR or View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
+        window.decorView.systemUiVisibility = 0
         mock = MockDispatchGateway(savedInstanceState?.getInt("sequence") ?: 0)
         vehicle = PleosVehicleGateway(this)
         savedInstanceState?.let { saved ->
@@ -143,7 +142,7 @@ class MainActivity : Activity() {
             if (page == Page.CONNECTED && session == null) page = Page.REVIEW
         }
         expansionVisible=savedInstanceState?.getBoolean("expansionVisible",true) ?: true
-        expansion=ExpansionUi(this,mock,savedInstanceState?.getString("expandedExperience"),::openLegacyTool)
+        expansion=ExpansionUi(this,mock,savedInstanceState?.getString("expandedExperience"),vehicle,::openLegacyTool)
         expansion.requestRender={if(expansionVisible && !isFinishing && !isDestroyed)expansion.render()}
         if(packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_AUTOMOTIVE)){
             runCatching { drivingRestrictions=DrivingRestrictionsGateway(this){value->runOnUiThread{
@@ -337,40 +336,40 @@ class MainActivity : Activity() {
         render();schedulePoll()
     }
     private fun dp(value: Int) = (value * resources.displayMetrics.density).toInt()
-    private fun shape(color: Int, focus: Boolean = false) = GradientDrawable().apply {
-        setColor(color); cornerRadius = dp(20).toFloat()
-        setStroke(dp(if (focus) 3 else 1), if (focus) accentColor else if(color==surfaceColor) Color.rgb(207,217,229) else color)
-    }
-    private fun interactiveBackground(color: Int) = StateListDrawable().apply {
-        addState(intArrayOf(android.R.attr.state_pressed), shape(color, true))
-        addState(intArrayOf(android.R.attr.state_focused), shape(color, true))
-        addState(intArrayOf(), shape(color))
-    }
+    private fun shape(color: Int) = LifeLinkUiStyle.shape(this,color)
+    private fun interactiveBackground(color: Int) = LifeLinkUiStyle.actionBackground(this,color)
     private fun label(value: String, size: Float = 22f, color: Int = textColor, bold: Boolean = false) = TextView(this).apply {
         text = value; textSize = size; setTextColor(color)
-        if (bold) setTypeface(null, Typeface.BOLD)
+        typeface = LifeLinkUiStyle.typeface(bold)
+        if (bold) isAccessibilityHeading = true
+        fontFeatureSettings = "tnum"
         setLineSpacing(dp(4).toFloat(), 1f)
     }
     private fun column() = LinearLayout(this).apply { orientation = LinearLayout.VERTICAL }
     private fun LinearLayout.add(view: View, top: Int = 0) {
-        addView(view, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(top) })
+        addView(view, LinearLayout.LayoutParams(-1, -2).apply { topMargin = dp(LifeLinkUiStyle.spacing(if(top>0 && view is Button)maxOf(24,top)else top)) })
     }
     private fun panel() = column().apply {
         background = shape(surfaceColor)
-        setPadding(dp(26), dp(24), dp(26), dp(24))
+        setPadding(dp(24), dp(24), dp(24), dp(24))
     }
     private fun button(caption: String, viewId: Int = View.NO_ID, action: () -> Unit) = Button(this).apply {
-        id = viewId; text = caption; textSize = 22f; isAllCaps = false
-        setTextColor(bgColor); background = interactiveBackground(accentColor)
-        minHeight = dp(76); setPadding(dp(20), dp(14), dp(20), dp(14))
+        id = viewId; text = caption; textSize = LifeLinkUiStyle.actionTextSize; isAllCaps = false; gravity = Gravity.CENTER
+        typeface = LifeLinkUiStyle.typeface(true); stateListAnimator = null; elevation = 0f
+        val primary = viewId in setOf(R.id.x_urgent_shortcut,R.id.next_step,R.id.connect_demo,R.id.share_console,R.id.read_driver_door)
+        val fill=if(primary)LifeLinkUiStyle.primaryFill else LifeLinkUiStyle.control
+        backgroundTintList=null
+        setTextColor(LifeLinkUiStyle.actionText(LifeLinkUiStyle.actionForeground(fill))); background = interactiveBackground(fill)
+        minHeight = dp(LifeLinkUiStyle.touchHeight); minimumHeight = minHeight; minWidth = minHeight; setPadding(dp(24), dp(20), dp(24), dp(20))
+        setFilterTouchesWhenObscured(true)
         setOnClickListener { action() }
     }
     private fun split(left: View, right: View): LinearLayout = LinearLayout(this).apply {
         val wide = resources.configuration.screenWidthDp >= 900
-        orientation = if (wide) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
-        addView(left, LinearLayout.LayoutParams(if (wide) 0 else -1, -2, if (wide) 1f else 0f))
-        addView(right, LinearLayout.LayoutParams(if (wide) 0 else -1, -2, if (wide) 1f else 0f).apply {
-            if (wide) marginStart = dp(20) else topMargin = dp(20)
+        orientation = if (wide) LinearLayout.HORIZONTAL else LinearLayout.VERTICAL; isBaselineAligned=false
+        addView(left, LinearLayout.LayoutParams(if (wide) 0 else -1, if(wide)-1 else -2, if (wide) 1f else 0f))
+        addView(right, LinearLayout.LayoutParams(if (wide) 0 else -1, if(wide)-1 else -2, if (wide) 1f else 0f).apply {
+            if (wide) marginStart = dp(24) else topMargin = dp(24)
         })
     }
 
@@ -379,28 +378,32 @@ class MainActivity : Activity() {
         val previousScroll = if (samePage) findViewById<ScrollView>(R.id.content_scroll)?.scrollY ?: 0 else 0
         val previousFocus = if (samePage) currentFocus?.id else null
         val root = column().apply { setBackgroundColor(bgColor) }
-        root.add(label("시연 모드 | 실제 신고·상담 연결 아님\n이동 중 응급상황도 시연 가능 · 실제 차량 속도 감지 미연동", 18f, warningColor, true).apply {
+        root.add(label("시연 모드 | 실제 신고·상담 연결 아님", 16f, warningColor).apply {
             id = R.id.safety_banner; gravity = Gravity.CENTER
-            setPadding(dp(20), dp(10), dp(20), dp(10))
-            setBackgroundColor(Color.rgb(255, 244, 230))
+            setPadding(dp(20), dp(8), dp(20), dp(8))
+            setBackgroundColor(LifeLinkUiStyle.notice)
         })
         val nav = LinearLayout(this).apply {
             gravity = Gravity.CENTER_VERTICAL
-            val side = maxOf(dp(24), (resources.displayMetrics.widthPixels - dp(1480)) / 2 + dp(24))
-            setPadding(side, dp(14), side, dp(14))
+            setBackgroundColor(LifeLinkUiStyle.chrome)
+            setPadding(dp(24), dp(12), dp(24), dp(12))
         }
-        if (page != Page.HOME) nav.addView(button("← 이전", R.id.back_button) { onBackPressed() }, LinearLayout.LayoutParams(dp(144), dp(64)).apply { marginEnd = dp(22) })
-        nav.addView(label("LifeLink 119", 30f, textColor, true), LinearLayout.LayoutParams(0, -2, 1f))
-        nav.addView(label(title, 20f, mutedColor))
+        val wide = resources.configuration.screenWidthDp >= 900
+        if (page != Page.HOME) nav.addView(button("이전", R.id.back_button) { onBackPressed() }, LinearLayout.LayoutParams(dp(120), -2).apply { marginEnd = dp(24) })
+        nav.addView(label("LifeLink 119", 28f, accentColor, true), LinearLayout.LayoutParams(0, -2, 1f))
+        if(wide){
+            nav.addView(button("홈",R.id.x_home){openExpansionHome()},LinearLayout.LayoutParams(dp(120),-2).apply{marginStart=dp(24)})
+            nav.addView(button("긴급 연결",R.id.x_urgent_shortcut){openExpansionHome();expansion.emergency()},LinearLayout.LayoutParams(dp(184),-2).apply{marginStart=dp(24)})
+        }
         root.add(nav)
-        root.add(LinearLayout(this).apply{
+        if(!wide)root.add(LinearLayout(this).apply{
             setPadding(dp(24),0,dp(24),dp(8))
-            addView(button("홈",R.id.x_home){openExpansionHome()},LinearLayout.LayoutParams(0,dp(64),1f))
-            addView(button("긴급 연결",R.id.x_urgent_shortcut){openExpansionHome();expansion.emergency()},LinearLayout.LayoutParams(0,dp(64),1f).apply{marginStart=dp(12)})
+            addView(button("홈",R.id.x_home){openExpansionHome()},LinearLayout.LayoutParams(0,-2,1f))
+            addView(button("긴급 연결",R.id.x_urgent_shortcut){openExpansionHome();expansion.emergency()},LinearLayout.LayoutParams(0,-2,1f).apply{marginStart=dp(24)})
         })
         val body = column().apply {
-            setPadding(dp(24), dp(14), dp(24), dp(34))
-            add(panel().apply {
+            setPadding(dp(24), dp(16), dp(24), dp(32))
+            if(page !in setOf(Page.MANUAL,Page.MANUAL_DETAIL))add(panel().apply {
                 val context = when (driveState) {
                     DemoDriveState.DRIVING -> "이동 중 응급상황 · 동승자 조작 시연"
                     DemoDriveState.PARKED -> "정차 상황 · 응급지원 시연"
@@ -421,7 +424,7 @@ class MainActivity : Activity() {
             content()
         }
         val frame = FrameLayout(this).apply {
-            addView(body, FrameLayout.LayoutParams(minOf(resources.displayMetrics.widthPixels, dp(1480)), -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL))
+            addView(body, FrameLayout.LayoutParams(dp(minOf(resources.configuration.screenWidthDp,LifeLinkUiStyle.contentWidth)), -2, Gravity.TOP or Gravity.CENTER_HORIZONTAL))
         }
         val scroll = ScrollView(this).apply { id = R.id.content_scroll; isFillViewport = true; addView(frame) }
         root.addView(scroll, LinearLayout.LayoutParams(-1, 0, 1f))
@@ -437,11 +440,11 @@ class MainActivity : Activity() {
     }
 
     private fun tile(title: String, subtitle: String, viewId: Int, action: () -> Unit) = panel().apply {
-        id = viewId; background = interactiveBackground(surfaceColor)
+        id = viewId; background = interactiveBackground(LifeLinkUiStyle.control)
         isClickable = true; isFocusable = true; contentDescription = "$title 열기"
-        minimumHeight = dp(154)
-        add(label(title, 25f, textColor, true))
-        add(label(subtitle, 18f, mutedColor), 12)
+        minimumHeight = dp(184)
+        add(label(title, 28f, textColor, true).apply { gravity = Gravity.CENTER })
+        add(label(subtitle, 22f, mutedColor).apply { gravity = Gravity.CENTER }, 12)
         setOnClickListener { action() }
     }
 
@@ -465,14 +468,15 @@ class MainActivity : Activity() {
     }
 
     private fun showManual() = shell("기본 응급상황 매뉴얼") {
-        add(label(manual.getString("title"),34f,textColor,true))
-        add(label(manual.getString("notice"),21f,warningColor),18)
-        add(label(manual.getString("scope"),20f,mutedColor),16)
+        add(label("응급 매뉴얼",32f,textColor,true))
+        add(label("실제 상황은 119 신고 후 상담원 안내를 우선하세요",22f,warningColor),16)
         val guides=manual.getJSONArray("guides")
         val ids=listOf(R.id.manual_first,R.id.manual_cpr,R.id.manual_aed,R.id.manual_bleeding,R.id.manual_burn,R.id.manual_seizure)
-        for (i in 0 until guides.length()) add(button(guides.getJSONObject(i).getString("title"),ids[i]) {
+        val topics=(0 until guides.length()).map { i->button(guides.getJSONObject(i).getString("title"),ids[i]) {
             manualTopic=i; navigate(Page.MANUAL_DETAIL)
-        },14)
+        }}
+        topics.chunked(2).forEach { pair->add(if(pair.size==2)split(pair[0],pair[1])else pair[0],24) }
+        add(label(manual.getString("scope"),20f,mutedColor),24)
         add(label("자료 확인일: ${manual.getString("version")} · 의료진 검토 전 · 앱 내 오프라인 열람",18f,mutedColor),20)
     }
 
@@ -573,7 +577,7 @@ class MainActivity : Activity() {
                 add(label(if(coopVolunteer) "협력 차량 역할 · ${s.vehicleId ?: "초대 대기"}" else "도움 요청자 역할",24f,accentColor,true))
                 add(label(s.missionId?.let { "$it\n임무 잔여 ${s.missionRemaining}초" } ?: "119 역할의 상황 확인 · 차량의 수락 · 임무 부여를 기다립니다.",20f),14)
                 coopWasVisible=coopVisible()
-                add(label(if(coopWasVisible) "● 응급협력 비상표시 ON · 실등 미연결" else "● 응급협력 비상표시 OFF",23f,if(coopWasVisible) Color.rgb(255,130,140) else mutedColor,true).apply {
+                add(label(if(coopWasVisible) "● 응급협력 비상표시 ON · 실등 미연결" else "● 응급협력 비상표시 OFF",23f,if(coopWasVisible) LifeLinkUiStyle.emergency else mutedColor,true).apply {
                     id=R.id.coop_indicator
                     if(coopWasVisible && ValueAnimator.areAnimatorsEnabled())startAnimation(AlphaAnimation(.35f,1f).apply {duration=1000;repeatCount=Animation.INFINITE;repeatMode=Animation.REVERSE})
                 },18)
@@ -611,7 +615,7 @@ class MainActivity : Activity() {
         val labels=mapOf("OFF" to "꺼짐","REQUESTED" to "승인 요청 대기","CONFIRMED" to "비상상황 확인 (모의)","APPROVED" to "표시 승인 (모의)","PREVIEW_ACTIVE" to "화면 점멸 표시 중 (모의)","REVOKED" to "중단·승인 철회","REJECTED" to "요청 거절","EXPIRED" to "승인 만료")
         add(label("${labels[signal.state] ?: "꺼짐"} · ${signal.authority ?: "기관 미선택"} · 잔여 ${signal.remainingSeconds}초",21f).apply { id=R.id.signal_status },14)
         signalWasVisible=signalVisible()
-        add(label(if(signalWasVisible) "● 화면 표시 ON · 실등 미연결" else "● 화면 표시 OFF",23f,if(signalWasVisible) Color.rgb(255,130,140) else mutedColor,true).apply {
+        add(label(if(signalWasVisible) "● 화면 표시 ON · 실등 미연결" else "● 화면 표시 OFF",23f,if(signalWasVisible) LifeLinkUiStyle.emergency else mutedColor,true).apply {
             id=R.id.signal_indicator
             if(signalWasVisible && ValueAnimator.areAnimatorsEnabled()) startAnimation(AlphaAnimation(.35f,1f).apply {
                 duration=1000; repeatCount=Animation.INFINITE; repeatMode=Animation.REVERSE

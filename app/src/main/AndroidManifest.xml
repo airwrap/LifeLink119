@@ -3,6 +3,8 @@
     <!-- Documented read-only door and battery diagnostics. No control permissions. -->
     <uses-permission android:name="pleos.car.permission.CAR_DOORS" />
     <uses-permission android:name="pleos.car.permission.CAR_ENERGY" />
+    <!-- Documented read-only airbag deployment signal; no vehicle control. -->
+    <uses-permission android:name="pleos.car.permission.CAR_SAFETY" />
     <uses-feature android:name="android.hardware.type.automotive" android:required="false" />
 
     <!-- No calls, camera, microphone or GPS. INTERNET is in the debug overlay only. -->

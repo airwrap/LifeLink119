@@ -1,0 +1,17 @@
+{
+  "version": "0.17.0",
+  "pages": 52,
+  "actualNativeScreens": 40,
+  "protectedPages": "Workflow diagrams only; FLAG_SECURE preserved",
+  "apkSha256": "2f46c2524b371e2d11a70d18b0ea76f7f4d35288366dfd5a8ed7dbf42ad821f5",
+  "files": {
+    "LifeLink119_Manual_v0.17.pdf": {
+      "bytes": 3764133,
+      "sha256": "eb50890c2511beb010efd93731930b24396d9cc520dbf7069f8fd0b3a7f7ee11"
+    },
+    "LifeLink119_Manual_v0.17.html": {
+      "bytes": 4108087,
+      "sha256": "4d60f46cc3da12d74fa17e3e95ba8234b9f28b1a7a6de79d36bf732aa1df5308"
+    }
+  }
+}

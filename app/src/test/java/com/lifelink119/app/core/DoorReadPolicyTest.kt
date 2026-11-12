@@ -30,4 +30,14 @@ class DoorReadPolicyTest {
         assertEquals(DiagnosticStatus.ERROR, DoorReadPolicy.failure("지원 기능 확인", Exception("opaque SDK error")).status)
         assertEquals(DiagnosticStatus.PERMISSION_DENIED, DoorReadPolicy.failure("도어 위치 조회", SecurityException()).status)
     }
+    @Test fun documentedUnsupportedCodesAreUnavailableCapabilitiesRatherThanConnectionFailures(){
+        for(code in listOf("ERROR_NOT_SUPPORTED_PROPERTY","ERROR_NOT_SUPPORTED_AREA"))
+            assertEquals(DiagnosticStatus.UNSUPPORTED,DoorReadPolicy.failure("에어백 지원 확인",Exception(code)).status)
+    }
+    @Test fun exactDocumentedSdkFailureCodesHaveDistinctRecoveryStates(){
+        for((code,status) in mapOf("ERROR_SECURITY_PERMISSION" to DiagnosticStatus.PERMISSION_DENIED,
+            "ERROR_EMPTY_RESULT" to DiagnosticStatus.UNAVAILABLE,"ERROR_SERVICE_CONNECTION_FAILURE" to DiagnosticStatus.SERVICE_UNAVAILABLE))
+            assertEquals(status,DoorReadPolicy.failure("조회",Exception(code)).status)
+        assertEquals(DiagnosticStatus.ERROR,DoorReadPolicy.failure("조회",Exception("prefix ERROR_NOT_SUPPORTED_PROPERTY")).status)
+    }
 }

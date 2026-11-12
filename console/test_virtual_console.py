@@ -30,19 +30,19 @@ class VirtualConsoleBoundaryTests(unittest.TestCase):
                 with self.assertRaises(ValueError):v.controls(**args)
             request.assert_not_called()
     def test_lost_forward_blocks_requests(self):
-        v=VirtualConsole.__new__(VirtualConsole);v.serial='emulator-5580'
+        v=VirtualConsole.__new__(VirtualConsole);v.serial='emulator-5580';v.port=8088
         with patch.object(v,'_adb',return_value='emulator-5554 tcp:8088 tcp:8088\n'),patch.object(VirtualConsole,'_open') as web:
             with self.assertRaises(RuntimeError):v.state()
             web.assert_not_called()
     def test_transient_503_retries_but_does_not_change_target(self):
-        v=VirtualConsole.__new__(VirtualConsole);v.thread=None
+        v=VirtualConsole.__new__(VirtualConsole);v.thread=None;v.base='http://127.0.0.1:8088'
         response=MagicMock();response.__enter__.return_value.read.return_value=b'{"ready":true}'
         error=urllib.error.HTTPError('http://127.0.0.1:8088/vehicle/state',503,'not active',None,io.BytesIO(b'{}'))
         with patch.object(v,'_verify_mapping') as guard,patch.object(v,'_open',side_effect=[error,response]) as web,patch.object(module.time,'sleep'):
             self.assertEqual(v.state(),{'ready':True});self.assertEqual(web.call_count,2);self.assertGreaterEqual(guard.call_count,2)
             self.assertTrue(all(call.args[0].full_url=='http://127.0.0.1:8088/vehicle/state' for call in web.call_args_list))
     def test_forward_is_checked_again_before_retry(self):
-        v=VirtualConsole.__new__(VirtualConsole);v.thread=None
+        v=VirtualConsole.__new__(VirtualConsole);v.thread=None;v.base='http://127.0.0.1:8088'
         error=urllib.error.HTTPError('http://127.0.0.1:8088/vehicle/state',503,'not active',None,io.BytesIO(b'{}'))
         with patch.object(v,'_verify_mapping',side_effect=[None,None,RuntimeError('forward changed')]),patch.object(v,'_open',side_effect=error) as web,patch.object(module.time,'sleep'):
             with self.assertRaises(RuntimeError):v.state()

@@ -4,6 +4,9 @@ import android.content.Context
 import ai.pleos.playground.vehicle.Vehicle
 import ai.pleos.playground.vehicle.api.model.area.DoorArea
 import ai.pleos.playground.vehicle.constant.area.DoorValue
+import ai.pleos.playground.vehicle.api.model.area.SeatArea
+import ai.pleos.playground.vehicle.constant.area.SeatValue
+import com.lifelink119.app.core.VehicleMetric
 import android.os.Handler
 import android.os.Looper
 import com.lifelink119.app.core.DiagnosticStatus
@@ -15,17 +18,18 @@ import java.util.concurrent.atomic.AtomicBoolean
 import java.util.concurrent.atomic.AtomicLong
 
 /**
- * 공식 Vehicle SDK 2.3.2 검증 전용 코드.
- * 도어 조회는 SDK 연결 확인을 위한 테스트이고 응급 상황 판단에는 사용하지 않음.
+ * Official read-only Vehicle SDK 2.3.2 observations for diagnostics and local context.
+ * A vehicle signal never determines medical severity, dispatch or safe stopping.
  * 카메라/GPS/전화/의료정보에 접근하지 않음.
  */
 class PleosVehicleGateway(context: Context) {
-    private enum class Query { DOOR, BATTERY }
+    private enum class Query { DOOR, BATTERY, AIRBAG }
     private val applicationContext = context.applicationContext
     private val main = Handler(Looper.getMainLooper())
     private val executor = Executors.newSingleThreadExecutor { task -> Thread(task, "lifelink-door-diagnostic").apply { isDaemon = true } }
     private var vehicle: Vehicle? = null
     private var initialized = false
+    @Volatile private var unsupportedAirbag: VehicleDiagnostic? = null
     @Volatile private var closed = false
     @Volatile private var reconnect = false
     private val pending = AtomicBoolean(false)
@@ -34,10 +38,21 @@ class PleosVehicleGateway(context: Context) {
 
     fun readDriverDoor(onResult: (VehicleDiagnostic) -> Unit) = read(Query.DOOR, onResult)
     fun readBatteryCharge(onResult: (VehicleDiagnostic) -> Unit) = read(Query.BATTERY, onResult)
+    fun readObservation(metric: VehicleMetric,onResult: (VehicleDiagnostic)->Unit) = read(when(metric){
+        VehicleMetric.DRIVER_DOOR->Query.DOOR;VehicleMetric.BATTERY_SOC->Query.BATTERY;VehicleMetric.DRIVER_AIRBAG->Query.AIRBAG
+    },onResult)
 
     private fun read(query: Query, onResult: (VehicleDiagnostic) -> Unit) {
         if (closed) {
             main.post { onResult(VehicleDiagnostic(DiagnosticStatus.RELEASED, "SDK 진단이 종료됐습니다. 화면을 다시 여세요.")) }
+            return
+        }
+        if(!applicationContext.packageManager.hasSystemFeature(android.content.pm.PackageManager.FEATURE_AUTOMOTIVE)){
+            main.post{onResult(VehicleDiagnostic(DiagnosticStatus.UNAVAILABLE,"Pleos 차량 서비스가 없는 환경입니다. SDK 성공값으로 대체하지 않습니다."))}
+            return
+        }
+        unsupportedAirbag?.takeIf{query==Query.AIRBAG && !reconnect}?.let{known->
+            main.post{if(!closed)onResult(known)}
             return
         }
         if (!pending.compareAndSet(false, true)) {
@@ -55,14 +70,16 @@ class PleosVehicleGateway(context: Context) {
         fun active() = !closed && token == generation.get() && !completed.get()
         fun finish(result: VehicleDiagnostic) {
             if (closed || token != generation.get() || !completed.compareAndSet(false, true)) return
+            if(query==Query.AIRBAG && result.status==DiagnosticStatus.UNSUPPORTED)unsupportedAirbag=result
             main.removeCallbacks(timeout)
             pending.set(false)
             main.post { if (!closed && token == generation.get()) onResult(result) }
         }
         fun failed(stage: String, error: Exception) {
             if (!active()) return
-            reconnect = true
-            finish(DoorReadPolicy.failure(stage, error))
+            val result=DoorReadPolicy.failure(stage,error)
+            if(result.status in setOf(DiagnosticStatus.ERROR,DiagnosticStatus.SERVICE_UNAVAILABLE,DiagnosticStatus.TIMEOUT))reconnect=true
+            finish(result)
         }
         timeout = Runnable {
             if (!active()) return@Runnable
@@ -75,6 +92,7 @@ class PleosVehicleGateway(context: Context) {
             try {
                 if (!active()) return@execute
                 if (reconnect) {
+                    unsupportedAirbag=null
                     runCatching { vehicle?.release() }
                     vehicle = null
                     initialized = false
@@ -87,6 +105,21 @@ class PleosVehicleGateway(context: Context) {
                 }
                 if (!active()) return@execute
                 stage = "지원 기능 확인"
+                if(query==Query.AIRBAG){
+                    val safety=client.getSafety();val seat=SeatArea(SeatValue.ROW_1_LEFT)
+                    safety.checkAirbagDeployedCapabilities(
+                        onComplete=capability@{config,areas->
+                            if(!active())return@capability
+                            if(config.accessType.name !in setOf("READ","READ_WRITE") || seat !in areas)
+                                finish(VehicleDiagnostic(DiagnosticStatus.UNSUPPORTED,"운전석 에어백 전개 조회를 지원하지 않습니다."))
+                            else try{safety.hasSeatAirbagBeenDeployed(seat,
+                                onComplete={value->finish(if(value==null)VehicleDiagnostic(DiagnosticStatus.UNAVAILABLE,"에어백 신호값 없음")
+                                    else VehicleDiagnostic(DiagnosticStatus.READ,"에어백 전개 신호 조회 · 사고·부상 판단 아님",if(value)1.0 else 0.0))},
+                                onFailed={error->failed("에어백 신호 조회",error)})
+                            }catch(error: Exception){failed("에어백 신호 조회",error)}
+                        },onFailed={error->failed("에어백 지원 확인",error)})
+                    return@execute
+                }
                 if (query == Query.BATTERY) {
                     val battery = client.getEvBattery()
                     battery.checkEvBatteryStateOfChargeCapabilities(
@@ -138,6 +171,7 @@ class PleosVehicleGateway(context: Context) {
     fun release() {
         if (closed) return
         closed = true
+        unsupportedAirbag=null
         generation.incrementAndGet()
         pending.set(false)
         main.removeCallbacksAndMessages(null)

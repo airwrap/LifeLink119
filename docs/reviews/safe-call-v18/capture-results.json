@@ -1,0 +1,13 @@
+{
+  "status": "PASS",
+  "apkSha256": "486871e3109732cf1fbfab828f8545ceafaea909c49ee5c090d5047d88e104bc",
+  "captures": [
+    "01-home.jpg",
+    "02-official-self.jpg",
+    "03-official-proxy.jpg",
+    "04-official-links.jpg"
+  ],
+  "protectedCaptureRefused": true,
+  "captureBackend": "native_view_draw",
+  "privateFrames": 0
+}

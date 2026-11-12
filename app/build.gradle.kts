@@ -12,8 +12,8 @@ android {
         applicationId = "com.lifelink119.app"
         minSdk = 28
         targetSdk = 34
-        versionCode = 12
-        versionName = "0.11.0-demo"
+        versionCode = 20
+        versionName = "0.18.0-demo"
         testInstrumentationRunner = "android.test.InstrumentationTestRunner"
     }
 

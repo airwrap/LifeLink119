@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item name="x_safe_person" type="id"/><item name="x_safe_person_choose" type="id"/>
+    <item name="x_safe_role_self" type="id"/><item name="x_safe_role_proxy" type="id"/>
+    <item name="x_safe_authority" type="id"/><item name="x_safe_line" type="id"/>
+    <item name="x_safe_fault" type="id"/><item name="x_safe_consent" type="id"/>
+    <item name="x_safe_revoke" type="id"/><item name="x_safe_official" type="id"/>
+    <item name="x_agency_self" type="id"/><item name="x_agency_proxy" type="id"/>
+    <item name="x_agency_status" type="id"/><item name="x_agency_open" type="id"/>
+    <item name="x_agency_guide" type="id"/><item name="x_agency_healthway" type="id"/>
+    <item name="x_agency_api_status" type="id"/><item name="x_my_health_add" type="id"/>
+    <item name="x_health_role" type="id"/><item name="x_health_proxy_consent" type="id"/>
+    <item name="x_health_phone" type="id"/><item name="x_health_registered" type="id"/>
+    <item name="x_local_self" type="id"/>
+    <item name="x_local_record_1" type="id"/><item name="x_local_record_2" type="id"/>
+    <item name="x_local_record_3" type="id"/><item name="x_local_record_4" type="id"/>
+    <item name="x_local_record_5" type="id"/><item name="x_local_record_6" type="id"/>
+    <item name="x_local_record_7" type="id"/><item name="x_local_record_8" type="id"/>
+    <item name="x_local_record_9" type="id"/><item name="x_local_record_10" type="id"/>
+    <item name="x_local_record_11" type="id"/><item name="x_local_record_12" type="id"/>
+</resources>

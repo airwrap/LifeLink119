@@ -1,0 +1,163 @@
+{
+  "version": "0.18.0-demo",
+  "versionCode": 20,
+  "minSdk": 28,
+  "compileSdk": 34,
+  "apk": {
+    "path": "artifacts\\LifeLink119-v0.18.0-family-safecall.apk",
+    "sha256": "486871e3109732cf1fbfab828f8545ceafaea909c49ee5c090d5047d88e104bc",
+    "bytes": 10541130,
+    "signatureVerified": true
+  },
+  "unit": {
+    "tests": 208,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "lint": {
+    "errors": 0,
+    "warnings": 0
+  },
+  "native": {
+    "status": "PASS",
+    "groups": 13,
+    "checks": [
+      "Public official registration guide separates self/proxy and requires no medical PIN",
+      "Official signup button opens its fixed public URL without attached personal data",
+      "Emergency request starts while unregistered and medically locked",
+      "Unselected beneficiary is distinct from unregistered",
+      "Real Android picker/touch covers matching, different, vehicle, unknown and shared synthetic lines",
+      "Timeout, lookup error and unsupported are not misreported as unregistered",
+      "Proxy lookup requires an explicit authority attestation",
+      "Proxy attestation and per-request consent/revoke work",
+      "Local self record stores registration reference and direct medical history",
+      "Family records remain distinct and sensitive fields are encrypted at rest",
+      "Deleting one family record preserves the self record",
+      "Home locks medical information and reauthentication preserves saved data",
+      "Only QA-created medical data and temporary PIN are removed"
+    ],
+    "qaDataRemoved": true,
+    "privateScreensCaptured": false
+  },
+  "publicRegression": {
+    "status": "PASS",
+    "groups": 9,
+    "checks": [
+      "Wide home has visible centered 96dp controls, separated targets, and red119/blue112",
+      "119 consultation and synthetic video retain separate request, consent, start and revoke",
+      "112 emergency and 109 counseling remain reachable",
+      "119 request does not require registration or PIN and repeating quick request does not duplicate",
+      "Progressive driving details preserve mock report, explicit sharing/revoke, safety and handover transitions",
+      "Medical authentication stays protected; no PIN entered, no private frame captured",
+      "Additional driving restriction leaves quick119 available and video disabled",
+      "Legacy offline manual is reachable and uses quiet secondary list controls",
+      "Large text and 520dp preview retain unclipped centered buttons; preferences restored"
+    ],
+    "captures": 18
+  },
+  "actualDisplay": {
+    "status": "PASS",
+    "resolutions": [
+      "1280x720",
+      "1024x600"
+    ],
+    "originalDisplayRestored": true
+  },
+  "publicGuideCapture": {
+    "status": "PASS",
+    "images": [
+      "01-home.jpg",
+      "02-official-self.jpg",
+      "03-official-proxy.jpg",
+      "04-official-links.jpg"
+    ],
+    "protectedCaptureRefused": true,
+    "backend": "native_view_draw"
+  },
+  "sdk": {
+    "status": "SDK_VALUE_CHANGES_VERIFIED",
+    "fixtureRestore": "PASS",
+    "apkHashMatches": true,
+    "runs": [
+      {
+        "label": "baseline",
+        "values": [
+          {
+            "metric": "DRIVER_DOOR",
+            "status": "READ",
+            "rawValue": 0
+          },
+          {
+            "metric": "BATTERY_SOC",
+            "status": "READ",
+            "rawValue": 100
+          }
+        ]
+      },
+      {
+        "label": "door_open_soc80",
+        "values": [
+          {
+            "metric": "DRIVER_DOOR",
+            "status": "READ",
+            "rawValue": 1
+          },
+          {
+            "metric": "BATTERY_SOC",
+            "status": "READ",
+            "rawValue": 80
+          }
+        ]
+      },
+      {
+        "label": "door_closed_soc15",
+        "values": [
+          {
+            "metric": "DRIVER_DOOR",
+            "status": "READ",
+            "rawValue": 0
+          },
+          {
+            "metric": "BATTERY_SOC",
+            "status": "READ",
+            "rawValue": 15
+          }
+        ]
+      },
+      {
+        "label": "restored",
+        "values": [
+          {
+            "metric": "DRIVER_DOOR",
+            "status": "READ",
+            "rawValue": 0
+          },
+          {
+            "metric": "BATTERY_SOC",
+            "status": "READ",
+            "rawValue": 100
+          }
+        ]
+      }
+    ]
+  },
+  "agency": {
+    "publicBrowserNavigationVerified": true,
+    "officialRegistrationApiConnected": false,
+    "officialLookupApiConnected": false,
+    "realCallingLineVerified": false,
+    "realMedicalDataTransferredByApp": false
+  },
+  "limitations": [
+    "Standard Android UI fixture and official Pleos SDK image are separate test environments.",
+    "No physical vehicle, real emergency calls, official medical lookup or legal proxy verification.",
+    "Family data was synthetic and protected screens were never captured."
+  ],
+  "runtimeCleanup": {
+    "taskEmulatorsStopped": true,
+    "originalConsoleBackendRetained": true,
+    "qaMedicalDataAndPinRemoved": true,
+    "avdDataPreserved": true
+  }
+}

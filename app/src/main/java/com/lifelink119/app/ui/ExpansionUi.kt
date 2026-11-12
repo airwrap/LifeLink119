@@ -3,40 +3,47 @@ package com.lifelink119.app.ui
 import android.app.Activity
 import android.app.AlertDialog
 import android.graphics.Color
-import android.graphics.Typeface
 import android.graphics.Canvas
 import android.graphics.Paint
-import android.graphics.drawable.GradientDrawable
-import android.graphics.drawable.StateListDrawable
 import android.os.Handler
 import android.os.Looper
+import android.os.SystemClock
 import android.text.SpannableString
 import android.text.Spanned
 import android.text.InputFilter
 import android.text.InputType
+import android.text.Editable
+import android.text.TextWatcher
 import android.text.style.RelativeSizeSpan
-import android.text.style.StyleSpan
+import android.text.style.ForegroundColorSpan
+import android.text.style.TypefaceSpan
 import android.view.Gravity
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.*
 import com.lifelink119.app.R
 import com.lifelink119.app.BuildConfig
 import com.lifelink119.app.core.*
 import com.lifelink119.app.data.*
+import com.lifelink119.app.vehicle.PleosVehicleGateway
+import com.lifelink119.app.vehicle.VehicleContextController
 import org.json.JSONObject
 import java.util.Locale
 
 /** Incremental Views UI over the existing Activity, dispatch gateway and SDK tools. */
-class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, saved: String?, private val legacy: (String)->Unit) {
-    private enum class Page { HOME, EMERGENCY, CONSULT, SESSION, PERSON, GALLERY, PROFILES, EDIT, MY_HEALTH, MY_HEALTH_EDIT, HEALTH_LINK, HEALTH_EXAMPLE, CARD, MORE, SUPPORT, TEXT, SIGN, VIDEO, GUIDED_VIDEO, LOCATION, SUMMARY, CENTER, POLICE, NAV, SAFE, ACCESS, POWER, DRIVER, TOOLS, FINISH, VOICE, EASY, COOPERATION, SECURITY, DRIVING_SETUP }
-    private val bg=Color.rgb(246,248,252);private val surface=Color.WHITE;private val ink=Color.rgb(25,38,57)
-    private val muted=Color.rgb(77,94,115);private val accent=Color.rgb(36,82,170);private val warning=Color.rgb(137,57,30)
-    private val emergency=Color.rgb(172,45,38)
+class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, saved: String?, vehicleGateway: PleosVehicleGateway, private val legacy: (String)->Unit) {
+    private enum class Page { HOME, EMERGENCY, CONSULT, SESSION, PERSON, GALLERY, PROFILES, EDIT, MY_HEALTH, MY_HEALTH_EDIT, HEALTH_LINK, HEALTH_EXAMPLE, CARD, MORE, SUPPORT, TEXT, SIGN, VIDEO, GUIDED_VIDEO, LOCATION, SUMMARY, CENTER, POLICE, NAV, SAFE, AGENCY, ACCESS, POWER, DRIVER, TOOLS, FINISH, VOICE, EASY, COOPERATION, SECURITY, DRIVING_SETUP, DRIVING_DETAILS, VEHICLE_CONTEXT }
+    private val bg=LifeLinkUiStyle.background;private val surface=LifeLinkUiStyle.surface;private val ink=LifeLinkUiStyle.ink
+    private val muted=LifeLinkUiStyle.secondary;private val accent=LifeLinkUiStyle.accent;private val warning=LifeLinkUiStyle.warning
+    private val emergency=LifeLinkUiStyle.emergency
     private val main=Handler(Looper.getMainLooper())
     val catalog=ExperienceCatalogParser.parse(host.assets.open("experience-catalog.json").bufferedReader(Charsets.UTF_8).use { it.readText() })
     private val repository=FakeProfileRepository(host,catalog)
     private val personalHealth=PersonalHealthStore(host)
+    private var healthRecordId="SELF"
+    private var agencyRole=RegistrationRole.SELF
+    private var safeFault=SafeCallFault.NONE
     private val healthLinkExample=HealthLinkExample()
     private val cooperationCatalog=CooperationCatalogParser.parse(host.assets.open("cooperation-catalog.json").bufferedReader(Charsets.UTF_8).use{it.readText()})
     val engine=SessionEngine(catalog,repository.load(),cooperationCatalog=cooperationCatalog)
@@ -66,10 +73,19 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
     private var electric=true;private var v2lSupported=true
     private var capacity=64.0;private var soc=72.0;private var reserve=30.0;private var efficiency=.85;private var load=200.0
     private var inForeground=true
+    private var vehicleConsent=false
+    private var powerSocReading: VehicleSample?=null
+    private val vehicleContext=VehicleContextController(vehicleGateway){
+        vehicleConsent=false
+        if(inForeground && page==Page.VEHICLE_CONTEXT)requestRender()
+    }
     private var previewWidthDp=0
     private val cooperationTick=object: Runnable {
         override fun run(){
             if(inForeground){
+                engine.expireVehicleContext(SystemClock.elapsedRealtime())
+                if(page==Page.POWER)updatePowerResult()
+                if(page==Page.VEHICLE_CONTEXT)updateVehicleAge()
                 if(engine.privateUnlocked && !privacy.authorized){inAction=true;engine.lockPrivate();inAction=false;requestRender()}
                 val before=engine.cooperation.snapshot;inAction=true;engine.cooperation.tick();inAction=false
                 val after=engine.cooperation.snapshot
@@ -95,8 +111,8 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             engine.restore(ExperienceStateCodec.decode(o.optString("session").takeIf { it.isNotEmpty() },catalog,engine.profiles),o.optString("driver"))
             page=runCatching { Page.valueOf(o.getString("page")) }.getOrDefault(Page.HOME)
             if(page in setOf(Page.EDIT,Page.CARD))page=Page.PROFILES
-            if(page in setOf(Page.HEALTH_LINK,Page.HEALTH_EXAMPLE))page=Page.MY_HEALTH
-            if(engine.current==null && page !in setOf(Page.HOME,Page.EMERGENCY,Page.CONSULT,Page.MORE,Page.TOOLS,Page.PROFILES,Page.MY_HEALTH,Page.MY_HEALTH_EDIT,Page.GALLERY,Page.POWER,Page.ACCESS,Page.DRIVER))page=Page.HOME
+            if(page in setOf(Page.HEALTH_LINK,Page.HEALTH_EXAMPLE,Page.MY_HEALTH_EDIT))page=Page.MY_HEALTH
+            if(engine.current==null && page !in setOf(Page.HOME,Page.EMERGENCY,Page.CONSULT,Page.MORE,Page.TOOLS,Page.PROFILES,Page.MY_HEALTH,Page.MY_HEALTH_EDIT,Page.GALLERY,Page.POWER,Page.ACCESS,Page.DRIVER,Page.AGENCY))page=Page.HOME
             pcPostedId=o.optString("pcPostedId").takeIf{it==engine.current?.id}
         }
         engine.onChange={ if(!inAction)requestRender() }
@@ -104,9 +120,9 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         scheduleAnswer()
         main.post(cooperationTick)
     }
-    fun save()=JSONObject().put("session",ExperienceStateCodec.encodePrivacySafe(engine.current)).put("page",if(page in setOf(Page.HEALTH_LINK,Page.HEALTH_EXAMPLE))Page.MY_HEALTH.name else page.name).put("pcPostedId",pcPostedId).toString()
-    fun release(){main.removeCallbacksAndMessages(null);privacy.release();bridge.release()}
-    fun background(){inForeground=false;healthLinkExample.revoke();privacy.background();engine.background()}
+    fun save()=JSONObject().put("session",ExperienceStateCodec.encodePrivacySafe(engine.current)).put("page",if(page in setOf(Page.HEALTH_LINK,Page.HEALTH_EXAMPLE,Page.MY_HEALTH_EDIT))Page.MY_HEALTH.name else page.name).put("pcPostedId",pcPostedId).toString()
+    fun release(){main.removeCallbacksAndMessages(null);vehicleContext.close();privacy.release();bridge.release()}
+    fun background(){inForeground=false;healthRecordId="SELF";safeFault=SafeCallFault.NONE;if(page==Page.MY_HEALTH_EDIT)page=Page.MY_HEALTH;vehicleContext.background();vehicleConsent=false;powerSocReading=powerSocReading?.copy(status=DiagnosticStatus.UNAVAILABLE,value=null);healthLinkExample.revoke();privacy.background();engine.background()}
     fun foreground(){inForeground=true;engine.foreground();deferredMedicalAction?.let{deferredMedicalAction=null;it()}}
     fun nativeMedicalResult(request: Int,result: Int)=privacy.nativeResult(request,result)
     private fun medicalUnlocked()=engine.privateUnlocked && privacy.authorized
@@ -122,9 +138,10 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         if(page in setOf(Page.HEALTH_LINK,Page.HEALTH_EXAMPLE))healthLinkExample.revoke()
         if(page==Page.COOPERATION)pauseCooperationPreview()
         page=when(page){Page.EMERGENCY,Page.CONSULT,Page.MORE,Page.PROFILES,Page.MY_HEALTH,Page.FINISH->Page.HOME
-            Page.MY_HEALTH_EDIT,Page.HEALTH_LINK->Page.MY_HEALTH;Page.HEALTH_EXAMPLE->Page.HEALTH_LINK
+            Page.AGENCY->Page.MORE;Page.MY_HEALTH_EDIT,Page.HEALTH_LINK->Page.MY_HEALTH;Page.HEALTH_EXAMPLE->Page.HEALTH_LINK
             Page.GALLERY,Page.DRIVER->Page.TOOLS;Page.EDIT->Page.PROFILES
             Page.ACCESS,Page.POWER,Page.TOOLS->Page.MORE
+            Page.VEHICLE_CONTEXT->if(engine.current?.active==true)Page.SESSION else Page.MORE
             Page.SESSION->Page.HOME
             else->if(engine.current?.active==true)Page.SESSION else Page.HOME}
         if(page==Page.HOME){home();return true}
@@ -133,7 +150,7 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
     private fun go(p: Page){
         if(p in protectedPages && !medicalUnlocked() && !engine.restrictions.complexBlocked){reveal{go(p)};return}
         if(page in setOf(Page.HEALTH_LINK,Page.HEALTH_EXAMPLE) && p !in setOf(Page.HEALTH_LINK,Page.HEALTH_EXAMPLE))healthLinkExample.revoke()
-        if(page==Page.COOPERATION && p!=page)pauseCooperationPreview();message="";page=p;if(p==Page.CARD)shareDraft=engine.current?.shared?.keys.orEmpty().filter { it!=ShareField.VIDEO && it!=ShareField.TEXT }.toMutableSet();requestRender()
+        if(page==Page.COOPERATION && p!=page)pauseCooperationPreview();message="";page=p;if(p==Page.CARD)shareDraft=engine.current?.shared?.keys.orEmpty().filter { it !in setOf(ShareField.VIDEO,ShareField.TEXT,ShareField.VEHICLE) }.toMutableSet();requestRender()
     }
     private fun mutate(action: ()->Unit){inAction=true;message="";runCatching(action).onFailure { message=it.message?.takeUnless {m->m in setOf("Failed requirement.","Check failed.") } ?: "선택 정보와 현재 단계를 확인하고 다시 시도하세요." };inAction=false
         if(engine.current?.ended==true && pcPostedId==engine.current?.id)revokePc()
@@ -162,72 +179,124 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
     private fun dp(x: Int)=(x*host.resources.displayMetrics.density).toInt()
     private fun size(sp: Float)=sp*(if(largeText || medicalUnlocked() && engine.person()?.access?.largeText==true)1.18f else 1f)
     private fun col()=LinearLayout(host).apply { orientation=LinearLayout.VERTICAL }
-    private fun LinearLayout.add(v: View,top: Int=0){addView(v,LinearLayout.LayoutParams(-1,-2).apply { topMargin=dp(top) })}
+    private fun LinearLayout.add(v: View,top: Int=0){addView(v,LinearLayout.LayoutParams(-1,-2).apply { topMargin=dp(LifeLinkUiStyle.spacing(if(top>0 && v is Button)maxOf(24,top)else top)) })}
     private fun text(value: String,sp: Float=22f,color: Int=ink,bold: Boolean=false,id: Int=View.NO_ID)=TextView(host).apply {
-        this.id=id;text=value;textSize=size(sp);setTextColor(color);setLineSpacing(dp(3).toFloat(),1f)
-        if(bold){setTypeface(null,Typeface.BOLD);isAccessibilityHeading=true}
+        this.id=id;text=value;textSize=size(sp);setTextColor(color);setLineSpacing(dp(4).toFloat(),1f)
+        typeface=LifeLinkUiStyle.typeface(bold);fontFeatureSettings="tnum"
+        if(bold)isAccessibilityHeading=true
     }
-    private fun shape(color: Int,focused: Boolean=false)=GradientDrawable().apply{
-        setColor(color);cornerRadius=dp(16).toFloat();setStroke(dp(if(focused)3 else 1),if(focused)accent else if(color==surface)Color.rgb(207,217,229) else color)
-    }
-    private fun interactive(color: Int)=StateListDrawable().apply{
-        addState(intArrayOf(android.R.attr.state_pressed),shape(color,true))
-        addState(intArrayOf(android.R.attr.state_focused),shape(color,true))
-        addState(intArrayOf(),shape(color))
-    }
+    private fun shape(color: Int)=LifeLinkUiStyle.shape(host,color)
+    private fun interactive(color: Int)=LifeLinkUiStyle.actionBackground(host,color)
     private fun button(label: String,id: Int=View.NO_ID,primary: Boolean=true,enabled: Boolean=true,action: ()->Unit)=Button(host).apply{
-        this.id=id;text=label;contentDescription=label;textSize=size(22f);isAllCaps=false;minHeight=dp(64);minimumHeight=dp(64);gravity=Gravity.CENTER
+        this.id=id;text=label;contentDescription=label;textSize=size(LifeLinkUiStyle.actionTextSize);isAllCaps=false;minHeight=dp(LifeLinkUiStyle.touchHeight);minimumHeight=minHeight;minWidth=dp(LifeLinkUiStyle.touchHeight);gravity=Gravity.CENTER
+        typeface=LifeLinkUiStyle.typeface(true);stateListAnimator=null;elevation=0f
         val emergency119=id in setOf(R.id.x_emergency,R.id.x_driving_quick,R.id.x_119,R.id.x_medical)
         val emergency112=id in setOf(R.id.x_home_112,R.id.x_112)
-        val filled=primary || emergency119 || emergency112
-        setPadding(dp(18),dp(12),dp(18),dp(12));setTextColor(if(filled)Color.WHITE else ink);background=interactive(if(emergency119)emergency else if(filled)accent else surface);isEnabled=enabled;alpha=if(enabled)1f else .55f
+        val fill=when{emergency119->LifeLinkUiStyle.emergencyFill;emergency112->LifeLinkUiStyle.policeFill;primary->LifeLinkUiStyle.primaryFill;else->LifeLinkUiStyle.control}
+        backgroundTintList=null
+        setPadding(dp(24),dp(20),dp(24),dp(20));setTextColor(LifeLinkUiStyle.actionText(LifeLinkUiStyle.actionForeground(fill)));background=interactive(fill);isEnabled=enabled
         setFilterTouchesWhenObscured(true)
         setOnClickListener{if(page in protectedPages && !medicalUnlocked() && id !in setOf(R.id.x_home,R.id.x_back,R.id.x_urgent_shortcut,R.id.x_driving_quick,R.id.privacy_unlock,R.id.privacy_lock,R.id.x_revoke))reveal{action()}else action()}
     }
     private fun homeCard(title: String,subtitle: String,id: Int,urgent: Boolean=false,action: ()->Unit)=button("$title\n$subtitle",id,false,action=action).apply{
         val label="$title\n$subtitle"
+        val compact=availableWidthDp()<760 || host.resources.configuration.screenHeightDp<720
+        val number=title in setOf("119","112","109")
+        val titleSize=if(compact)if(number)44f else 32f else if(number)64f else 40f
         text=SpannableString(label).apply{
-            setSpan(StyleSpan(Typeface.BOLD),0,title.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            setSpan(RelativeSizeSpan(.78f),title.length+1,label.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(TypefaceSpan(LifeLinkUiStyle.typeface(true)),0,title.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(TypefaceSpan(LifeLinkUiStyle.typeface()),title.length+1,label.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(RelativeSizeSpan((if(compact)24f else 28f)/titleSize),title.length+1,label.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         }
         contentDescription=label;gravity=Gravity.CENTER
-        setPadding(dp(28),dp(20),dp(28),dp(20));minHeight=dp(144);minimumHeight=dp(144)
-        setTextColor(if(urgent)Color.WHITE else ink);background=interactive(if(urgent)emergency else surface)
+        textSize=size(titleSize);setLineSpacing(dp(8).toFloat(),1f)
+        val cardHeight=when{
+            shortLandscape()->LifeLinkUiStyle.spacing((host.resources.configuration.screenHeightDp-300).coerceIn(160,220))
+            availableWidthDp()<760->160
+            else->LifeLinkUiStyle.spacing(((host.resources.configuration.screenHeightDp-320)/2).coerceIn(144,300))
+        }
+        setPadding(dp(24),dp(16),dp(24),dp(16));minHeight=dp(cardHeight);minimumHeight=minHeight
+        val fill=when{urgent->LifeLinkUiStyle.emergencyFill;id in setOf(R.id.x_112,R.id.x_home_112)->LifeLinkUiStyle.policeFill;else->LifeLinkUiStyle.control}
+        setTextColor(LifeLinkUiStyle.actionText(LifeLinkUiStyle.actionForeground(fill)));background=LifeLinkUiStyle.actionBackground(host,fill,LifeLinkUiStyle.panelRadius)
     }
-    private fun panel(content: LinearLayout.()->Unit)=col().apply{background=shape(surface);setPadding(dp(22),dp(20),dp(22),dp(20));content()}
+    private fun homeMenuCard(title: String,subtitle: String,id: Int,action: ()->Unit)=homeCard(title,subtitle,id,action=action).apply{
+        // Home choices have equal visual weight; agency colors identify the service only.
+        val label="$title\n$subtitle"
+        val compact=availableWidthDp()<760 || host.resources.configuration.screenHeightDp<720
+        val titleSize=if(compact)32f else 40f
+        val subtitleSize=if(compact)20f else 24f
+        textSize=size(titleSize)
+        text=SpannableString(label).apply{
+            setSpan(TypefaceSpan(LifeLinkUiStyle.typeface(true)),0,title.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(TypefaceSpan(LifeLinkUiStyle.typeface()),title.length+1,label.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(RelativeSizeSpan(subtitleSize/titleSize),title.length+1,label.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            setSpan(ForegroundColorSpan(LifeLinkUiStyle.actionSecondary),title.length+1,label.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            Regex("119|112").findAll(subtitle).forEach{match->
+                val start=title.length+1+match.range.first
+                setSpan(ForegroundColorSpan(if(match.value=="112")LifeLinkUiStyle.policeActionInk else LifeLinkUiStyle.emergencyActionInk),start,start+match.value.length,Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+            }
+        }
+        setTextColor(LifeLinkUiStyle.actionText(LifeLinkUiStyle.actionInk))
+        background=LifeLinkUiStyle.actionBackground(host,LifeLinkUiStyle.primaryFill,LifeLinkUiStyle.panelRadius)
+    }
+    private fun panel(content: LinearLayout.()->Unit)=col().apply{background=shape(surface);setPadding(dp(24),dp(24),dp(24),dp(24));content()}
     private fun check(label: String,checked: Boolean,id: Int=View.NO_ID,enabled: Boolean=true,changed: (Boolean)->Unit)=CheckBox(host).apply{
-        this.id=id;text=label;textSize=size(20f);setTextColor(ink);minHeight=dp(52);isChecked=checked;isEnabled=enabled;setOnCheckedChangeListener{_,v->changed(v)}
+        this.id=id;text=label;textSize=size(24f);typeface=LifeLinkUiStyle.typeface();setTextColor(ink);minHeight=dp(LifeLinkUiStyle.touchHeight);setPadding(dp(12),dp(12),dp(12),dp(12));isChecked=checked;isEnabled=enabled;setOnCheckedChangeListener{_,v->changed(v)}
+    }
+    private fun pickerAdapter(labels: List<String>)=object: ArrayAdapter<String>(host,android.R.layout.simple_spinner_dropdown_item,labels){
+        private fun style(view: View)=view.apply{
+            minimumHeight=dp(LifeLinkUiStyle.touchHeight)
+            setPadding(dp(24),dp(16),dp(24),dp(16))
+            if(this is TextView){textSize=size(24f);setTextColor(ink);typeface=LifeLinkUiStyle.typeface();gravity=Gravity.CENTER_VERTICAL}
+        }
+        override fun getView(position: Int,convertView: View?,parent: ViewGroup): View=style(super.getView(position,convertView,parent))
+        override fun getDropDownView(position: Int,convertView: View?,parent: ViewGroup): View=style(super.getDropDownView(position,convertView,parent))
     }
     private fun availableWidthDp()=if(previewWidthDp>0)minOf(previewWidthDp,host.resources.configuration.screenWidthDp) else host.resources.configuration.screenWidthDp
+    private fun shortLandscape()=availableWidthDp()>=900 && host.resources.configuration.screenHeightDp<600
     private fun row(left: View,right: View)=LinearLayout(host).apply{
-        val wide=availableWidthDp()>=760;orientation=if(wide)LinearLayout.HORIZONTAL else LinearLayout.VERTICAL
-        addView(left,LinearLayout.LayoutParams(if(wide)0 else -1,-2,if(wide)1f else 0f))
-        addView(right,LinearLayout.LayoutParams(if(wide)0 else -1,-2,if(wide)1f else 0f).apply{if(wide)marginStart=dp(16)else topMargin=dp(12)})
+        val wide=availableWidthDp()>=760;orientation=if(wide)LinearLayout.HORIZONTAL else LinearLayout.VERTICAL;isBaselineAligned=false
+        addView(left,LinearLayout.LayoutParams(if(wide)0 else -1,if(wide)-1 else -2,if(wide)1f else 0f))
+        addView(right,LinearLayout.LayoutParams(if(wide)0 else -1,if(wide)-1 else -2,if(wide)1f else 0f).apply{if(wide)marginStart=dp(24)else topMargin=dp(24)})
+    }
+    private fun LinearLayout.actionGrid(actions: List<View>){
+        actions.chunked(2).forEach{pair->add(if(pair.size==2)row(pair[0],pair[1])else pair[0],24)}
+    }
+    private fun LinearLayout.primaryGrid(actions: List<View>){
+        if(!shortLandscape()){actionGrid(actions);return}
+        add(LinearLayout(host).apply{
+            isBaselineAligned=false
+            actions.forEachIndexed{index,view->addView(view,LinearLayout.LayoutParams(0,-1,1f).apply{if(index>0)marginStart=dp(24)})}
+        },24)
+    }
+    private fun navButton(label: String,id: Int,action: ()->Unit)=button(label,id,false,action=action).apply{
+        textSize=size(24f);setPadding(dp(16),dp(16),dp(16),dp(16))
     }
     private fun shell(title: String,content: LinearLayout.()->Unit){
         if(page in protectedPages || medicalUnlocked() || privacy.prompting)host.window.addFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)else host.window.clearFlags(android.view.WindowManager.LayoutParams.FLAG_SECURE)
         val same=lastPage==page;val previous=if(same)host.findViewById<ScrollView>(R.id.x_scroll)?.scrollY ?: 0 else 0
         val root=col().apply{setBackgroundColor(bg)}
-        val compact=availableWidthDp()<680
-        root.add(text("시연 모드 | 실제 신고·상담 연결 아님",16f,warning,true,R.id.safety_banner).apply{gravity=Gravity.CENTER;setPadding(dp(12),dp(8),dp(12),dp(8));setBackgroundColor(Color.rgb(255,244,230))})
+        val compact=availableWidthDp()<960 || largeText || host.resources.configuration.fontScale>1.1f
+        root.add(text("시연 모드 | 실제 신고·상담 연결 아님",16f,warning,false,R.id.safety_banner).apply{gravity=Gravity.CENTER;setPadding(dp(12),dp(8),dp(12),dp(8));setBackgroundColor(LifeLinkUiStyle.notice)})
         if(previewWidthDp>0)root.add(text("화면 너비 ${availableWidthDp()}dp 미리보기 · 실제 차량 창과 별개",14f,muted).apply{gravity=Gravity.CENTER})
         root.add(LinearLayout(host).apply{
-            gravity=Gravity.CENTER_VERTICAL;setPadding(dp(20),dp(8),dp(20),dp(8));setBackgroundColor(surface)
-            if(page!=Page.HOME && !compact)addView(button("이전",R.id.x_back,false){back()},LinearLayout.LayoutParams(dp(94),-2))
-            addView(text("LifeLink 119",27f,accent,true),LinearLayout.LayoutParams(0,-2,1f).apply{marginStart=dp(12)})
-            if(page!=Page.HOME){addView(button("119 바로 요청",R.id.x_driving_quick){startDriving()},LinearLayout.LayoutParams(dp(168),-2).apply{marginStart=dp(8)})
-                addView(button("홈",R.id.x_home,false){home()},LinearLayout.LayoutParams(dp(88),-2))
-                if(!compact)addView(button("119·112 선택",R.id.x_urgent_shortcut,false){emergency()},LinearLayout.LayoutParams(dp(195),-2).apply{marginStart=dp(10)})}
-            else addView(button("더보기",R.id.x_more,false){go(Page.MORE)},LinearLayout.LayoutParams(dp(124),-2))
+            gravity=Gravity.CENTER_VERTICAL;isBaselineAligned=false;setPadding(dp(24),dp(12),dp(24),dp(12));setBackgroundColor(LifeLinkUiStyle.chrome)
+            if(page!=Page.HOME && !compact)addView(navButton("이전",R.id.x_back){back()},LinearLayout.LayoutParams(dp(120),-2).apply{marginEnd=dp(24)})
+            addView(text("LifeLink 119",28f,accent,true),LinearLayout.LayoutParams(0,-2,1f))
+            if(page!=Page.HOME){
+                if(!compact)addView(navButton("119 요청",R.id.x_driving_quick){startDriving()},LinearLayout.LayoutParams(dp(184),-2).apply{marginStart=dp(24)})
+                addView(navButton("홈",R.id.x_home){home()},LinearLayout.LayoutParams(dp(120),-2).apply{marginStart=dp(24)})
+            }else addView(navButton("더보기",R.id.x_more){go(Page.MORE)},LinearLayout.LayoutParams(dp(144),-2))
         })
         if(medicalUnlocked())root.add(button("의료정보 다시 잠금",R.id.privacy_lock,false){lockMedical()},4)
         if(compact && page!=Page.HOME)root.add(LinearLayout(host).apply{
-            setPadding(dp(20),0,dp(20),dp(8));addView(button("이전",R.id.x_back,false){back()},LinearLayout.LayoutParams(0,-2,1f))
-            addView(button("119·112 선택",R.id.x_urgent_shortcut,false){emergency()},LinearLayout.LayoutParams(0,-2,1f).apply{marginStart=dp(12)})
+            setPadding(dp(24),dp(8),dp(24),dp(8));addView(navButton("이전",R.id.x_back){back()},LinearLayout.LayoutParams(0,-2,1f))
+            addView(navButton("119 요청",R.id.x_driving_quick){startDriving()},LinearLayout.LayoutParams(0,-2,1f).apply{marginStart=dp(24)})
         })
         val body=col().apply{
-            setPadding(dp(24),dp(14),dp(24),dp(28))
-            if(title.isNotEmpty())add(text(title,30f,ink,true),4)
+            val shortPrimary=shortLandscape() && page in setOf(Page.HOME,Page.SESSION,Page.CONSULT,Page.EMERGENCY)
+            setPadding(dp(24),dp(if(shortPrimary)16 else 24),dp(24),dp(if(shortPrimary)24 else 32))
+            if(title.isNotEmpty())add(text(title,32f,ink,true),4)
             if(message.isNotBlank())add(text(message,20f,warning,false,R.id.x_message).apply{accessibilityLiveRegion=View.ACCESSIBILITY_LIVE_REGION_POLITE},10)
             if(engine.restrictions.known && (engine.restrictions.requiresOptimization || engine.restrictions.noVideo || engine.restrictions.noSetup))
                 add(text("차량 제한 적용 중 · 실제 긴급신고는 기기의 표준 긴급통화 기능을 이용하세요.",17f,warning),8)
@@ -235,8 +304,8 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         }
         val scroll=ScrollView(host).apply{
             id=R.id.x_scroll;isFillViewport=true
-            if(page==Page.HOME)addView(FrameLayout(host).apply{addView(body,FrameLayout.LayoutParams(dp(minOf(1200,availableWidthDp())),-2,Gravity.TOP or Gravity.CENTER_HORIZONTAL))})
-            else addView(body)
+            val centered=page in setOf(Page.HOME,Page.CONSULT,Page.EMERGENCY)
+            addView(FrameLayout(host).apply{addView(body,FrameLayout.LayoutParams(dp(minOf(LifeLinkUiStyle.contentWidth,availableWidthDp())),-2,(if(centered)Gravity.CENTER_VERTICAL else Gravity.TOP) or Gravity.CENTER_HORIZONTAL))})
         }
         root.addView(scroll,LinearLayout.LayoutParams(-1,0,1f))
         if(previewWidthDp>0)host.setContentView(FrameLayout(host).apply{setBackgroundColor(Color.BLACK);addView(root,FrameLayout.LayoutParams(dp(availableWidthDp()),-1,Gravity.CENTER))})else host.setContentView(root)
@@ -244,9 +313,11 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         if(same)scroll.post{scroll.scrollTo(0,previous)}
     }
     fun render(){
+        if(page!=Page.VEHICLE_CONTEXT)vehicleConsent=false
+        vehicleContext.visible(inForeground && page==Page.VEHICLE_CONTEXT && !engine.restrictions.complexBlocked)
         if(!medicalUnlocked() && page in setOf(Page.HEALTH_LINK,Page.HEALTH_EXAMPLE))healthLinkExample.revoke()
         if(page==Page.HEALTH_EXAMPLE && !healthLinkExample.canShowExample())page=Page.HEALTH_LINK
-        if(engine.restrictions.complexBlocked && page in setOf(Page.PERSON,Page.PROFILES,Page.EDIT,Page.MY_HEALTH,Page.MY_HEALTH_EDIT,Page.HEALTH_LINK,Page.HEALTH_EXAMPLE,Page.CARD,Page.SUMMARY,Page.POWER,Page.DRIVER,Page.ACCESS,Page.COOPERATION)){
+        if(engine.restrictions.complexBlocked && page in setOf(Page.PERSON,Page.PROFILES,Page.EDIT,Page.MY_HEALTH,Page.MY_HEALTH_EDIT,Page.HEALTH_LINK,Page.HEALTH_EXAMPLE,Page.CARD,Page.SUMMARY,Page.POWER,Page.DRIVER,Page.ACCESS,Page.COOPERATION,Page.DRIVING_DETAILS,Page.VEHICLE_CONTEXT,Page.SAFE,Page.AGENCY)){
             shell("상세 조작 제한"){add(text("플랫폼이 상세 정보·설정을 제한하고 있습니다. 안전하게 이용할 수 있을 때 다시 열어주세요. 긴급 연결 시연은 상단에서 선택할 수 있습니다.",24f,warning),18)}
             return
         }
@@ -261,23 +332,19 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         Page.HOME->homePage();Page.EMERGENCY->entry(true);Page.CONSULT->entry(false);Page.SESSION->if(engine.current?.driving!=null)drivingPage()else sessionPage();Page.PERSON->personPage()
         Page.GALLERY->gallery();Page.PROFILES->profilesPage();Page.EDIT->editProfile();Page.MY_HEALTH->personalHealthPage();Page.MY_HEALTH_EDIT->personalHealthEdit();Page.HEALTH_LINK->healthLinkPage();Page.HEALTH_EXAMPLE->healthExamplePage();Page.CARD->cardPage();Page.MORE->morePage();Page.SUPPORT->supportPage()
         Page.TEXT->textPage();Page.SIGN->signPage();Page.VIDEO->videoPage();Page.GUIDED_VIDEO->guidedVideoPage();Page.LOCATION->locationPage();Page.SUMMARY->summaryPage();Page.CENTER->centerPage()
-        Page.POLICE->policePage();Page.NAV->navigationPage();Page.SAFE->safePage();Page.ACCESS->accessPage();Page.POWER->powerPage();Page.DRIVER->driverPage()
-        Page.TOOLS->toolsPage();Page.FINISH->finishPage();Page.VOICE->voicePage();Page.EASY->easyPage();Page.COOPERATION->cooperationPage();Page.SECURITY->securityPage();Page.DRIVING_SETUP->drivingSetup()
+        Page.POLICE->policePage();Page.NAV->navigationPage();Page.SAFE->safePage();Page.AGENCY->agencyPage();Page.ACCESS->accessPage();Page.POWER->powerPage();Page.DRIVER->driverPage()
+        Page.TOOLS->toolsPage();Page.FINISH->finishPage();Page.VOICE->voicePage();Page.EASY->easyPage();Page.COOPERATION->cooperationPage();Page.SECURITY->securityPage();Page.DRIVING_SETUP->drivingSetup();Page.DRIVING_DETAILS->drivingDetails();Page.VEHICLE_CONTEXT->vehicleContextPage()
     }}
-    private fun homePage()=shell(""){
-        add(text("나와 가족을 위한 차량 안전 서비스",17f,accent,true),12)
-        add(text("나와 가족의 안전을 위해\n어떤 도움이 필요하세요?",if(availableWidthDp()<680)30f else 38f,ink,true),12)
-        add(text("긴급 요청은 등록이나 인증 없이 시작합니다.",22f,muted),12)
-        add(row(homeCard("119 구조·구급 바로 요청","위급한 상황 · 한 번에 시작",R.id.x_emergency,true){startDriving()},
-            homeCard("상담받고 싶어요","119 의료상담 / 109 심리상담",R.id.x_consult){go(Page.CONSULT)}),26)
-        add(row(button("112 긴급신고",R.id.x_home_112,false){start(ConnectionTarget.EMERGENCY_112)},
-            button("우리 가족 안심콜",R.id.x_family,false){go(Page.MY_HEALTH)}),24)
+    private fun homePage()=shell("나와 가족의 안전"){
+        primaryGrid(listOf(homeMenuCard("구조·구급","119 긴급 요청",R.id.x_emergency){startDriving()},
+            homeMenuCard("의료·심리 상담","119 · 109 상담",R.id.x_consult){go(Page.CONSULT)},
+            homeMenuCard("경찰 신고","112 긴급신고",R.id.x_home_112){start(ConnectionTarget.EMERGENCY_112)},
+            homeMenuCard("가족 안심콜",if(shortLandscape())"119 · 건강정보"else"119 · 가족 건강정보",R.id.x_family){go(Page.MY_HEALTH)}))
     }
     private fun entry(urgent: Boolean)=shell(if(urgent)"어디로 연결할까요?" else "어떤 상담이 필요하세요?"){
-        add(text(if(urgent)"필요한 도움을 선택하세요." else "상담 목적에 맞게 선택하세요.",22f,muted),12)
         val targets=if(urgent)listOf(ConnectionTarget.EMERGENCY_119,ConnectionTarget.EMERGENCY_112) else listOf(ConnectionTarget.CONSULT_119,ConnectionTarget.COUNSEL_109)
         val ids=if(urgent)listOf(R.id.x_119,R.id.x_112) else listOf(R.id.x_medical,R.id.x_109)
-        add(row(button(targets[0].label,ids[0]){start(targets[0])},button(targets[1].label,ids[1],false){start(targets[1])}),24)
+        add(row(homeCard("119",if(urgent)"구조·구급 요청"else"응급의료상담",ids[0],true){start(targets[0])},homeCard(if(urgent)"112"else"109",if(urgent)"긴급신고"else"심리위기 상담",ids[1]){start(targets[1])}),24)
     }
     private fun drivingSetup()=shell("주행 중 긴급 호출 시연"){
         add(text("공모전용 가상 장면입니다. 실차 없이 에뮬레이터에서 전체 과정을 연습합니다.",22f,muted),12)
@@ -288,16 +355,14 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             add(text("정해진 예시 버튼입니다. 마이크 녹음·음성 인식·전화 발신은 없습니다.",19f,warning),12)
         }
     }
-    private fun drivingPage()=shell("차 안의 위급 상황 · 119"){
+    private fun drivingPage()=shell(""){
         val s=engine.current ?: return@shell
         val d=s.driving ?: return@shell
         add(panel{
-            add(text(status(s),25f,warning,true,R.id.x_session_status))
-            add(text(s.id,16f,muted,false,R.id.x_ticket),8)
-            add(text(d.trigger.label,19f,muted,false,R.id.x_driving_trigger),8)
-            add(text(d.safety.label.replace(" · 시연",""),23f,accent,true,R.id.x_driving_safety),12)
+            setPadding(dp(16),dp(16),dp(16),dp(16))
+            add(text("119 · ${status(s)}",30f,statusColor(s),true,R.id.x_session_status))
+            add(text(d.safety.label.replace(" · 시연",""),24f,ink,false,R.id.x_driving_safety),8)
         },16)
-        add(text("조작보다 안전 확보를 우선하세요. 실제 신고·출동은 발생하지 않습니다.",22f,warning),14)
         if(s.status==LinkStatus.REQUESTING){
             add(text("가상 상담원 응답 대기 중 · 정차·의료정보 인증 없이 요청했습니다.",22f),16)
             add(button("호출 취소·정보 정리",R.id.x_end,false){mutate{engine.finish(true);page=Page.FINISH}},16)
@@ -310,30 +375,35 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             return@shell
         }
         if(s.ended)return@shell
-        add(text(d.guidance,23f),16)
-        add(button("상황실 영상 안내 보기",R.id.x_guided_video,false,enabled=!engine.restrictions.videoBlocked){go(Page.GUIDED_VIDEO)},16)
-        if(engine.restrictions.videoBlocked)add(text("차량 제한으로 영상 안내는 표시할 수 없습니다.",18f,warning),8)
-        if(d.reconfirm)add(text("화면 복원으로 상황·안전 확인을 초기화했습니다. 현재 상황을 다시 확인하세요.",20f,warning,false,R.id.x_driving_reconfirm),12)
-        if(engine.restrictions.complexBlocked){
-            add(text("플랫폼 조작 제한 중 · 상세 역할 시연은 사용할 수 없습니다. 정차 확인은 호출 조건이 아닙니다.",22f,warning,false,R.id.x_driving_restricted),16)
-            add(button("시연 종료·정보 정리",R.id.x_end,false){mutate{engine.finish(true);page=Page.FINISH}},16)
-            return@shell
-        }
-        add(text("도움이 필요한 상황을 함께 확인해요",25f,accent,true),22)
-        add(text("현재 상황을 선택하세요.",19f,muted),8)
+        if(d.reconfirm)add(text("현재 안전 상태를 다시 확인하세요",22f,warning,false,R.id.x_driving_reconfirm),12)
+        if(engine.restrictions.complexBlocked)add(text("플랫폼 조작 제한 중 · 긴급 요청 유지",22f,warning,false,R.id.x_driving_restricted),16)
+        primaryGrid(listOf(button("영상 안내",R.id.x_guided_video,false,enabled=!engine.restrictions.videoBlocked){go(Page.GUIDED_VIDEO)},
+            button("상황·정보 전달",R.id.x_driving_details,enabled=!engine.restrictions.complexBlocked){go(Page.DRIVING_DETAILS)},
+            button("추가 지원",R.id.x_driving_extra,false){go(Page.SUPPORT)},
+            button("요청 종료",R.id.x_end,false){mutate{engine.finish(true);page=Page.FINISH}}))
+        if(!shortLandscape())add(text("조작보다 안전 확보를 우선하세요",22f,warning),16)
+    }
+    private fun drivingDetails()=shell("상황·정보 전달"){
+        val s=engine.current ?: return@shell
+        val d=s.driving ?: return@shell
+        if(s.ended){add(text("종료된 요청입니다",24f,muted),16);return@shell}
+        add(text(s.id,18f,muted,false,R.id.x_ticket),12)
+        add(text(d.guidance,24f),16)
+        add(text(d.trigger.label,18f,muted,false,R.id.x_driving_trigger),12)
         add(text("차 안의 위급 상황 · 구체적인 내용은 연결 후 설명",24f,ink,true,R.id.x_driving_context),16)
         add(panel{
             add(text("가상 상황 전달",24f,accent,true))
             add(text(d.summary(),20f),12)
             add(text(d.report.label,24f,warning,true,R.id.x_driving_report),12)
         },20)
-        if(d.report==DrivingReport.DRAFT)add(button("확인한 상황 전달 · 모의",R.id.x_driving_send){mutate{engine.drivingSend()}},12)
+        if(d.report==DrivingReport.DRAFT)add(button("상황 전달",R.id.x_driving_send){mutate{engine.drivingSend()}},12)
         if(d.report==DrivingReport.SENT)add(button("상황실 역할 · 내용 확인",R.id.x_driving_ack){mutate{engine.drivingAcknowledge()}},12)
-        add(text("공유 항목: "+s.shared.keys.joinToString { it.label }.ifEmpty { "없음 · 기본 비공유" },20f,muted,false,R.id.x_driving_shared),18)
+        val sharedLabels=s.shared.keys.map{it.label}+if(engine.vehicleContextShare!=null)listOf("차량 관측 정보")else emptyList()
+        add(text("공유 항목: "+sharedLabels.joinToString().ifEmpty { "없음 · 기본 비공유" },20f,muted,false,R.id.x_driving_shared),18)
         if(d.report!=DrivingReport.HANDED_OVER){
             add(button(if(engine.locationAvailable)"가상 위치만 공유 · GPS 아님" else "가상 위치 없음 · 호출은 계속 가능",R.id.x_driving_location,false,engine.locationAvailable){mutate{engine.share(setOf(ShareField.LOCATION))}},12)
-            add(button("가상 차량 정보만 공유",R.id.x_driving_vehicle,false){mutate{engine.share(setOf(ShareField.VEHICLE))}},12)
-            if(s.shared.isNotEmpty())add(button("공유 철회",R.id.x_driving_revoke,false){mutate{engine.revoke()}},12)
+            add(button("차량 상태 조회·공유",R.id.x_driving_vehicle,false){go(Page.VEHICLE_CONTEXT)},12)
+            if(s.shared.isNotEmpty() || engine.vehicleContextShare!=null)add(button("공유 철회",R.id.x_driving_revoke,false){mutate{engine.revoke()}},12)
         }
         if(d.safety==DrivingSafety.MOVING)add(button("동승자 역할 · 안전한 곳에 정차했다고 알림",R.id.x_driving_stopped,false){mutate{engine.drivingStopped()}},20)
         if(d.safety==DrivingSafety.STOPPED_REPORTED){
@@ -342,49 +412,52 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         }
         if(d.report==DrivingReport.ACKNOWLEDGED && d.safety==DrivingSafety.SAFE_PLACE_REPORTED)
             add(button("상황실 역할 · 가상 대응팀 인계 확인",R.id.x_driving_handover){mutate{engine.drivingHandover()}},20)
-        if(d.report==DrivingReport.HANDED_OVER)add(button("시연 완료·공유정보 정리",R.id.x_driving_finish){mutate{engine.finish();page=Page.FINISH}},20)
-        else add(button("시연 취소·정보 정리",R.id.x_end,false){mutate{engine.finish(true);page=Page.FINISH}},20)
-        add(button("기존 추가 지원 보기",R.id.x_driving_extra,false){go(Page.SUPPORT)},12)
-        add(text("의료정보는 별도 인증·항목별 동의가 필요합니다. 차량 외부 표시·협력 요청은 기존 별도 승인 시연에서만 진행합니다.",18f,muted),12)
+        if(d.report==DrivingReport.HANDED_OVER)add(button("완료·공유정보 정리",R.id.x_driving_finish){mutate{engine.finish();page=Page.FINISH}},20)
+        add(button("연결 화면으로",R.id.x_return_session,false){go(Page.SESSION)},24)
+        add(text("의료정보는 별도 인증·동의가 필요합니다",20f,muted),16)
     }
     private fun status(s: EmergencySession)=when(s.status){LinkStatus.REQUESTING->"연결 요청 중";LinkStatus.DEMO_CONNECTED->"가상 상담원 응답";LinkStatus.SUPPORT_IN_PROGRESS->"추가 지원 진행";LinkStatus.FAILED->"연결 실패";LinkStatus.COMPLETED->"종료 · 공유정보 정리됨";LinkStatus.CANCELLED->"취소 · 공유정보 정리됨";else->"대기"}
-    private fun sessionPage()=shell("응급지원 연결"){
+    private fun statusColor(s: EmergencySession)=when(s.status){LinkStatus.FAILED->warning;LinkStatus.COMPLETED,LinkStatus.CANCELLED->muted;else->accent}
+    private fun sessionPage()=shell(""){
         val s=engine.current
         if(s==null){add(button("긴급 연결 선택",R.id.x_119){emergency()},16);return@shell}
         add(panel{
-            add(text(s.target.label,27f,accent,true));add(text(s.target.purpose,20f,muted),8)
-            add(text(status(s),24f,warning,true,R.id.x_session_status),14)
-            add(text(s.id,16f,muted,false,R.id.x_ticket),8)
+            setPadding(dp(16),dp(16),dp(16),dp(16))
+            add(text(s.target.label,28f,ink,true))
+            add(text(status(s),28f,statusColor(s),true,R.id.x_session_status),8)
         },16)
         if(s.status==LinkStatus.REQUESTING){add(text("앱 안의 가상 상담원이 응답하는 중입니다. 전화·네트워크 연결이 아닙니다.",21f),20);return@shell}
         if(s.status==LinkStatus.FAILED){add(button("다시 시도",R.id.x_retry){mutate{engine.retry()};scheduleAnswer()},20);add(button("취소·정보 정리",R.id.x_end,false){mutate{engine.finish(true);page=Page.FINISH}},12);return@shell}
         if(s.ended){add(button("종료 요약 보기",R.id.x_end){go(Page.FINISH)},20);return@shell}
-        if(s.target==ConnectionTarget.CONSULT_119 || s.target==ConnectionTarget.EMERGENCY_119){
-            add(button("상황실 영상 안내 보기",R.id.x_guided_video,false,enabled=!engine.restrictions.videoBlocked){go(Page.GUIDED_VIDEO)},16)
-            if(engine.restrictions.videoBlocked)add(text("차량 제한으로 영상 안내는 표시할 수 없습니다.",18f,warning),8)
-        }
         val spec=catalog.scenario(s.scenarioId)
-        add(text(spec.title,25f,ink,true,R.id.x_case_title),20)
-        add(text(if(easy || engine.person()?.access?.easy==true)"필요한 도움을 하나씩 선택하세요." else spec.context,20f,muted),10)
-        add(button("도움이 필요한 분 선택 · 선택사항: ${personLabel()}",R.id.x_person,false){go(Page.PERSON)},16)
         val plan=ContextualActionResolver.resolve(if(medicalUnlocked())engine.person()else null,spec,s.target,engine.restrictions)
-        plan.primary.forEachIndexed { index,a -> add(button(a.label,listOf(R.id.x_primary_1,R.id.x_primary_2,R.id.x_primary_3)[index],index==0){action(a)},12) }
-        add(button("추가 지원",R.id.x_support,false){go(Page.SUPPORT)},18)
-        add(button("종료·공유정보 정리",R.id.x_end,false){mutate{engine.finish();page=Page.FINISH}},12)
+        val hasVideo=s.target in setOf(ConnectionTarget.CONSULT_119,ConnectionTarget.EMERGENCY_119)
+        val actions=mutableListOf<View>()
+        if(hasVideo)actions.add(button("영상 안내",R.id.x_guided_video,false,enabled=!engine.restrictions.videoBlocked){go(Page.GUIDED_VIDEO)})
+        plan.primary.take(if(hasVideo)1 else 2).forEachIndexed { index,a -> actions.add(button(a.label,listOf(R.id.x_primary_1,R.id.x_primary_2)[index],index==0){action(a)}) }
+        actions.add(button("추가 지원",R.id.x_support,false){go(Page.SUPPORT)})
+        actions.add(button("연결 종료",R.id.x_end,false){mutate{engine.finish();page=Page.FINISH}})
+        primaryGrid(actions)
     }
     private fun action(a: SupportAction){when(a){
         SupportAction.CARD,SupportAction.GUARDIAN,SupportAction.MOBILITY,SupportAction.PRIVACY->go(Page.CARD)
-        SupportAction.VIDEO->go(Page.VIDEO);SupportAction.LOCATION,SupportAction.VEHICLE->go(Page.LOCATION)
+        SupportAction.VIDEO->go(Page.VIDEO);SupportAction.LOCATION->go(Page.LOCATION);SupportAction.VEHICLE->go(Page.VEHICLE_CONTEXT)
         SupportAction.TEXT,SupportAction.PHRASES->go(Page.TEXT);SupportAction.SIGN->go(Page.SIGN);SupportAction.VOICE->go(Page.VOICE);SupportAction.EASY->go(Page.EASY)
         SupportAction.SUMMARY->go(Page.SUMMARY);SupportAction.POLICE->go(Page.POLICE);SupportAction.NAVIGATION->go(Page.NAV)
         SupportAction.SAFE_CALL->go(Page.SAFE);SupportAction.POWER->go(Page.POWER);SupportAction.MANUAL->legacy("manual");SupportAction.COOPERATION->go(Page.COOPERATION)
     }}
     private fun supportPage()=shell("추가 지원"){
         val s=engine.current ?: return@shell
-        add(button("가상 상황실 보기",R.id.x_center){go(Page.CENTER)},16)
+        add(button("가상 상황실",R.id.x_center){go(Page.CENTER)},16)
+        add(text(s.id,18f,muted,false,R.id.x_ticket),12)
         if(engine.restrictions.galleryBlocked){add(text("플랫폼 제한 중에는 추가 기능 목록을 표시하지 않습니다.",22f,warning),16);return@shell}
-        add(button("가상 상황 바꾸기",R.id.x_change_case,false){changeContextOnly=true;go(Page.GALLERY)},12)
-        ContextualActionResolver.resolve(if(medicalUnlocked())engine.person()else null,catalog.scenario(s.scenarioId),s.target,engine.restrictions).additional.forEach { a->add(button(a.label,idForAction(a),false){action(a)},10) }
+        add(row(button("도움받는 분 선택",R.id.x_person,false){go(Page.PERSON)},
+            button("상황 바꾸기",R.id.x_change_case,false){changeContextOnly=true;go(Page.GALLERY)}),24)
+        val spec=catalog.scenario(s.scenarioId)
+        add(text(spec.title,26f,ink,true,R.id.x_case_title),24)
+        add(text(if(easy || engine.person()?.access?.easy==true)"필요한 도움을 하나씩 선택하세요"else spec.context,22f,muted),12)
+        val plan=ContextualActionResolver.resolve(if(medicalUnlocked())engine.person()else null,spec,s.target,engine.restrictions)
+        actionGrid((plan.primary+plan.additional).distinct().map { a->button(a.label,idForAction(a),false){action(a)} })
     }
     private fun personPage()=shell("누가 도움이 필요한가요?"){
         add(text("선택은 나중에 바꾸거나 건너뛸 수 있습니다. 변경하면 이전 개인 정보 공유는 철회합니다.",20f,muted),12)
@@ -402,30 +475,35 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
     private fun idForCase(id: String)=ExperienceViewIds.scenario(id)
     private fun idForAction(action: SupportAction)=ExperienceViewIds.action(action)
     private fun morePage()=shell("더보기"){
-        if(engine.current?.active==true)add(button("진행 중인 연결 시연",R.id.x_resume){go(Page.SESSION)},18)
-        add(button("차량 안전 준비 · EV 전력 계산",R.id.x_power,engine.current?.active!=true){go(Page.POWER)},16)
-        add(button("설정·시연 도구",R.id.x_tools,false){go(Page.TOOLS)},12)
+        if(engine.current?.active==true)add(button("진행 중인 연결",R.id.x_resume){go(Page.SESSION)},18)
+        add(button(OfficialHealthSite.SAFE_CALL.label,R.id.x_safe_official,false){go(Page.AGENCY)},16)
+        add(button("차량 상태",R.id.x_vehicle_context,false){go(Page.VEHICLE_CONTEXT)},18)
+        add(row(button("응급 매뉴얼",R.id.x_manual,false){legacy("manual")},
+            button("EV 전력 계산",R.id.x_power,false){go(Page.POWER)}),24)
+        add(row(button("설정·도구",R.id.x_tools,false){go(Page.TOOLS)},
+            button("119·112 선택",R.id.x_urgent_shortcut,false){emergency()}),24)
         if(engine.current?.active!=true)add(button("접근성 설정",R.id.x_access,false){go(Page.ACCESS)},12)
     }
-    private fun toolsPage()=shell("설정·시연 도구"){
+    private fun toolsPage()=shell("설정·도구"){
         if(engine.restrictions.galleryBlocked){
             add(text("주행 제한: ${engine.restrictions.source}\n${platform.detail}",22f,warning,false,R.id.x_restrictions),16)
             add(text("플랫폼 제한 중에는 시연 도구 목록과 상세 설정을 표시하지 않습니다.",22f),16)
             if(extraRestriction && !platform.galleryBlocked)add(button("추가 제한 시연 종료",R.id.x_test_restriction){extraRestriction=false;engine.setRestrictions(platform)},16)
             return@shell
         }
-        add(button("시나리오 갤러리 · S01~S14 / E01~E04 / D01",R.id.x_gallery){changeContextOnly=false;go(Page.GALLERY)},16)
-        add(button("주행 중 긴급 호출 시연",R.id.x_driving_setup,false){go(Page.DRIVING_SETUP)},12)
-        add(button("접근성 설정",R.id.x_access,false){go(Page.ACCESS)},12)
-        add(button("의료정보 잠금·PIN 설정",R.id.privacy_settings,false){go(Page.SECURITY)},12)
-        add(button("가상 운전자·디지털키",R.id.x_driver,false){go(Page.DRIVER)},12)
-        add(button(if(previewWidthDp>0)"기본 화면 너비로 복귀" else "좁은 화면 520dp 미리보기",R.id.x_narrow_preview,false){previewWidthDp=if(previewWidthDp>0)0 else 520;requestRender()},12)
-        add(button("기존 5개 흐름·로컬 상황실 도구",R.id.x_legacy,false){legacy("legacy")},12)
-        add(button("기본 응급 매뉴얼",R.id.x_manual,false){legacy("manual")},12)
-        add(button("주변 차량 협력·승인 표시",R.id.x_cooperation,false){go(Page.COOPERATION)},12)
+        actionGrid(listOf(
+            button("상황별 체험",R.id.x_gallery){changeContextOnly=false;go(Page.GALLERY)},
+            button("주행 중 도움 요청",R.id.x_driving_setup,false){go(Page.DRIVING_SETUP)},
+            button("접근성 설정",R.id.x_access,false){go(Page.ACCESS)},
+            button("의료정보 잠금·PIN",R.id.privacy_settings,false){go(Page.SECURITY)},
+            button("운전자·디지털키 예시",R.id.x_driver,false){go(Page.DRIVER)},
+            button(if(previewWidthDp>0)"기본 너비로"else"좁은 화면 미리보기",R.id.x_narrow_preview,false){previewWidthDp=if(previewWidthDp>0)0 else 520;requestRender()},
+            button("기존 흐름·상황실",R.id.x_legacy,false){legacy("legacy")},
+            button("응급 매뉴얼",R.id.x_manual,false){legacy("manual")},
+            button("주변 차량 협력",R.id.x_cooperation,false){go(Page.COOPERATION)}))
         add(panel{
             add(text("연동 상태",24f,accent,true))
-            add(text("Vehicle 도어·배터리 진단: REAL(지원 기기)\n전화·문자·영상·위치·수어·내비·안심콜·디지털키: MOCK\n실제 기관 연결·차량 제어: NEEDS_PARTNERSHIP",18f,muted),12)
+            add(text("차량 상태: 도어·SoC·에어백 읽기(지원 기기)\n전화·문자·영상·위치·수어·내비·안심콜·디지털키: MOCK\n실제 기관 연결·차량 제어: NEEDS_PARTNERSHIP",18f,muted),12)
             add(text("주행 제한: ${engine.restrictions.source}\n${platform.detail}",19f,warning,false,R.id.x_restrictions),12)
             add(check("영상·상세 입력 추가 제한 시연",extraRestriction,R.id.x_test_restriction){v->extraRestriction=v;engine.setRestrictions(platform.withTestRestriction(v))},12)
             add(check("다음 연결 실패 시연",engine.failNextConnection,R.id.x_fault_connection){engine.failNextConnection=it},8)
@@ -439,9 +517,9 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         add(text("개인별 문자·수어·음성·이동 도움 선호는 가족 응급정보에서 가상 프로필별로 선택할 수 있습니다. 스크린리더는 시스템 설정을 사용합니다.",21f,muted),18)
         add(button("우리 가족 응급정보",R.id.x_family,false){go(Page.PROFILES)},18)
     }
-    private fun finishPage()=shell("시연 종료"){
+    private fun finishPage()=shell("연결 종료"){
         add(text("공유정보를 정리했습니다",30f,accent,true,R.id.x_finished),18)
-        add(text("현재 세션의 의료·위치·영상·대화 정보와 동의를 제거했습니다. 가상 가족 프로필은 가족 응급정보에서 따로 편집·삭제할 수 있습니다.",22f),16)
+        add(text("이번 연결의 공유정보와 동의를 지웠습니다. 저장된 건강정보는 안심콜에서 관리하세요.",24f),16)
         add(button("처음으로",R.id.x_finish_home){home()},24)
         add(button("다른 시나리오 연습",R.id.x_gallery,false){changeContextOnly=false;go(Page.GALLERY)},12)
         if(pcPostedId!=null){add(text(bridgeMessage,19f,warning),16);add(button("PC 게시 철회 다시 시도",R.id.x_pc_revoke,false,enabled=!pcBusy){revokePc()},12)}
@@ -466,23 +544,35 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         },16)
     }
     private fun personalHealthPage()=shell("우리 가족 안심콜"){
-        add(text("내 건강정보",26f,accent,true),12)
-        add(text("직접 입력한 정보는 이 기기에만 보관됩니다. 119 안심콜과 건강정보 고속도로는 연결되지 않았습니다.",19f,muted),10)
-        add(button("건강정보 고속도로 가입·연결",R.id.x_health_link,false){go(Page.HEALTH_LINK)},16)
-        val loaded=runCatching{personalHealth.load()}
+        add(text("이 기기에 암호화 보관합니다. 공식 안심콜 등록·조회는 별도입니다.",19f,muted),10)
+        add(button("119안심콜 가입·등록 안내",R.id.x_safe_official,false){go(Page.AGENCY)},16)
+        val loaded=runCatching{personalHealth.records()}
         if(loaded.isFailure){add(text("저장된 정보를 열 수 없습니다. 기존 정보를 유지했습니다.",21f,warning,false,R.id.x_my_health_status),18);return@shell}
-        val record=loaded.getOrNull()
+        val records=loaded.getOrThrow()
+        if(healthRecordId!="SELF" && records.none{it.id==healthRecordId})healthRecordId="SELF"
+        val record=records.firstOrNull{it.id==healthRecordId}
+        if(records.size>1 || records.any{it.id!="SELF"}){
+            val keys=intArrayOf(R.id.x_local_record_1,R.id.x_local_record_2,R.id.x_local_record_3,R.id.x_local_record_4,R.id.x_local_record_5,R.id.x_local_record_6,R.id.x_local_record_7,R.id.x_local_record_8,R.id.x_local_record_9,R.id.x_local_record_10,R.id.x_local_record_11,R.id.x_local_record_12)
+            add(button("내 정보",R.id.x_local_self,false){healthRecordId="SELF";requestRender()},16)
+            records.filter{it.id!="SELF"}.forEachIndexed{i,r->add(button(r.name.ifBlank{"가족 정보"},keys[i],false){healthRecordId=r.id;requestRender()},12)}
+        }
         if(record==null)add(text("등록된 내 건강정보가 없습니다.",22f,ink,false,R.id.x_my_health_status),18)
         else add(panel{
             fun field(title: String,value: String){add(text(title,20f,accent,true),12);add(text(value.ifBlank{"입력 없음"},21f),6)}
+            field("관리 방식",record.role.label)
             field("이름",record.name);field("병력",record.conditions);field("알레르기",record.allergies);field("투약 내역 · 직접 입력",record.medicationHistory)
+            field("안심콜 등록 상태",record.registration.label+" · 공식 조회 아님")
+            field("등록 연락처",if(record.registeredPhone.isBlank())"확인 안 됨"else"끝 ${record.registeredPhone.filter(Char::isDigit).takeLast(4)} · 직접 입력")
+            field("마지막 수정",if(record.updatedAt==0L)"확인 안 됨"else java.text.DateFormat.getDateTimeInstance(java.text.DateFormat.SHORT,java.text.DateFormat.SHORT).format(java.util.Date(record.updatedAt)))
         },16)
-        add(button(if(record==null)"내 정보 등록" else "내 정보 수정",R.id.x_my_health_edit){go(Page.MY_HEALTH_EDIT)},18)
+        add(button(if(record==null)"내 정보 등록" else "선택한 정보 수정",R.id.x_my_health_edit){go(Page.MY_HEALTH_EDIT)},18)
+        add(button("가족 대신 정보 등록",R.id.x_my_health_add,false,records.size<12){healthRecordId="LOCAL-"+java.util.UUID.randomUUID().toString();go(Page.MY_HEALTH_EDIT)},12)
         if(record!=null)add(button("내 정보 삭제",R.id.x_my_health_delete,false){
-            AlertDialog.Builder(host).setTitle("내 건강정보를 삭제할까요?").setMessage("이 기기에 저장한 직접 입력 정보를 삭제합니다.")
-                .setPositiveButton("삭제"){_,_->if(medicalUnlocked() && !engine.restrictions.complexBlocked)mutate{personalHealth.erase();message="내 건강정보를 삭제했습니다."}}
+            AlertDialog.Builder(host).setTitle("선택한 건강정보를 삭제할까요?").setMessage("다른 가족의 정보는 유지합니다.")
+                .setPositiveButton("삭제"){_,_->if(medicalUnlocked() && !engine.restrictions.complexBlocked)mutate{personalHealth.remove(record.id);healthRecordId="SELF";message="선택한 정보를 삭제했습니다."}}
                 .setNegativeButton("취소",null).show()
         },12)
+        add(button("건강정보 고속도로 가입·연결",R.id.x_health_link,false){go(Page.HEALTH_LINK)},16)
         add(button("가족 예시 관리",R.id.x_my_health_family,false){go(Page.PROFILES)},12)
     }
     private fun healthLinkPage()=shell("건강정보 고속도로"){
@@ -490,7 +580,7 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         add(text("실제 가입이나 의료정보 전송은 진행되지 않습니다. 동의 후 예시 화면을 확인할 수 있습니다.",20f,muted),12)
         var accepted=false
         add(check("가입 및 예시 건강정보 확인에 동의합니다",false,R.id.x_health_consent){value->
-            accepted=value;host.findViewById<Button>(R.id.x_health_continue)?.let { it.isEnabled=value;it.alpha=if(value)1f else .55f }
+            accepted=value;host.findViewById<Button>(R.id.x_health_continue)?.isEnabled=value
         },18)
         add(button("동의하고 예시 보기",R.id.x_health_continue,enabled=false){mutate{healthLinkExample.agree(accepted);page=Page.HEALTH_EXAMPLE}},16)
         add(button("취소",R.id.x_health_back,false){healthLinkExample.revoke();go(Page.MY_HEALTH)},12)
@@ -506,17 +596,17 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         add(button("동의 철회",R.id.x_health_revoke,false){healthLinkExample.revoke();go(Page.HEALTH_LINK)},16)
         add(button("내 건강정보로 돌아가기",R.id.x_health_back,false){healthLinkExample.revoke();go(Page.MY_HEALTH)},12)
     }
-    private fun personalHealthEdit()=shell("내 건강정보 등록"){
-        val loaded=runCatching{personalHealth.load()}
+    private fun personalHealthEdit()=shell("건강정보 등록·수정"){
+        val loaded=runCatching{personalHealth.records()}
         if(loaded.isFailure){add(text("저장된 정보를 열 수 없어 수정할 수 없습니다.",21f,warning),18);return@shell}
-        val record=loaded.getOrNull() ?: PersonalHealthRecord()
+        val record=loaded.getOrThrow().firstOrNull{it.id==healthRecordId} ?: PersonalHealthRecord(id=healthRecordId,role=if(healthRecordId=="SELF")RegistrationRole.SELF else RegistrationRole.PROXY)
         add(text("직접 입력한 정보만 저장합니다. 투약 내역은 날짜와 약 이름을 적어주세요.",20f,muted),12)
         fun input(title: String,value: String,id: Int,max: Int,multiline: Boolean): EditText {
             add(text(title,21f,ink,true),16)
             return EditText(host).apply{
-                this.id=id;contentDescription=title;setText(value);setTextColor(ink);setHintTextColor(muted);textSize=size(21f)
+                this.id=id;contentDescription=title;setText(value);setTextColor(ink);setHintTextColor(muted);textSize=size(24f)
                 inputType=InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_NO_SUGGESTIONS or if(multiline)InputType.TYPE_TEXT_FLAG_MULTI_LINE else 0
-                filters=arrayOf(InputFilter.LengthFilter(max));minHeight=dp(if(multiline)90 else 64)
+                filters=arrayOf(InputFilter.LengthFilter(max));minHeight=dp(if(multiline)144 else LifeLinkUiStyle.touchHeight)
                 if(!multiline)setSingleLine() else gravity=Gravity.TOP or Gravity.START
                 imeOptions=EditorInfo.IME_FLAG_NO_PERSONALIZED_LEARNING
                 importantForAutofill=View.IMPORTANT_FOR_AUTOFILL_NO_EXCLUDE_DESCENDANTS
@@ -525,14 +615,41 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             }
         }
         val name=input("이름",record.name,R.id.x_my_health_name,80,false)
+        var selectedRole=record.role
+        var proxyConsent=record.proxyConsent && loaded.getOrThrow().any{it.id==record.id}
+        var registered=record.registration==LocalRegistration.USER_REPORTED
+        val proxyCheck=check("가족 정보를 관리할 동의·권한이 있습니다",proxyConsent,R.id.x_health_proxy_consent){proxyConsent=it}
+        proxyCheck.visibility=if(selectedRole==RegistrationRole.PROXY)View.VISIBLE else View.GONE
+        add(button("관리 방식: ${selectedRole.label}",R.id.x_health_role,false){
+            AlertDialog.Builder(host).setTitle("정보 관리 방식").setSingleChoiceItems(RegistrationRole.entries.map{it.label}.toTypedArray(),selectedRole.ordinal){dialog,which->
+                selectedRole=RegistrationRole.entries[which];proxyConsent=false;proxyCheck.isChecked=false
+                registered=false;host.findViewById<CheckBox>(R.id.x_health_registered)?.isChecked=false
+                proxyCheck.visibility=if(selectedRole==RegistrationRole.PROXY)View.VISIBLE else View.GONE
+                host.findViewById<Button>(R.id.x_health_role)?.text=host.getString(R.string.health_role_label,selectedRole.label);dialog.dismiss()
+            }.show()
+        },16)
+        add(proxyCheck,8)
+        val phone=input("안심콜에 등록한 전화번호 · 선택",record.registeredPhone,R.id.x_health_phone,24,false).apply{inputType=InputType.TYPE_CLASS_PHONE}
+        val registeredCheck=check("공식 사이트에서 등록 완료를 확인했습니다",registered,R.id.x_health_registered){registered=it}
+        add(registeredCheck,12)
+        val identityChanged=object: TextWatcher{
+            override fun beforeTextChanged(s: CharSequence?,start: Int,count: Int,after: Int){}
+            override fun onTextChanged(s: CharSequence?,start: Int,before: Int,count: Int){registeredCheck.isChecked=false;registered=false}
+            override fun afterTextChanged(value: Editable?){}
+        }
+        name.addTextChangedListener(identityChanged);phone.addTextChangedListener(identityChanged)
+        add(text("사용자 확인으로만 기록합니다. 이 앱에서 공식 가입 여부를 조회하지 않습니다.",18f,muted),6)
         val conditions=input("병력",record.conditions,R.id.x_my_health_conditions,1500,true)
         val allergies=input("알레르기",record.allergies,R.id.x_my_health_allergies,1000,true)
         val medications=input("투약 내역",record.medicationHistory,R.id.x_my_health_medications,3000,true)
         add(button("저장",R.id.x_my_health_save){
-            val saved=PersonalHealthRecord(name.text.toString().trim(),conditions.text.toString().trim(),allergies.text.toString().trim(),medications.text.toString().trim())
+            if(!medicalUnlocked() || engine.restrictions.complexBlocked)return@button
+            val saved=PersonalHealthRecord(name.text.toString().trim(),conditions.text.toString().trim(),allergies.text.toString().trim(),medications.text.toString().trim(),
+                healthRecordId,selectedRole,phone.text.toString().trim(),if(registered)LocalRegistration.USER_REPORTED else LocalRegistration.UNKNOWN,System.currentTimeMillis(),proxyConsent)
             if(listOf(saved.name,saved.conditions,saved.allergies,saved.medicationHistory).all{it.isBlank()}){
                 message="한 항목 이상 입력해 주세요.";requestRender()
-            }else mutate{personalHealth.save(saved);page=Page.MY_HEALTH;message="저장했습니다."}
+            }else if(!PersonalHealthCodec.validate(saved)){message="전화번호 형식과 가족 정보 관리 동의·권한을 확인해 주세요.";requestRender()}
+            else mutate{personalHealth.save(saved);page=Page.MY_HEALTH;message="이 기기에 저장했습니다."}
         },20)
         add(button("취소",R.id.x_my_health_cancel,false){go(Page.MY_HEALTH)},12)
     }
@@ -552,8 +669,8 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
     private fun choose(group: String,selected: String,id: Int=View.NO_ID): Spinner {
         val keys=catalog.words.getValue(group).keys.toList()
         return Spinner(host).apply{
-            this.id=id;minimumHeight=dp(56);contentDescription=when(group){"aliases"->"가상 별명";"ages"->"연령대";"guardians"->"가상 보호자";else->group}
-            adapter=ArrayAdapter(host,android.R.layout.simple_spinner_dropdown_item,keys.map { catalog.word(group,it) })
+            this.id=id;minimumHeight=dp(LifeLinkUiStyle.touchHeight);contentDescription=when(group){"aliases"->"가상 별명";"ages"->"연령대";"guardians"->"가상 보호자";else->group}
+            adapter=pickerAdapter(keys.map { catalog.word(group,it) })
             setSelection(keys.indexOf(selected).coerceAtLeast(0));tag=keys
         }
     }
@@ -596,7 +713,7 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         add(text("대상: ${s.target.label} · 앱 안의 가상 상황실\n동의하지 않아도 연결 시연은 계속됩니다.",21f,muted),12)
         add(text("도움받는 분: ${personLabel()}",23f,ink,true),14)
         if(engine.person()==null)add(button("가상 가족 선택 · 건너뛰어도 됩니다",R.id.x_person,false){go(Page.PERSON)},12)
-        ShareField.entries.filter { it !in setOf(ShareField.VIDEO,ShareField.TEXT) }.forEach { f ->
+        ShareField.entries.filter { it !in setOf(ShareField.VIDEO,ShareField.TEXT,ShareField.VEHICLE) }.forEach { f ->
             val value=engine.value(f)
             val shown=if(value==null)"정보 없음" else if(f in sensitive && !engine.privateUnlocked)"가려진 가상 정보" else value
             add(panel{
@@ -610,7 +727,8 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         }
         add(button("선택 정보 모의 공유",R.id.x_share_card,enabled=shareDraft.isNotEmpty()){mutate{engine.share(shareDraft);message="선택한 항목을 앱 내 가상 상황실에 반영했습니다."}},18)
         add(button(if(medicalUnlocked())"의료정보 다시 잠그기" else "의료정보 인증하고 확인",R.id.x_unlock,false){if(medicalUnlocked())lockMedical()else reveal{}},12)
-        add(button("전체 공유 철회",R.id.x_revoke,false,enabled=s.shared.isNotEmpty()){mutate{engine.revoke();shareDraft.clear();message="공유정보와 영상·경로를 철회했습니다."}},12)
+        add(button("전체 공유 철회",R.id.x_revoke,false,enabled=s.shared.isNotEmpty() || engine.vehicleContextShare!=null){mutate{engine.revoke();shareDraft.clear();message="공유정보와 영상·경로를 철회했습니다."}},12)
+        add(button("차량 상태 조회·공유",R.id.x_vehicle_context,false){go(Page.VEHICLE_CONTEXT)},12)
         add(button("가상 상황실에서 확인",R.id.x_center,false){go(Page.CENTER)},12)
     }
     private fun textPage()=shell("문자·의사표현 시연"){
@@ -632,8 +750,7 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
     private fun guidedVideoPage()=shell("119 상황실 영상 안내"){
         val s=engine.current ?: return@shell
         if(s.ended){add(text("종료된 시연입니다.",22f,warning),16);return@shell}
-        add(text("가상 상황실 담당자의 안내를 확인합니다.",22f,muted),12)
-        add(text("실제 영상통화와 촬영은 연결되지 않았습니다.",20f,warning),12)
+        add(text("합성 영상 안내 · 실제 통화·촬영 없음",22f,muted),12)
         if(engine.restrictions.videoBlocked)add(text("차량 제한으로 영상 미리보기와 시작을 잠갔습니다. 중단은 가능합니다.",21f,warning),16)
         when(s.video){
             VideoStatus.OFF,VideoStatus.STOPPED->{
@@ -660,7 +777,7 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             }
         }
         if(s.video !in setOf(VideoStatus.OFF,VideoStatus.STOPPED))add(button("영상 중단·동의 철회",R.id.x_guide_stop,false){mutate{engine.stopVideo()}},16)
-        add(button("연결 화면으로 돌아가기",R.id.x_guide_back,false){go(Page.SESSION)},12)
+        add(button("연결 화면으로",R.id.x_guide_back,false){go(Page.SESSION)},12)
     }
     private fun videoPage()=shell("영상 공유 · 합성 예시"){
         val s=engine.current ?: return@shell
@@ -680,10 +797,10 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         if(s.video !in setOf(VideoStatus.OFF,VideoStatus.STOPPED))add(button("영상 공유 중단·동의 취소",R.id.x_video_stop,false){mutate{engine.stopVideo()}},16)
     }
     private fun locationPage()=shell("위치·차량 정보"){
-        add(text("MOCK · 실제 GPS나 차량 식별정보를 보내지 않습니다. 실제 SDK 원본 조회는 별도 진단에서 확인합니다.",20f,muted),12)
-        add(panel{add(text(engine.value(ShareField.LOCATION) ?: "가상 위치 없음",23f,ink,true,R.id.x_location_status));add(text(engine.value(ShareField.VEHICLE).orEmpty(),21f,muted),14)},16)
+        add(text("위치는 가상 좌표입니다. 차량 상태는 별도로 조회하고 동의한 뒤 전달할 수 있습니다.",20f,muted),12)
+        add(panel{add(text(engine.value(ShareField.LOCATION) ?: "가상 위치 없음",23f,ink,true,R.id.x_location_status))},16)
         add(button("가상 위치 공유",R.id.x_share_location,enabled=engine.locationAvailable){mutate{engine.share(setOf(ShareField.LOCATION))}},18)
-        add(button("가상 차량 정보 공유",R.id.x_share_vehicle,false){mutate{engine.share(setOf(ShareField.VEHICLE))}},12)
+        add(button("차량 상태 조회·공유",R.id.x_share_vehicle,false){go(Page.VEHICLE_CONTEXT)},12)
         add(button("실제 Vehicle SDK 진단",R.id.x_sdk,false){legacy("vehicle")},12)
         if(!engine.locationAvailable)add(button("가상 위치 다시 확인",R.id.x_location_retry,false){engine.locationAvailable=true;requestRender()},12)
     }
@@ -695,9 +812,9 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             val observation=choose("observations",s.observation,R.id.x_observation)
             add(text("상황 설명 수정",22f,accent,true),18);add(observation)
             val times=listOf("NOW","AGO5","AGO10","AGO30")
-            val time=Spinner(host).apply{id=R.id.x_discovered;minimumHeight=dp(56);contentDescription="가상 발견 시각";adapter=ArrayAdapter(host,android.R.layout.simple_spinner_dropdown_item,listOf("방금 발견(시연)","5분 전(시연)","10분 전(시연)","30분 전(시연)"));setSelection(times.indexOf(s.discovered).coerceAtLeast(0))}
+            val time=Spinner(host).apply{id=R.id.x_discovered;minimumHeight=dp(LifeLinkUiStyle.touchHeight);contentDescription="가상 발견 시각";adapter=pickerAdapter(listOf("방금 발견","5분 전","10분 전","30분 전"));setSelection(times.indexOf(s.discovered).coerceAtLeast(0))}
             add(text("발견 시각",20f),12);add(time)
-            val glucose=EditText(host).apply{id=R.id.x_glucose;hint="선택: 가상 혈당 20~600 mg/dL";textSize=size(22f);setTextColor(ink);setHintTextColor(muted);inputType=android.text.InputType.TYPE_CLASS_NUMBER;setText(s.demoGlucose?.let{String.format(Locale.ROOT,"%d",it)} ?: "");minHeight=dp(60);setSingleLine()}
+            val glucose=EditText(host).apply{id=R.id.x_glucose;hint="선택: 가상 혈당 20~600 mg/dL";textSize=size(24f);setTextColor(ink);setHintTextColor(muted);inputType=android.text.InputType.TYPE_CLASS_NUMBER;setText(s.demoGlucose?.let{String.format(Locale.ROOT,"%d",it)} ?: "");minHeight=dp(LifeLinkUiStyle.touchHeight);setSingleLine()}
             add(glucose,12)
             add(button("요약 수정 반영",R.id.x_summary_update,false){mutate{val v=glucose.text.toString();engine.observe(selection(observation),times[time.selectedItemPosition],if(v.isBlank())null else v.toInt())}},12)
         }else add(text("플랫폼 제한 중에는 상세 수정이 잠깁니다.",20f,warning),12)
@@ -728,6 +845,13 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             s.shared.forEach { (field,value)->add(text(field.label+": "+if(field in sensitive && !engine.privateUnlocked)"가려진 가상 정보" else value,20f),12) }
             add(text("영상 ${s.video} · 통역 ${s.sign}\n112 협조 ${s.police}\n만남 장소 ${s.navigation}\n안심콜 ${s.safeCall}",18f,muted),16)
         },16)
+        engine.vehicleContextShare?.takeIf{it.fresh(SystemClock.elapsedRealtime())}?.let { shared->
+            add(panel{
+                add(text("사용자가 전달한 차량 상태",24f,accent,true))
+                add(text(shared.summary(SystemClock.elapsedRealtime()),21f,id=R.id.x_vctx_center),12)
+                add(button("차량 상태 전달 철회",R.id.x_vctx_revoke,false){mutate{engine.revokeVehicleContext()}},12)
+            },16)
+        }
         if(s.active){
             if(engine.cooperation.snapshot!=null)add(button("협력 차량·표시 승인 역할 보기",R.id.x_coop_center,false){go(Page.COOPERATION)},12)
             if(s.target in setOf(ConnectionTarget.EMERGENCY_119,ConnectionTarget.CONSULT_119))add(button("가상 상담원: 만남 장소 안내",R.id.x_operator_guidance){mutate{engine.giveGuidance();message="가상 전문가 안내를 기록했습니다. 목적지는 사용자가 확인해야 합니다."}},16)
@@ -781,13 +905,62 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             NavigationStatus.SET->add(text("시연 목적지 설정 완료 · 실제 내비 앱·차량은 변경하지 않았습니다.",23f,warning),18)
         }
     }
-    private fun safePage()=shell("119안심콜 연계 모형"){
-        add(text("공식 조회 API나 실제 상황실과 연결하지 않습니다. 등록된 전화번호로 신고하는 실제 제도의 확인은 별도 공식 안내를 따릅니다.",21f,muted),14)
-        add(text("가상 등록 여부: ${if(engine.person()?.safeCallRegistered==true)"등록된 예시" else "미등록 예시"}\n가상 연락 표식: ${engine.person()?.let { catalog.word("guardians",it.guardianKey) } ?: "프로필 미선택"}",22f),18)
-        val result=when(engine.current?.safeCall){"MOCK_REGISTERED"->"등록된 가상 예시를 확인했습니다";"MOCK_NOT_REGISTERED"->"등록된 가상 예시가 없습니다 · 연결 시연은 계속됩니다";else->"조회 전"}
-        add(text("조회 시연 결과: $result",24f,accent,true,R.id.x_safe_status),16)
-        add(button("가상 정보 연계에 동의하고 조회",R.id.x_safe_lookup){mutate{engine.safeCall(true)}},18)
+    private fun safePage()=shell("119안심콜 · 대상·회선 확인"){
+        val link=engine.safeCallLink
+        add(text("전화와 조회 응답은 가상 조건입니다. 공식 기관 조회는 미연결입니다.",19f,muted),12)
+        add(text("도움 대상: ${engine.person()?.let(engine::alias) ?: "미선택"}",24f,ink,true,R.id.x_safe_person),16)
+        add(text(link.outcome.label,25f,if(link.outcome==SafeCallOutcome.MATCHED)accent else warning,true,R.id.x_safe_status),16)
+        add(text("번호가 다르거나 확인되지 않아도 긴급 연결은 계속됩니다.",19f,muted),10)
+        add(button("도움 대상자 선택",R.id.x_safe_person_choose,false){go(Page.PERSON)},16)
+        add(row(button(if(link.role==RegistrationRole.SELF)"선택됨 · 본인"else"수혜자 본인",R.id.x_safe_role_self,false){mutate{engine.configureSafeCall(role=RegistrationRole.SELF)}},
+            button(if(link.role==RegistrationRole.PROXY)"선택됨 · 대리자"else"가족·대리자",R.id.x_safe_role_proxy,false){mutate{engine.configureSafeCall(role=RegistrationRole.PROXY)}}),16)
+        if(link.role==RegistrationRole.PROXY)add(check("가족 정보 관리 권한을 확인했습니다",link.authorityConfirmed,R.id.x_safe_authority){v->mutate{engine.configureSafeCall(authority=v)}},12)
+        fun <T> picker(title: String,values: List<T>,selected: T,id: Int,label: (T)->String,changed: (T)->Unit){
+            add(text(title,21f,ink,true),18)
+            add(Spinner(host).apply{
+                this.id=id;contentDescription=title;minimumHeight=dp(LifeLinkUiStyle.touchHeight);adapter=pickerAdapter(values.map(label));setSelection(values.indexOf(selected))
+                val picker=this
+                onItemSelectedListener=object: AdapterView.OnItemSelectedListener{
+                    override fun onNothingSelected(parent: AdapterView<*>?){}
+                    override fun onItemSelected(parent: AdapterView<*>?,view: View?,position: Int,itemId: Long){
+                        if(picker.isAttachedToWindow && host.findViewById<Spinner>(id)===picker && values[position]!=selected)changed(values[position])
+                    }
+                }
+            },6)
+        }
+        picker("발신 회선 · 가상",DemoCallLine.entries.toList(),link.line,R.id.x_safe_line,{it.label}){v->mutate{engine.configureSafeCall(line=v)}}
+        picker("조회 응답 조건",SafeCallFault.entries.toList(),safeFault,R.id.x_safe_fault,{it.label}){v->safeFault=v;mutate{engine.revokeSafeCall()}}
+        var accepted=link.consent
+        add(check("이번 등록정보 확인에 동의합니다",accepted,R.id.x_safe_consent){v->accepted=v
+            if(!v)mutate{engine.revokeSafeCall()}else host.findViewById<Button>(R.id.x_safe_lookup)?.isEnabled=link.outcome!=SafeCallOutcome.PENDING
+        },16)
+        add(button("등록번호 대조",R.id.x_safe_lookup,enabled=accepted && link.outcome!=SafeCallOutcome.PENDING){
+            mutate{
+                val request=engine.beginSafeCall(accepted,safeFault)
+                if(request!=null)main.postDelayed({if(inForeground && medicalUnlocked())mutate{engine.completeSafeCall(request)}},650)
+            }
+        },16)
+        add(button("동의 철회·결과 지우기",R.id.x_safe_revoke,false){mutate{engine.revokeSafeCall()}},12)
+        if(link.outcome in setOf(SafeCallOutcome.DIFFERENT,SafeCallOutcome.UNKNOWN,SafeCallOutcome.AMBIGUOUS))add(text("상황요원에게 신고한 사람과 도움이 필요한 사람이 다를 수 있음을 알려주세요. 번호 확인을 위해 연결을 끊지 않습니다.",22f),16)
+        add(button("119안심콜 공식 가입 안내",R.id.x_safe_official,false){go(Page.AGENCY)},12)
         add(button("응급정보 공유는 별도로 선택",primary=false){go(Page.CARD)},12)
+    }
+    private fun agencyPage()=shell("119안심콜 공식 가입 안내"){
+        add(text("본인 가입과 가족 대신 가입을 구분해 주세요.",23f,ink,true,R.id.x_agency_status),16)
+        add(row(button("수혜자 본인",R.id.x_agency_self,false){agencyRole=RegistrationRole.SELF;requestRender()},
+            button("가족·대리자",R.id.x_agency_proxy,false){agencyRole=RegistrationRole.PROXY;requestRender()}),16)
+        add(text(if(agencyRole==RegistrationRole.SELF)"공식 사이트에서 본인 정보를 등록·수정합니다."else"대리자 가입 후 도움받을 수혜자의 정보를 등록·관리합니다. 대리자 전화와 수혜자 등록 전화는 다를 수 있습니다.",23f),16)
+        add(text("등록한 전화로 신고해야 사전 정보 활용이 원활합니다. 다른 전화로 신고 중이라면 연결을 유지하고 상황요원의 안내를 따르세요.",21f,muted),14)
+        add(text("공식 사이트를 별도 브라우저로 엽니다. 이 앱의 이름·전화번호·병력은 전달하지 않습니다. 돌아와도 가입 완료로 자동 처리하지 않습니다.",19f,muted),14)
+        OfficialHealthSite.entries.forEach{site->add(button(site.label,when(site){OfficialHealthSite.SAFE_CALL->R.id.x_agency_open;OfficialHealthSite.SAFE_CALL_GUIDE->R.id.x_agency_guide;OfficialHealthSite.HEALTHWAY->R.id.x_agency_healthway},site==OfficialHealthSite.SAFE_CALL){openOfficial(site)},16)}
+        add(text("공식 등록·조회 API: 이용 승인·테스트 환경 미확보",19f,muted,false,R.id.x_agency_api_status),16)
+    }
+    private fun openOfficial(site: OfficialHealthSite){
+        if(engine.restrictions.complexBlocked){message="플랫폼의 상세 조작 제한 중에는 공식 사이트를 열 수 없습니다.";requestRender();return}
+        inAction=true;lockMedical();inAction=false
+        if(!OfficialHealthNavigation.open(host,site)){
+            AlertDialog.Builder(host).setTitle("휴대전화·PC에서 열어주세요").setMessage(site.url+"\n\n이 기기에 연결 가능한 브라우저가 없습니다. 개인정보는 전송하지 않았습니다.").setPositiveButton("확인",null).show()
+        }
     }
     private fun driverPage()=shell("가상 운전자 프로필·디지털키"){
         add(text("OEM 디지털키·인식 API는 사용하지 않습니다. 운전자와 도움받는 동승자는 별도로 선택합니다.",21f,muted),12)
@@ -826,7 +999,7 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             "REQUESTED"->add(button("가상 119 역할: 상황 확인",R.id.x_coop_review){mutate{coop.review()}},18)
             "REVIEWED"->{
                 add(text("참여 동의·교육·가용 조건을 확인합니다. 가까워도 조건 미충족 차량은 초대하지 않습니다.",20f,muted),16)
-                coop.vehicles.forEach{v->
+                for (v in coop.vehicles) {
                     val eligible=coop.eligible(v.id)
                     add(text(v.name+" · "+if(eligible)"참여 가능 · 이동 가정 ${v.travelSeconds}초" else "참여 불가 · 동의/교육/가용 조건 미충족",20f),12)
                     if(eligible)add(button("${v.name} 초대",if(v.id=="DEMO-HELPER-A")R.id.x_coop_invite_a else R.id.x_coop_invite_d,false){mutate{coop.invite(v.id)}},8)
@@ -860,21 +1033,79 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
             add(button("다른 협력 실험",R.id.x_coop_restart){mutate{coop.attach(session.id)}},16)
         }else add(button("협력 요청 취소·전체 표시 중단",R.id.x_coop_cancel,false){mutate{coop.finish("CANCELLED")}},18)
     }
+    private fun vehicleContextPage()=shell("차량 상태"){
+        val snapshot=vehicleContext.snapshot;val now=SystemClock.elapsedRealtime()
+        add(text(snapshot.origin.label,23f,accent,true,R.id.x_vctx_source),12)
+        add(text(if(vehicleContext.busy)"조회 중 · 긴급 요청은 계속 이용할 수 있습니다."else"읽기 전용 · 30초 이내 조회값만 이용",19f,muted,false,R.id.x_vctx_state),8)
+        add(button(if(vehicleContext.busy)"차량 조회 중"else"차량에서 새로 조회",R.id.x_vctx_refresh,enabled=!vehicleContext.busy){vehicleContext.refresh()},16)
+        add(check("이 화면에서 5초마다 확인",vehicleContext.monitoring,R.id.x_vctx_watch){vehicleContext.monitor(it);requestRender()},12)
+        add(panel{
+            VehicleMetric.entries.forEach { metric->
+                val value=snapshot.samples[metric]
+                add(text(metric.label+" · "+(value?.display(now) ?: "아직 조회하지 않음"),23f,ink,true,metricViewId(metric)),12)
+            }
+            add(text(vehicleAge(),18f,muted,false,R.id.x_vctx_age),12)
+        },16)
+        add(text("에어백·도어 신호로 사고, 탑승자, 환자 상태를 판정하지 않습니다.",18f,muted),12)
+        val canShare=engine.current?.active==true && engine.current?.target!=ConnectionTarget.COUNSEL_109 && snapshot.usable(now).isNotEmpty()
+        add(check("표시된 최신 차량 상태를 앱 내 상황실에 전달",vehicleConsent,R.id.x_vctx_consent,canShare){vehicleConsent=it;requestRender()},18)
+        add(button("선택한 차량 상태 전달",R.id.x_vctx_share,enabled=canShare && vehicleConsent){mutate{engine.shareVehicleContext(snapshot,vehicleConsent,SystemClock.elapsedRealtime());vehicleConsent=false}},12)
+        if(engine.current?.active!=true)add(text("119·112 연결 후 전달할 수 있습니다. 차량 조회 없이도 바로 도움을 요청할 수 있습니다.",19f,muted),10)
+        else if(engine.current?.target==ConnectionTarget.COUNSEL_109)add(text("109 상담에는 차량 상태를 전달하지 않습니다.",19f,muted),10)
+        val shared=engine.vehicleContextShare?.takeIf{it.fresh(now)}
+        add(text(shared?.let{"앱 내 상황실 수신\n"+it.summary(now)} ?: "전달한 차량 상태 없음",20f,if(shared!=null)accent else muted,false,R.id.x_vctx_receipt),16)
+        if(shared!=null)add(button("전달 철회",R.id.x_vctx_revoke,false){mutate{engine.revokeVehicleContext();vehicleConsent=false}},12)
+        add(text("이 전달값은 앱 안에서만 사용하며 PC 게시·저장·실제 기관 전송에 포함하지 않습니다.",18f,muted),12)
+        add(button("배터리 잔량으로 EV 계산",R.id.x_vctx_power,false){go(Page.POWER)},18)
+        add(panel{
+            add(text("실차 없이 확인하기",23f,ink,true))
+            add(text("아래 선택은 SDK 조회값과 분리된 예시입니다.",18f,muted),8)
+            add(row(button("일반 상태 예시",R.id.x_vctx_normal,false){vehicleContext.example("NORMAL")},button("신호 변화 예시",R.id.x_vctx_incident,false){vehicleContext.example("INCIDENT")}),12)
+            add(row(button("값 없음 예시",R.id.x_vctx_missing,false){vehicleContext.example("NO_DATA")},button("오래된 값 예시",R.id.x_vctx_stale,false){vehicleContext.example("STALE")}),12)
+        },24)
+        if(engine.current?.active==true)add(button("연결 화면으로",R.id.x_return_session,false){go(Page.SESSION)},18)
+    }
+    private fun metricViewId(metric: VehicleMetric)=when(metric){VehicleMetric.DRIVER_DOOR->R.id.x_vctx_door;VehicleMetric.BATTERY_SOC->R.id.x_vctx_soc;VehicleMetric.DRIVER_AIRBAG->R.id.x_vctx_airbag}
+    private fun vehicleAge(): String {
+        val now=SystemClock.elapsedRealtime();val samples=vehicleContext.snapshot.samples.values
+        if(samples.isEmpty())return "조회 시각 없음"
+        val ages=samples.filter{it.status==DiagnosticStatus.READ}.map{maxOf(0,now-it.receivedAt)/1000}
+        return if(ages.isEmpty())"확인 가능한 값 없음 · 예시로 자동 대체하지 않음"else"수신 후 ${ages.maxOrNull()}초 · 유효 ${vehicleContext.snapshot.usable(now).size}/3개"
+    }
+    private fun updateVehicleAge(){
+        val now=SystemClock.elapsedRealtime();val snapshot=vehicleContext.snapshot
+        host.findViewById<TextView>(R.id.x_vctx_age)?.text=vehicleAge()
+        snapshot.samples.forEach{(metric,sample)->host.findViewById<TextView>(metricViewId(metric))?.text=host.getString(R.string.vehicle_metric_caption,metric.label,sample.display(now))}
+        val allowed=engine.current?.active==true && engine.current?.target!=ConnectionTarget.COUNSEL_109 && snapshot.usable(now).isNotEmpty()
+        host.findViewById<Button>(R.id.x_vctx_share)?.isEnabled=allowed && vehicleConsent
+        host.findViewById<CheckBox>(R.id.x_vctx_consent)?.isEnabled=allowed
+    }
+    private fun powerSocSource(): String = powerSocReading?.let{sample->
+        if(sample.fresh(SystemClock.elapsedRealtime()))"${sample.origin.label} · 수신 후 ${(SystemClock.elapsedRealtime()-sample.receivedAt)/1000}초"
+        else "불러온 SoC 만료·해제 · 다시 조회하거나 수동 입력을 선택하세요."
+    } ?: "SoC 수동 입력 · 차량 조회값 아님"
     private fun powerPage()=shell("차량 안전 준비 · EV 전력 계산"){
         val editable=!engine.restrictions.complexBlocked
-        add(text("가상 조건으로 계산합니다. 차종별 V2L 지원·출력 한도를 확인해야 하며 의료·생명유지장치의 안전한 전원 공급을 보장하지 않습니다.",20f,muted),12)
+        add(text("SoC만 조회값을 불러올 수 있습니다. 용량·V2L 지원·효율·부하는 수동 가정이며 의료·생명유지장치 전원 공급을 보장하지 않습니다.",20f,muted),12)
+        val available=vehicleContext.snapshot.soc(SystemClock.elapsedRealtime())
+        add(text(powerSocSource(),20f,warning,false,R.id.x_ev_soc_source),12)
+        add(button("최근 차량 SoC 불러오기",R.id.x_ev_import_soc,enabled=editable && available!=null){
+            val sample=vehicleContext.snapshot.soc(SystemClock.elapsedRealtime())
+            if(sample!=null){soc=requireNotNull(sample.value);powerSocReading=sample.copy()};requestRender()
+        },12)
+        add(row(button("차량 상태 조회",R.id.x_vehicle_context,false){go(Page.VEHICLE_CONTEXT)},button("SoC 수동 입력",R.id.x_ev_manual_soc,false){powerSocReading=null;requestRender()}),12)
         add(check("가상 전기차",electric,R.id.x_ev_electric,editable){electric=it;requestRender()},14)
         add(check("V2L 지원 가정",v2lSupported,R.id.x_ev_support,editable && electric){v2lSupported=it;requestRender()},6)
         fun slider(label: String,value: Double,max: Int,scale: Double,id: Int,changed: (Double)->Unit){
             val caption=text("$label: ${"%.1f".format(Locale.ROOT,value)}",21f)
-            val bar=SeekBar(host).apply{this.id=id;this.max=max;progress=(value/scale).toInt().coerceIn(0,max);isEnabled=editable && electric && v2lSupported;minimumHeight=dp(48);contentDescription=label}
+            val bar=SeekBar(host).apply{this.id=id;this.max=max;progress=(value/scale).toInt().coerceIn(0,max);isEnabled=editable && electric && v2lSupported;minimumHeight=dp(LifeLinkUiStyle.touchHeight);contentDescription=label}
             bar.setOnSeekBarChangeListener(object: SeekBar.OnSeekBarChangeListener{
                 override fun onProgressChanged(b: SeekBar?,n: Int,user: Boolean){if(user){changed(n*scale);caption.text=host.getString(R.string.value_caption,label,"%.1f".format(Locale.ROOT,n*scale));updatePowerResult()}}
                 override fun onStartTrackingTouch(b: SeekBar?){};override fun onStopTrackingTouch(b: SeekBar?){}
             });add(caption,12);add(bar)
         }
         slider("배터리 용량 가정 (kWh)",capacity,160,1.0,R.id.x_ev_capacity){capacity=it}
-        slider("가상 SOC (%)",soc,100,1.0,R.id.x_ev_soc){soc=it}
+        slider("SoC (%) · 조절하면 수동 입력",soc,100,1.0,R.id.x_ev_soc){soc=it;powerSocReading=null}
         slider("보존 SOC (%)",reserve,100,1.0,R.id.x_ev_reserve){reserve=it}
         slider("변환 효율 (%)",efficiency*100,100,1.0,R.id.x_ev_efficiency){efficiency=it/100.0}
         slider("기기 소비전력 가정 (W)",load,360,10.0,R.id.x_ev_load){load=it}
@@ -884,11 +1115,12 @@ class ExpansionUi(private val host: Activity, dispatch: MockDispatchGateway, sav
         add(button("실제 Vehicle SDK 진단",R.id.x_sdk,false){legacy("vehicle")},20)
     }
     private fun powerResult(): String {
+        if(powerSocReading?.fresh(SystemClock.elapsedRealtime())==false)return "불러온 SoC가 유효하지 않아 계산을 보류합니다.\n차량 상태를 다시 확인하거나 SoC 수동 입력을 선택하세요."
         val p=V2lCalculator.estimate(electric,v2lSupported,capacity,soc,reserve,efficiency,load)
         return (p.availableKwh?.let { "사용가능량 가정 %.2f kWh".format(Locale.ROOT,it) } ?: "계산할 수 없는 조건")+
             (p.hours?.let { "\n예상 사용 시간 %.2f시간".format(Locale.ROOT,it) } ?: "")+(p.issue?.let { "\n$it" } ?: "\n가정값이며 실제 사용 보장이 아닙니다.")
     }
-    private fun updatePowerResult(){host.findViewById<TextView>(R.id.x_power_result)?.text=powerResult()}
+    private fun updatePowerResult(){host.findViewById<TextView>(R.id.x_power_result)?.text=powerResult();host.findViewById<TextView>(R.id.x_ev_soc_source)?.text=powerSocSource();host.findViewById<Button>(R.id.x_ev_import_soc)?.isEnabled=vehicleContext.snapshot.soc(SystemClock.elapsedRealtime())!=null && !engine.restrictions.complexBlocked}
     private class SyntheticFrameView(context: android.content.Context,private val source: VideoSource,private val frame: Int): View(context){
         private val paint=Paint(Paint.ANTI_ALIAS_FLAG)
         init{contentDescription="${source.label} · 합성 도형 장면 ${frame+1} · 실제 카메라 아님";isFocusable=true}

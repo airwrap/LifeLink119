@@ -1,0 +1,201 @@
+"""Build the offline HTML and illustrated PDF from actual native captures.
+
+Protected health pages use explicitly labelled workflow diagrams, never fake
+screenshots. Fonts are embedded; the same source text drives both formats.
+"""
+from pathlib import Path
+from html import escape
+import base64, hashlib, json, re
+from reportlab.pdfgen import canvas
+from reportlab.lib.colors import HexColor
+from reportlab.lib.pagesizes import A4, landscape
+from reportlab.lib.units import mm
+from reportlab.pdfbase import pdfmetrics
+from reportlab.pdfbase.ttfonts import TTFont
+from reportlab.platypus import Paragraph, Table, TableStyle
+from reportlab.lib.styles import ParagraphStyle
+from reportlab.lib.utils import ImageReader
+
+ROOT=Path(__file__).resolve().parents[1]
+BASE=ROOT/'docs/manual/v17'
+OUT=BASE/'output'
+VERSION='0.17.0'
+
+# The content describes the existing product, not proposed integrations.
+DETAILS={
+ 'home':('시작','나와 가족의 안전을 위한 네 가지 출발점', ['구조·구급은 119 긴급 요청으로 바로 시작합니다.','의료·심리상담은 119 의료상담 또는 109 심리상담을 선택합니다.','경찰 신고는 112, 가족 안심콜은 인증 후 건강정보 관리로 이어집니다.'],'긴급 요청에는 가입·의료정보 등록·PIN이 필요하지 않습니다.'),
+ 'more':('시작','일상적인 확인과 추가 기능은 더보기에서 찾습니다.', ['차량 상태에서 값의 출처와 유효 시간을 확인합니다.','응급 매뉴얼과 EV 계산을 열 수 있습니다.','설정·도구에서 상황별 체험·접근성·잠금 설정으로 이동합니다.'],'진행 중인 연결이 있으면 같은 연결 화면으로 돌아갈 수 있습니다.'),
+ 'agency':('시작','도움의 종류에 맞춰 기관 역할을 선택합니다.', ['119는 구조·구급 도움 요청입니다.','112는 경찰 긴급신고입니다.','이 화면은 앱 안의 연결 절차를 시작합니다.'],'빨강 119와 파랑 112를 구분하되 두 버튼의 크기는 같습니다.'),
+ 'tools':('시작','체험과 설정을 한 곳에 모았습니다.', ['상황별 체험에서 준비된 19개 예시를 고릅니다.','주행 중 도움 요청·접근성·의료정보 잠금을 확인합니다.','주변 차량 협력과 기존 흐름도 이곳에서 엽니다.'],'추가 제한 설정은 실제 CarUX 제한을 해제하는 기능이 아닙니다.'),
+ 'driving-setup':('긴급 요청','정차 확인을 기다리지 않는 도움 요청 흐름입니다.', ['버튼으로 119 호출 예시를 시작합니다.','음성 요청 예시는 미리 정한 문구를 실행하는 버튼입니다.','실제 마이크·음성 인식·전화 발신은 사용하지 않습니다.'],'수동 주행 시나리오와 실제 플랫폼 조작 제한은 별개입니다.'),
+ 'driving':('긴급 요청','먼저 연결하고, 필요한 정보는 이후에 선택합니다.', ['119 요청 후 앱 내 가상 상담원의 응답을 확인합니다.','영상 안내·상황과 정보 전달·추가 지원 중에서 고릅니다.','조작을 끝내려면 요청 종료를 선택합니다.'],'등록·PIN·차량 조회 성공을 긴급 요청의 선행 조건으로 두지 않습니다.'),
+ 'driving-details':('긴급 요청','상황 설명과 선택적 공유를 단계적으로 진행합니다.', ['상황 전달을 눌러 가상 보고 상태를 바꿉니다.','위치와 차량 상태는 각각 별도로 선택합니다.','안전 확보 알림과 인계 확인은 참가자가 누르는 역할 버튼입니다.'],'화면의 상태 변화가 실제 차량 안전이나 기관 접수를 자동 확인한 것은 아닙니다.'),
+ 'driving-ack':('긴급 요청','요청자와 상황실 역할의 확인 단계를 구분합니다.', ['상황 전달 후 전달됨 상태를 확인합니다.','상황실 역할의 내용 확인을 누릅니다.','확인 완료 상태에서 다음 지원 절차로 이어갑니다.'],'실제 119 상황실의 응답이 아니라 앱 내 상태 전이입니다.'),
+ 'driving-location':('선택 정보','위치를 선택해도 의료정보가 함께 전달되지는 않습니다.', ['가상 위치만 공유를 누릅니다.','공유 항목 목록에 가상 위치가 추가되는지 확인합니다.','공유 철회를 누르면 전달한 선택 정보를 거둡니다.'],'현재 위치는 고정된 가상 좌표이며 GPS를 사용하지 않습니다.'),
+ 'vehicle-example':('차량 데이터','조회값과 예시의 출처를 먼저 확인합니다.', ['실제 Pleos 환경에서는 차량에서 새로 조회를 누릅니다.','이 화면은 일반 상태 예시 버튼을 직접 선택한 캡처입니다.','SDK 조회 실패가 예시 성공으로 자동 전환되지는 않습니다.'],'캡처의 출처는 예시 데이터입니다. 실제 SDK 검증은 별도 검증 기록으로 확인합니다.'),
+ 'vehicle-values':('차량 데이터','지원 여부와 숫자 0을 서로 다르게 취급합니다.', ['운전석 도어 위치·배터리 SoC·에어백 신호를 구분합니다.','출처·수신 시각·유효한 값의 수를 확인합니다.','에어백·도어 신호로 사고나 환자 상태를 자동 판정하지 않습니다.'],'실제 Pleos 이미지에서는 도어·SoC를 읽었으며 에어백은 미지원입니다.'),
+ 'vehicle-receipt':('차량 데이터','최신 상태를 동의 후 앱 내 상황실에 표시합니다.', ['119·112 연결이 진행 중이어야 전달할 수 있습니다.','표시된 최신 차량 상태 전달에 동의한 다음 전달을 누릅니다.','전달 철회·30초 만료·앱 이탈·연결 종료 때 공유를 정리합니다.'],'이 값은 앱 안에서만 사용하며 PC 게시·저장 JSON·실제 기관 전송에 포함하지 않습니다.'),
+ 'ev-result':('차량 데이터','조회한 SoC가 계산 입력으로 이어집니다.', ['최근 차량 SoC 불러오기를 직접 선택합니다.','용량·보존 잔량·효율·소비전력은 수동 가정입니다.','불러온 값이 만료되면 다시 조회하거나 수동 입력을 선택합니다.'],'예시: 64kWh × (80−30)% × 0.85 = 27.20kWh. 실제 전원 제어·사용 보장은 없습니다.'),
+ 'vehicle-stale':('차량 데이터','오래되거나 없는 값은 현재 값처럼 전달하지 않습니다.', ['오래된 값 예시에서 이전 조회값 표시를 확인합니다.','전달 버튼이 비활성화되는지 확인합니다.','최신 SoC를 다시 읽거나 계산 입력을 수동으로 선택합니다.'],'미지원·권한 오류·값 없음·TIMEOUT은 숫자 0으로 대체하지 않습니다.'),
+ 'handover':('긴급 요청','안전 확보와 대응팀 인계를 역할별로 확인합니다.', ['동승자 역할로 정차·안전 확보 사실을 알립니다.','상황실 역할로 가상 대응팀 인계를 확인합니다.','완료·공유정보 정리로 연결을 끝냅니다.'],'안전 상태는 참가자가 보고한 시나리오 상태이며 실제 센서 판정이 아닙니다.'),
+ 'finish':('긴급 요청','연결을 끝내면 그 연결의 공유정보를 정리합니다.', ['요청 종료 또는 인계 후 완료를 선택합니다.','공유정보를 정리했다는 결과를 확인합니다.','처음으로를 눌러 홈으로 돌아갑니다.'],'따로 저장한 건강정보는 자동 삭제하지 않으며 안심콜의 관리 화면에서 다룹니다.'),
+ 'consult':('상담','의료상담과 심리상담을 선택할 수 있습니다.', ['119 응급의료상담을 선택해 의료상담 흐름을 시작합니다.','109를 선택해 심리상담 흐름을 시작합니다.','가족·의료정보 공유는 연결과 분리된 선택 사항입니다.'],'119 구조·구급과 119 의료상담은 도움의 목적을 구분하는 메뉴입니다.'),
+ 'medical-session':('상담','연결 이후 필요한 지원을 선택합니다.', ['가상 상담원의 응답 상태를 확인합니다.','영상 안내 또는 상황에 맞는 우선 지원을 고릅니다.','추가 지원에서 의사표현·위치 등 다른 기능을 찾습니다.'],'앱 내 가상 상담이며 실제 통화나 의료 진단을 제공하지 않습니다.'),
+ 'video-request':('영상 안내','요청·동의·시작을 나누어 사용자가 제어합니다.', ['영상 안내를 엽니다.','영상 안내 요청을 누릅니다.','다음 화면에서 합성 영상 사용에 동의할지 결정합니다.'],'요청 버튼만으로 미리보기가 시작되지는 않습니다.'),
+ 'video-consent':('영상 안내','영상 안내는 별도 동의를 받습니다.', ['합성 장면과 가상 안내라는 설명을 확인합니다.','동의하고 계속을 누릅니다.','영상 안내 시작을 눌러 실제로 미리보기를 시작합니다.'],'의료정보 동의와 영상 사용 동의는 서로 다른 절차입니다.'),
+ 'video-active':('영상 안내','합성 장면과 준비된 안내 문장을 함께 보여줍니다.', ['영상 안내 시작 후 합성 장면을 확인합니다.','다음 안내 보기로 준비된 문장을 바꿉니다.','영상 안내 중단으로 미리보기를 종료합니다.'],'실제 상황실 영상통화·카메라 촬영·음성 연결은 구현되지 않았습니다.'),
+ 'counsel109':('상담','109 상담은 프라이버시를 우선하는 별도 흐름입니다.', ['의료·심리상담에서 109를 선택합니다.','문자·의사표현 등 가능한 지원을 확인합니다.','추가 긴급 도움이 필요하면 상단 119 요청으로 전환합니다.'],'109 상담에는 차량 관측 상태를 전달하지 않습니다.'),
+ 'emergency112':('긴급 요청','경찰 도움 요청을 별도 메뉴로 구분합니다.', ['홈의 경찰 신고를 누릅니다.','112 역할의 가상 응답 상태를 확인합니다.','필요한 지원을 고르거나 연결을 종료합니다.'],'파랑 112는 기관 역할 식별색이며 실제 신고 발신은 없습니다.'),
+ 'support':('추가 지원','현재 상황에 맞춰 우선 지원을 바꿉니다.', ['추가 지원을 눌러 기능 목록을 엽니다.','문자·수어·위치·차량 상태 등 필요한 항목을 고릅니다.','개인정보가 필요한 기능은 인증 후 접근합니다.'],'상황별 예시와 접근성 선호에 따라 표시 우선순위가 달라집니다.'),
+ 'phrases':('추가 지원','말하기 어려울 때 큰 문구 버튼으로 뜻을 전달합니다.', ['필요한 의사표현 카드를 선택합니다.','선택한 문구가 화면의 메시지 목록에 추가되는지 봅니다.','가상 상담원 답장 보기로 응답 예시를 확인합니다.'],'실제 문자메시지 발송·상황실 채팅 연결은 없습니다.'),
+ 'sign':('추가 지원','3자 수어통역의 연결 상태를 모형으로 보여줍니다.', ['수어통역 연결을 엽니다.','가상 통역사 연결에 동의합니다.','연결 상태를 확인하고 종료할 수 있습니다.'],'실제 통역사 호출·수어 인식·수어 번역·영상 통화는 없습니다.'),
+ 'voice':('추가 지원','준비된 음성 안내 문장을 화면에서 강조합니다.', ['시각장애 상황 예시 등에서 음성 도움말을 엽니다.','음성 안내 문장 강조를 누릅니다.','큰 안내 문장을 읽는 흐름을 확인합니다.'],'현재 앱은 이 기능에서 소리를 재생하지 않으며 STT·TTS·마이크를 사용하지 않습니다.'),
+ 'easy':('추가 지원','짧은 단계로 선택 부담을 줄입니다.', ['쉬운 안내에서 순서대로 내용을 확인합니다.','의사표현 카드로 바로 이동할 수 있습니다.','보호자 정보는 별도 인증과 공유 선택을 거칩니다.'],'개인별 선호는 표시 순서를 바꾸며 긴급 연결의 자격 조건이 아닙니다.'),
+ 'police-review':('공동대응','요청과 기관 역할의 검토를 구분합니다.', ['112 공동대응에서 경찰 협조 모의 요청을 누릅니다.','가상 112 역할로 검토 시작을 선택합니다.','승인 또는 거절을 따로 선택합니다.'],'자동 승인이나 실제 경찰 출동·호송·우선통행을 보장하지 않습니다.'),
+ 'police-approved':('공동대응','승인은 앱 안의 역할 상태입니다.', ['검토 단계에서 가상 112 역할 승인을 누릅니다.','승인 문구와 적용 범위를 확인합니다.','다른 사례에서는 거절 경로도 확인할 수 있습니다.'],'실제 교통법규 특례·기관 권한이 생기지 않습니다.'),
+ 'navigation-gate':('공동대응','전문가 안내와 위치 공유를 먼저 확인합니다.', ['현재 화면에서 필요한 전제조건을 확인합니다.','이후 절차는 가상 안내 → 위치 동의 → 목적지 제안입니다.','사용자 확인 → 가상 설정 완료 순으로 이어집니다.'],'캡처는 안내 전 화면입니다. 실제 NaviHelper 호출·병원 수용 확인·이송 결정은 없습니다.'),
+ 'location':('선택 정보','위치와 차량 관측 정보의 출처를 분리합니다.', ['위치·차량 정보 화면을 엽니다.','가상 위치 공유를 직접 선택합니다.','차량 상태는 별도 화면에서 조회하고 동의합니다.'],'위치는 고정 예시이며 현재 GPS나 실제 주소가 아닙니다.'),
+ 'cooperation-review':('주변 차량 협력','가까운 차량이라도 참여 조건을 먼저 확인합니다.', ['가상 위치 공유와 별도 협력 요청 동의를 선택합니다.','도움 요청 후 가상 119 역할로 상황을 확인합니다.','참여 동의·교육·가용 조건이 충족되는 차량만 초대합니다.'],'차량 도착 시간은 고정 실험 가정이며 생존 효과를 측정한 값이 아닙니다.'),
+ 'cooperation-mission':('주변 차량 협력','초대·자발적 수락·임무 부여를 나눕니다.', ['참여 가능한 가상 차량을 초대합니다.','차량 역할이 자발적으로 수락합니다.','가상 119 역할이 300초 임무를 부여합니다.'],'취소·거절·만료·인계 경로가 있으며 의료정보를 자동 공유하지 않습니다.'),
+ 'cooperation-display':('주변 차량 협력','표시 승인은 임무와 별도로 받습니다.', ['119 또는 112 역할에 표시 승인을 요청합니다.','비상상황 확인과 최대 120초 승인 단계를 거칩니다.','승인된 화면 표시를 시작하고 언제든 철회할 수 있습니다.'],'실제 자동차 등화·경광등·통행 권한을 제어하지 않는 앱 화면 모형입니다.'),
+ 'manual-topics':('응급 매뉴얼','기본 매뉴얼은 오프라인으로 열 수 있습니다.', ['더보기에서 응급 매뉴얼을 누릅니다.','준비된 여섯 주제 중 필요한 항목을 고릅니다.','목록과 상세 화면을 오가며 내용을 확인합니다.'],'매뉴얼 이용에 개인 의료정보 등록이나 PIN이 필요하지 않습니다.'),
+ 'manual-detail':('응급 매뉴얼','기본 정보를 읽고 전문 상담 안내로 이어갑니다.', ['목록에서 주제를 선택합니다.','화면에 표시된 단계와 주의 사항을 읽습니다.','긴급 연결이 필요하면 상단 요청 경로를 이용합니다.'],'이 문서는 앱 조작 설명입니다. 실제 응급상황에서는 119의 안내를 따릅니다.'),
+ 'accessibility':('접근성과 보호','큰 글씨와 짧은 안내를 선택합니다.', ['큰 글씨를 켜면 주요 글자 크기가 커집니다.','쉬운 짧은 안내를 선택할 수 있습니다.','스크린리더는 Android 시스템 설정을 사용합니다.'],'큰 글씨·좁은 화면에서도 조작 영역과 가운데 정렬을 유지하도록 검사했습니다.'),
+ 'privacy':('접근성과 보호','선택적 의료정보를 긴급 연결과 분리해 잠급니다.', ['기기 보안 인증이 있으면 시스템 자격 확인을 사용합니다.','지원되지 않으면 사용자가 6~12자리 앱 PIN을 설정합니다.','60초 경과·홈 복귀·다른 앱 전환 시 다시 잠급니다.'],'PIN 초기화는 저장한 의료정보 삭제를 동반합니다. 매뉴얼 촬영에서 초기화·PIN 입력을 하지 않았습니다.'),
+ 'gallery':('체험과 실행','19개 예시로 기능을 차례로 살펴볼 수 있습니다.', ['설정·도구에서 상황별 체험을 엽니다.','원하는 예시를 골라 관련 지원 흐름을 시작합니다.','예시의 선택이 의료정보 자동 공유를 뜻하지는 않습니다.'],'진단·위험도 자동 분류가 아니라 준비된 시나리오를 고르는 기능입니다.'),
+}
+
+def extra_pages():
+    return [
+      {'id':'flow','type':'flow','group':'전체 흐름','title':'연결은 먼저, 정보 제공은 선택','lead':'긴급 요청·상담과 건강정보 관리는 서로 독립된 출발점입니다.','steps':['홈에서 도움 종류 선택','119·112·109 역할 연결','상황 설명과 추가 지원','선택 정보에 동의·공유','안내·인계 확인 후 종료'],'note':'의료정보 등록이나 SDK 조회가 실패해도 긴급 요청을 시작할 수 있습니다.'},
+      {'id':'health','type':'health','group':'안심콜과 의료정보','title':'우리 가족 안심콜: 인증 후 건강정보 관리','lead':'이 부분은 실제 앱의 보호 화면이므로 캡처 대신 소스로 확인한 절차를 설명합니다.','steps':['홈 → 가족 안심콜','시스템 인증 또는 앱 PIN','내 건강정보 조회·등록','가족 예시 관리·공유 선택','건강정보 고속도로 예시'],'note':'실제 119 안심콜 등록·조회나 건강정보 고속도로 API와 연결된 서비스는 아닙니다.'},
+      {'id':'health-input','type':'fields','group':'안심콜과 의료정보','title':'병력·알레르기·투약 내역을 직접 입력','lead':'기기에 등록한 본인 정보를 인증 뒤 조회·수정·삭제하는 기능입니다.','steps':['이름: 도움받는 본인을 구분하는 정보','병력: 본인이 직접 작성하는 내용','알레르기: 필요한 주의 정보를 직접 작성','투약 내역: 날짜·약 이름·복용 기록을 직접 작성','저장·조회·수정·삭제: 사용자가 직접 관리'],'note':'처방전이나 병원 기록을 자동 수집하지 않습니다. 입력한 의료정보는 기기에 암호화 저장합니다.'},
+      {'id':'health-highway','type':'flow','group':'안심콜과 의료정보','title':'건강정보 고속도로: 동의와 예시 화면','lead':'현재 제공 범위는 가입·연계 동의의 체험과 예시 정보 화면입니다.','steps':['안심콜에서 건강정보 고속도로 선택','예시 이용 동의 확인','예시 건강정보 화면 열기','나가기·철회 시 예시 접근 정리'],'note':'실제 의료기관·공공 플랫폼 계정 인증·API 데이터 수신은 구현되지 않았습니다. 보호 기능을 풀어 화면을 촬영하지 않았습니다.'},
+      {'id':'scope','type':'scope','group':'검증과 실행','title':'어디까지 실제로 동작하나요?','lead':'실제 앱 동작, 공식 SDK의 가상 차량 값, 외부 서비스 모형을 구분합니다.','steps':['실제 앱: 메뉴·상태 전환·동의·철회·잠금·암호화 저장·오프라인 매뉴얼·계산','공식 SDK: Pleos Console 가상 도어·SoC 입력을 실제 Vehicle SDK로 읽어 비교','현재 미지원: Pleos 이미지의 에어백 신호','모의: 119·112·109·영상·수어·위치·목적지·주변 차량·기관 승인','미연계: 실제 안심콜·건강정보 고속도로·카메라·차량 등화·전원 제어'],'note':'SDK 검증과 전체 실차 안전성 검증은 다릅니다. 의료 진단·자동 신고·기관 자동 승인을 제공하지 않습니다.'},
+      {'id':'presenter','type':'flow','group':'검증과 실행','title':'발표자는 이 순서로 따라가세요','lead':'핵심 흐름을 먼저 보여주고, 나머지는 질문에 맞춰 찾아갑니다.','steps':['홈 네 메뉴와 나와 가족의 안전 소개','119 요청 → 상황 전달·위치 선택 → 종료','119 의료상담 → 영상 요청·동의·시작·중단','차량 상태 출처 → SDK 값 변화 → 동의·철회 → EV 계산','안심콜 보호 설명 → 필요 시 협력 차량·기관 승인 모형'],'note':'역할 버튼은 발표자가 단계별로 누릅니다. 실제 기관 응답·실제 영상통화·실차 제어로 설명하지 않습니다.'},
+      {'id':'run','type':'setup','group':'검증과 실행','title':'실행·종료·새 PC 준비','lead':'기본 앱 체험에는 실제 자동차가 필요하지 않습니다.','steps':['개발 환경: Android Studio·JDK 17·API 34 SDK, 앱 minSdk 28','일반 Android AVD: UI·모의 흐름·예시 상태 확인','Pleos 공식 AVD: 실제 Vehicle SDK와 가상 차량 값 비교','SDK 자동 검사: Verify-Pleos-SDK.cmd 실행. 입력 비교 후 원복','연결 종료: 앱의 종료 버튼 → 홈. 에뮬레이터 종료는 창 닫기'],'note':'PC 상황실을 함께 쓰는 경우 로컬 서버와 ADB reverse 준비가 필요합니다. 상세 설치는 docs/OTHER_PC_GUIDE.md를 따릅니다.'},
+    ]
+
+def build_pages(manifest):
+    pages=[]
+    pages.append({'id':'cover','type':'cover','group':'시작','title':'나와 가족의 안전을 잇는 자동차','lead':'LifeLink 119 이용·시연 매뉴얼','frame':next(f for f in manifest['frames'] if f['id']=='home'),'steps':['긴급 요청 · 상담 · 가족 건강정보 · 차량 상태'],'note':'공모전 PoC · 실제 기관 연결·실차 제어 없음'})
+    pages.append(extra_pages()[0])
+    # The screenshots are a screen reference, grouped into the actual journeys.
+    order=['home','more','agency','driving-setup','driving','driving-details','driving-ack','driving-location','handover','finish','consult','medical-session','video-request','video-consent','video-active','counsel109','emergency112','privacy','support','phrases','sign','voice','easy','vehicle-example','vehicle-values','vehicle-receipt','ev-result','vehicle-stale','police-review','police-approved','navigation-gate','location','cooperation-review','cooperation-mission','cooperation-display','manual-topics','manual-detail','accessibility','tools','gallery']
+    by={f['id']:f for f in manifest['frames']}
+    for key in order:
+        if key=='home':continue
+        assert key in by,'Missing actual capture: '+key
+        g,lead,steps,note=DETAILS[key]
+        pages.append({'id':key,'type':'screen','group':g,'title':by[key]['title'],'lead':lead,'steps':steps,'note':note,'frame':by[key]})
+        if key=='privacy':
+            pages.extend(extra_pages()[1:4])
+            pages.extend([
+                {'id':'sharing-room','type':'flow','protectedDiagram':True,'group':'안심콜과 의료정보','title':'선택 정보·요약·상황실로 이어지는 흐름','lead':'인증 뒤에도 제공할 정보는 항목별로 따로 선택합니다.','steps':['연결 후 도움받는 가상 가족 프로필 선택 또는 건너뛰기','응급정보에서 제공할 항목에만 동의하고 공유','상담 전달용 요약의 상황·발견 시각 등을 검토','검토한 요약만 공유하거나 항목별로 철회','앱 내 가상 상황실에서 동의한 항목과 연결 상태 확인'],'note':'요약은 정형 문장 조합이며 진단·위험도 판정이 아닙니다. 직접 등록한 내 건강정보와 가상 가족 예시는 별도이며 직접 입력 정보를 자동 공유하지 않습니다.'},
+                {'id':'pc-room','type':'flow','protectedDiagram':True,'group':'안심콜과 의료정보','title':'앱 내 상황실과 PC 상황실 보기','lead':'앱 내 확인은 오프라인으로, PC 게시에는 별도 연결과 동의가 필요합니다.','steps':['추가 지원 → 가상 상황실에서 인증 후 상태 확인','영상·통역·112 협조·만남 장소 등 역할 상태 확인','필요하면 가상 상담원의 만남 장소 안내를 실행','PC에서 보려면 로컬 서버·ADB reverse 준비 후 게시 동의','현재 가상 상태와 공유 항목 이름만 게시하고 필요 시 철회'],'note':'개별 의료 내용·연락처·차량 SDK 관측값은 PC 게시에 포함하지 않습니다. 서버가 없어도 앱 내 흐름은 계속 사용할 수 있습니다.'},
+                {'id':'driver-safe','type':'flow','protectedDiagram':True,'group':'안심콜과 의료정보','title':'안심콜 연계·운전자 역할 예시','lead':'실제 등록 조회나 디지털키 인식과 구분되는 역할 모형입니다.','steps':['인증 후 도움받는 가상 가족 프로필 선택','안심콜 연계 모형에서 별도 동의 후 등록 예시 확인','응급정보 제공은 정보별로 다시 선택','설정·도구 → 운전자·디지털키 예시에서 가상 운전자 선택·해제','도움받는 승객은 운전자와 별도로 선택'],'note':'실제 119 안심콜 등록 상태 조회·OEM 디지털키 API·환자 자동 식별을 하지 않습니다. 미등록 예시에서도 긴급 요청은 계속 가능합니다.'},
+            ])
+    pages.extend(extra_pages()[4:])
+    proof=json.loads((BASE/'sdk-verification.json').read_text(encoding='utf-8'))
+    assert proof['status']=='SDK_VALUE_CHANGES_VERIFIED' and proof['apkSha256']==manifest['apkSha256']
+    pages.insert(-3,{'id':'sdk-proof','type':'scope','group':'검증과 실행','title':'공식 SDK 값 검증: 실차 없이 확인','lead':'공식 Console 입력을 실제 설치 앱의 Vehicle SDK 2.3.2 반환값과 비교했습니다.','steps':['시작: 도어 닫힘 / SoC 100% → SDK READ 0 / READ 100','변경 1: 도어 열림 / SoC 80% → SDK READ 1 / READ 80','변경 2: 도어 닫힘 / SoC 15% → SDK READ 0 / READ 15','원복: 원래 닫힘 / 100% → SDK READ 0 / READ 100'],'note':'입력은 공식 에뮬레이터의 가상 신호입니다. 앱의 예시 분기를 사용하지 않았습니다. 에어백은 현재 이미지 미지원입니다. 실차·기관 연결 검증과 구분합니다.'})
+    contents={'id':'contents','type':'flow','group':'전체 흐름','title':'먼저 필요한 흐름을 찾으세요','lead':'기본 흐름을 따라 읽거나, 필요한 화면으로 바로 이동할 수 있습니다.','steps':[],'note':'HTML은 목차 검색과 원본 크기 확대를, PDF는 페이지 번호와 책갈피를 제공합니다.'}
+    pages.insert(1,contents)
+    ranges=[('시작과 전체 흐름','cover','agency'),('긴급 요청·상황 전달·인계','driving-setup','finish'),('상담·영상·109·112','consult','emergency112'),('안심콜·의료정보 보호','privacy','driver-safe'),('추가 지원·차량 데이터·협력','support','manual-detail'),('설정·체험·검증·실행','accessibility','run')]
+    ids=[p['id'] for p in pages]
+    contents['steps']=[f'{label}  ·  {ids.index(first)+1}-{ids.index(last)+1}쪽' for label,first,last in ranges]
+    assert pages[-1]['id']=='run'
+    pages[-1]['lead']+='\nUI polish: unslop by Damir Sokolovsky (@heydamir), CC BY 4.0 · github.com/heydamir/unslop'
+    return pages
+
+def pdf_book(pages):
+    pdfmetrics.registerFont(TTFont('Korean','C:/Windows/Fonts/malgun.ttf'))
+    pdfmetrics.registerFont(TTFont('KoreanBold','C:/Windows/Fonts/malgunbd.ttf'))
+    pdfmetrics.registerFontFamily('Korean',normal='Korean',bold='KoreanBold',italic='Korean',boldItalic='KoreanBold')
+    dest=OUT/'pdf/LifeLink119_Manual_v0.17.pdf';dest.parent.mkdir(parents=True,exist_ok=True)
+    c=canvas.Canvas(str(dest),pagesize=landscape(A4));c.setTitle('LifeLink 119 전체 이용·시연 매뉴얼 v0.17');c.setAuthor('LifeLink 119')
+    W,H=landscape(A4);navy='#162536';blue='#23558B';muted='#526477';cream='#F6F4EE';line='#D8E0E7'
+    def box(x,y,w,h,fill,r=8):c.setFillColor(HexColor(fill));c.roundRect(x,y,w,h,r,stroke=0,fill=1)
+    def para(text,x,top,w,size=11,color=navy,bold=False,leading=None):
+        style=ParagraphStyle('p',fontName='KoreanBold' if bold else 'Korean',fontSize=size,leading=leading or size*1.58,textColor=HexColor(color),wordWrap='CJK',spaceAfter=0)
+        p=Paragraph(escape(text).replace('\n','<br/>'),style);_,height=p.wrap(w,H)
+        assert top-height>=14*mm,(text,'page text overflow')
+        p.drawOn(c,x,top-height);return top-height
+    for i,p in enumerate(pages,1):
+        c.bookmarkPage(p['id']);c.addOutlineEntry(f'{i:02d}  {p["title"]}',p['id'],0,False)
+        box(0,0,W,H,cream,0);c.setStrokeColor(HexColor(line));c.line(14*mm,16*mm,W-14*mm,16*mm)
+        para('LifeLink 119',14*mm,H-11*mm,100*mm,11,blue,True)
+        c.setFont('Korean',9);c.setFillColor(HexColor(muted));c.drawRightString(W-14*mm,H-15*mm,p['group'])
+        para(p['title'],14*mm,H-25*mm,W-28*mm,25,navy,True,34)
+        para(p['lead'],14*mm,H-41*mm,W-28*mm,11,muted)
+        if 'frame' in p:
+            f=p['frame'];left=14*mm;top=H-59*mm;imageW=180*mm;imageH=112.5*mm
+            c.drawImage(ImageReader(str(BASE/f['image'])),left,top-imageH,width=imageW,height=imageH,preserveAspectRatio=True,anchor='c',mask='auto')
+            para(f['path'],left,top-imageH-3*mm,imageW,9,muted)
+            para('실제 APK 화면 · '+f['kind'],left,top-imageH-11*mm,imageW,8,blue)
+            right=202*mm;width=W-right-14*mm;t=top
+            if p['type']=='cover':
+                t=para('가족을 위한 차량형 응급지원',right,t,width,16,navy,True)-8*mm
+                t=para('실제 앱 화면을 따라 긴급 요청부터 상담, 선택 정보 제공, 종료까지 살펴봅니다.',right,t,width,12)-10*mm
+            else:t=para('이렇게 사용하세요',right,t,width,12,blue,True)-6*mm
+            for n,text in enumerate(p['steps'],1):
+                t=para(f'{n}. {text}',right,t,width,11)-5*mm
+            para(p['note'],right,t-3*mm,width,9,muted)
+        else:
+            x=14*mm;top=H-61*mm;full=W-28*mm
+            tag='보호 화면 안내도 · 실제 화면 캡처 아님' if p['id'].startswith('health') or p.get('protectedDiagram') else '이용 흐름과 구현 범위'
+            para(tag,x,top,full,10,blue,True);top-=12*mm
+            if p['type']=='fields':
+                rows=[[str(n),text] for n,text in enumerate(p['steps'],1)]
+                data=[[Paragraph(a,ParagraphStyle('cellnum',fontName='KoreanBold',fontSize=15,textColor=HexColor(blue))),Paragraph(escape(b),ParagraphStyle('cell',fontName='Korean',fontSize=12,leading=18,wordWrap='CJK'))] for a,b in rows]
+                table=Table(data,colWidths=[16*mm,full-16*mm]);table.setStyle(TableStyle([('BACKGROUND',(0,0),(-1,-1),HexColor('#FFFFFF')),('BOX',(0,0),(-1,-1),.5,HexColor(line)),('INNERGRID',(0,0),(-1,-1),.5,HexColor(line)),('TOPPADDING',(0,0),(-1,-1),10),('BOTTOMPADDING',(0,0),(-1,-1),10),('LEFTPADDING',(0,0),(-1,-1),12)]))
+                _,h=table.wrap(full,H);table.drawOn(c,x,top-h);top-=h+9*mm
+            else:
+                for n,text in enumerate(p['steps'],1):
+                    h=16*mm if len(text)<45 else 20*mm
+                    box(x,top-h,full,h-3*mm,'#FFFFFF',5)
+                    para(f'{n:02d}',x+5*mm,top-3*mm,15*mm,13,blue,True)
+                    para(text,x+24*mm,top-3*mm,full-30*mm,12)
+                    top-=h
+                top-=5*mm
+            para(p['note'],x,top,full,10,muted)
+        c.setFont('Korean',8);c.setFillColor(HexColor(muted));c.drawString(14*mm,10*mm,'2026.11.07  ·  v'+VERSION+'  ·  실제 기관 연결·실차 제어 없음')
+        c.drawRightString(W-14*mm,10*mm,f'{i:02d} / {len(pages):02d}')
+        c.showPage()
+    c.save();return dest
+
+def html_book(pages):
+    def img(f):
+        raw=base64.b64encode((BASE/f['image']).read_bytes()).decode()
+        return 'data:image/jpeg;base64,'+raw
+    nav=''.join(f'<a href="#{p["id"]}"><span>{i:02d}</span>{escape(p["title"])}</a>' for i,p in enumerate(pages,1))
+    blocks=[]
+    for i,p in enumerate(pages,1):
+        steps=''.join('<li>'+escape(t)+'</li>' for t in p['steps'])
+        heading='h1' if p['type']=='cover' else 'h2'
+        if 'frame' in p:
+            f=p['frame'];media=f'<figure><button class="image" aria-label="{escape(p["title"])} 화면 확대"><img src="{img(f)}" alt="{escape(f["title"])} 실제 Android 앱 화면"></button><figcaption>{escape(f["path"])}<br><span>실제 APK 화면 · {escape(f["kind"])}</span></figcaption></figure>'
+        else:
+            tag='보호 화면 안내도 · 실제 캡처 아님' if p['id'].startswith('health') or p.get('protectedDiagram') else '전체 흐름'
+            media=f'<div class="diagram"><p class="tag">{tag}</p>'+''.join(f'<div class="flow"><b>{n:02d}</b><span>{escape(t)}</span></div>' for n,t in enumerate(p['steps'],1))+'</div>'
+        body=f'<div class="guide"><h3>{"확인할 내용" if "frame" not in p else "이렇게 사용하세요"}</h3><ol>{steps}</ol><p class="note">{escape(p["note"])}</p></div>'
+        if 'frame' not in p:body=f'<div class="guide"><h3>범위와 확인 사항</h3><p class="note">{escape(p["note"])}</p></div>'
+        blocks.append(f'<section id="{p["id"]}"><header><p class="eyebrow">{escape(p["group"])} · {i:02d}/{len(pages):02d}</p><{heading}>{escape(p["title"])}</{heading}><p class="lead">{escape(p["lead"])}</p></header><div class="spread">{media}{body}</div></section>')
+    page='''<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>LifeLink 119 이용·시연 매뉴얼 v0.17</title><style>
+    *{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;background:#f6f4ee;color:#162536;font:17px/1.7 'Malgun Gothic',system-ui,sans-serif;word-break:keep-all;overflow-wrap:anywhere}a{color:#23558b}button{font:inherit;cursor:pointer}.top{padding:22px 32px;background:#162536;color:#f6f4ee;display:flex;justify-content:space-between;align-items:center;gap:20px}.top b{font-size:23px}.top small{color:#d2dde8}.layout{display:grid;grid-template-columns:280px minmax(0,1fr)}nav{position:sticky;top:0;height:100vh;overflow:auto;padding:24px 16px;background:#fff;border-right:1px solid #d8e0e7}nav a{display:flex;gap:10px;padding:8px 10px;text-decoration:none;border-radius:6px;font-size:13px;color:#34465a}nav a:hover{background:#e8eef4}nav span{font-variant-numeric:tabular-nums;color:#748292}nav input{width:100%;font:inherit;font-size:14px;padding:12px;border:1px solid #9aabba;border-radius:6px;margin-bottom:18px}main{min-width:0;padding:20px 32px}section{padding:30px 0 50px;border-bottom:1px solid #d8e0e7;scroll-margin-top:24px}h1,h2,h3,p{margin:0}h1,h2{font-size:clamp(24px,2.6vw,35px);line-height:1.4;margin:8px 0 12px;font-weight:600}.eyebrow{font-size:13px;color:#23558b}.lead{color:#526477;margin-bottom:26px;font-size:16px}.spread{display:grid;grid-template-columns:minmax(0,2.2fr) minmax(210px,1fr);gap:28px;align-items:start}figure{margin:0;min-width:0}.image{display:block;border:0;background:transparent;padding:0;width:100%;text-align:left}.image img{width:100%;display:block;border-radius:8px}.image:hover{outline:2px solid #23558b;outline-offset:4px}figcaption{font-size:12px;color:#526477;margin-top:12px}figcaption span{color:#23558b}.guide h3{font-size:17px;margin-bottom:12px}.guide ol{padding-left:22px;margin:0}.guide li{font-size:15px;margin-bottom:14px}.note{font-size:13px;color:#526477;border-left:3px solid #879db2;padding-left:14px;margin-top:22px}.diagram{padding:24px;background:#e8eef4;border-radius:8px}.tag{font-size:13px;color:#23558b;margin-bottom:18px}.flow{display:flex;gap:20px;align-items:center;padding:16px;background:white;margin-bottom:12px;border-radius:6px;font-size:16px}.flow b{color:#23558b;font-size:22px;font-variant-numeric:tabular-nums}.credit{padding:30px;font-size:12px;color:#526477}dialog{width:min(1320px,96vw);max-width:96vw;max-height:96vh;overflow:auto;border:0;background:#fff;padding:18px;border-radius:8px}dialog::backdrop{background:#07111ddd}dialog img{width:1280px;max-width:none;max-height:none;display:block}dialog button{position:sticky;top:0;left:calc(100% - 80px);display:block;margin:0 0 12px auto;min-height:44px;padding:8px 20px;border:1px solid #8a9aab;border-radius:6px;background:#e8eef4;color:#162536}:focus-visible{outline:3px solid #23558b;outline-offset:4px}@media(max-width:1150px){.layout{grid-template-columns:240px minmax(0,1fr)}.spread{grid-template-columns:1fr}.guide{max-width:760px}}@media(max-width:700px){.top{padding:18px;display:block}.top small{display:block;margin-top:8px}.layout{display:block}nav{position:relative;height:auto;max-height:260px;border-bottom:1px solid #d8e0e7}main{padding:0 18px}section{padding:28px 0}.spread{gap:18px}.flow{font-size:14px;padding:14px;gap:14px}}@media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}@media print{nav,.top,dialog{display:none}.layout{display:block}main{padding:0}section{break-after:page;border:0}.spread{grid-template-columns:2fr 1fr}h2{font-size:24px}.credit{display:none}}
+    [hidden]{display:none!important}</style><div class="top"><b>LifeLink 119 · 이용·시연 매뉴얼</b><small>v0.17.0 · 2026.11.07 · 실제 기관 연결·실차 제어 없음</small></div><div class="layout"><nav aria-label="화면별 목차"><input id="search" type="search" placeholder="목차 검색" aria-label="목차 검색">NAV</nav><main>CONTENT<footer class="credit">실제 Android 앱 공개 화면을 촬영했습니다. 보호 화면은 캡처를 우회하지 않고 절차 안내도로 설명했습니다.<br>UI 개선 참고: unslop by Damir Sokolovsky (@heydamir), CC BY 4.0 · https://github.com/heydamir/unslop</footer></main></div><dialog id="zoom"><button id="close">닫기</button><img alt="확대한 실제 앱 화면"></dialog><script>
+    const zoom=document.querySelector('#zoom');document.querySelectorAll('.image').forEach(b=>b.addEventListener('click',()=>{zoom.querySelector('img').src=b.querySelector('img').src;zoom.showModal()}));document.querySelector('#close').addEventListener('click',()=>zoom.close());document.querySelector('#search').addEventListener('input',e=>{const q=e.target.value.trim().toLowerCase();document.querySelectorAll('nav a').forEach(a=>a.hidden=!a.textContent.toLowerCase().includes(q))});
+    </script></html>'''.replace('NAV',nav).replace('CONTENT',''.join(blocks))
+    dest=OUT/'LifeLink119_Manual_v0.17.html';dest.write_text(page,encoding='utf-8');return dest
+
+def main():
+    manifest=json.loads((BASE/'capture-manifest.json').read_text(encoding='utf-8'))
+    assert manifest['status']=='PASS','Capture every required public screen first'
+    for f in manifest['frames']:assert hashlib.sha256((BASE/f['image']).read_bytes()).hexdigest()==f['sha256']
+    OUT.mkdir(parents=True,exist_ok=True);pages=build_pages(manifest)
+    pdf=pdf_book(pages);html=html_book(pages)
+    (BASE/'manual-content.json').write_text(json.dumps(pages,ensure_ascii=False,indent=2),encoding='utf-8')
+    report={'version':VERSION,'pages':len(pages),'actualNativeScreens':len(manifest['frames']),'protectedPages':'Workflow diagrams only; FLAG_SECURE preserved','apkSha256':manifest['apkSha256'],'files':{p.name:{'bytes':p.stat().st_size,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()} for p in [pdf,html]}}
+    (OUT/'manifest.json').write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8');print(json.dumps(report,ensure_ascii=False,indent=2))
+
+if __name__=='__main__':main()

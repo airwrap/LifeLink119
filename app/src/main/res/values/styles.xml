@@ -1,9 +1,39 @@
 <resources>
-    <style name="Theme.LifeLink" parent="android:style/Theme.Material.Light.NoActionBar">
-        <item name="android:statusBarColor">#08111E</item>
-        <item name="android:navigationBarColor">#08111E</item>
+    <style name="Theme.LifeLink" parent="android:style/Theme.Material.NoActionBar">
+        <item name="android:windowBackground">#191C22</item>
+        <item name="android:colorBackground">#191C22</item>
+        <item name="android:colorBackgroundFloating">#292F38</item>
+        <item name="android:textColorPrimary">#F3F5F8</item>
+        <item name="android:textColorSecondary">#C4CDD8</item>
+        <item name="android:textColorHint">#C4CDD8</item>
+        <item name="android:colorAccent">#A7C7F4</item>
+        <item name="android:colorControlNormal">#C4CDD8</item>
+        <item name="android:colorControlActivated">#A7C7F4</item>
+        <item name="android:colorButtonNormal">#D2DDE8</item>
+        <item name="android:buttonStyle">@style/Widget.LifeLink.Action</item>
+        <item name="android:buttonBarButtonStyle">@style/Widget.LifeLink.Action</item>
+        <item name="android:buttonBarPositiveButtonStyle">@style/Widget.LifeLink.Action</item>
+        <item name="android:buttonBarNegativeButtonStyle">@style/Widget.LifeLink.Action</item>
+        <item name="android:buttonBarNeutralButtonStyle">@style/Widget.LifeLink.Action</item>
+        <item name="android:colorError">#F2A9A2</item>
+        <item name="android:statusBarColor">#191C22</item>
+        <item name="android:navigationBarColor">#191C22</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar">false</item>
         <item name="android:fontFamily">sans</item>
         <item name="android:windowActionModeOverlay">true</item>
+    </style>
+    <style name="Widget.LifeLink.Action" parent="android:style/Widget.Material.Button.Borderless">
+        <item name="android:background">@drawable/dialog_action_background</item>
+        <item name="android:textColor">@color/action_text</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="android:gravity">center</item>
+        <item name="android:minHeight">96dp</item>
+        <item name="android:minWidth">96dp</item>
+        <item name="android:textSize">24sp</item>
+        <item name="android:paddingLeft">24dp</item>
+        <item name="android:paddingRight">24dp</item>
+        <item name="android:paddingTop">16dp</item>
+        <item name="android:paddingBottom">16dp</item>
     </style>
 </resources>

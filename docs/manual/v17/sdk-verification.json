@@ -1,0 +1,33 @@
+{
+  "status": "SDK_VALUE_CHANGES_VERIFIED",
+  "appVersion": "0.17.0-demo",
+  "sdkVersion": "2.3.2",
+  "apkSha256": "2f46c2524b371e2d11a70d18b0ea76f7f4d35288366dfd5a8ed7dbf42ad821f5",
+  "fixtureRestore": "PASS",
+  "cases": [
+    {
+      "label": "baseline",
+      "driverDoor": 0,
+      "socPercent": 100
+    },
+    {
+      "label": "door_open_soc80",
+      "driverDoor": 1,
+      "socPercent": 80
+    },
+    {
+      "label": "door_closed_soc15",
+      "driverDoor": 0,
+      "socPercent": 15
+    },
+    {
+      "label": "restored",
+      "driverDoor": 0,
+      "socPercent": 100
+    }
+  ],
+  "airbag": "UNSUPPORTED",
+  "inputs": "Official Console simulated values; actual installed application Gateway/SDK, no EXAMPLE fallback",
+  "realVehicleTested": false,
+  "networkBootstrapUsed": false
+}

@@ -34,9 +34,11 @@ class DemoWorkflowTest {
         assertEquals(DiagnosticStatus.UNSUPPORTED, BatteryReadPolicy.capability("WRITE")!!.status)
         assertEquals(DiagnosticStatus.UNSUPPORTED, BatteryReadPolicy.capability("NONE")!!.status)
     }
-    @Test fun batteryNullAndZeroAreDifferentAndRawValueIsNotRescaled() {
+    @Test fun batteryNullAndZeroAreDifferentAndPercentageIsValidated() {
         assertEquals(DiagnosticStatus.UNAVAILABLE, BatteryReadPolicy.position(null).status)
         assertEquals(DiagnosticStatus.READ, BatteryReadPolicy.position(0).status)
-        assertTrue(BatteryReadPolicy.position(7200).message.contains("7200"))
+        assertEquals(DiagnosticStatus.ERROR,BatteryReadPolicy.position(7200).status)
+        assertNull(BatteryReadPolicy.position(7200).rawValue)
+        assertEquals(72.0,BatteryReadPolicy.position(72).rawValue!!,0.0)
     }
 }

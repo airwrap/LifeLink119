@@ -1,0 +1,17 @@
+{
+  "reviewType": "public_source_research_and_static_code_review",
+  "implementedChanges": false,
+  "liveRegistrationTested": false,
+  "realCallTested": false,
+  "officialLookupTested": false,
+  "relativeDocumentLinksValid": true,
+  "userProvidedImageValid": true,
+  "plannedAcceptanceScenarios": 20,
+  "sourceSha256": {
+    "app/src/main/java/com/lifelink119/app/data/PersonalHealthRecord.kt": "202994c69a4a9ee3dcd00ef785155eccec5645ad212ef111a2e82c9194d4c6d3",
+    "app/src/main/java/com/lifelink119/app/data/ExperienceData.kt": "d2d9ecfb0cbd0ffa3a421dca75a09ff4747326ea275e6212a02da0ab930a94bb",
+    "app/src/main/java/com/lifelink119/app/core/Experience.kt": "143a11af1c86a10b88cef8ed448d10383163cd85550f48d7914b70689971c900",
+    "app/src/main/java/com/lifelink119/app/ui/ExpansionUi.kt": "59eba5f981e0850d28c36f1aeb449d998ce3a5d26f08eded89127e9e728b3a58",
+    "docs/MEDICAL_PRIVACY.md": "a78aeb2247f8b7d9aa12933919be454d2396c5a8107e51e1e2fc990598d179ed"
+  }
+}

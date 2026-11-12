@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="vehicle_metric_caption">%1$s · %2$s</string>
+    <item type="id" name="x_vehicle_context" />
+    <item type="id" name="x_vctx_source" />
+    <item type="id" name="x_vctx_state" />
+    <item type="id" name="x_vctx_refresh" />
+    <item type="id" name="x_vctx_watch" />
+    <item type="id" name="x_vctx_door" />
+    <item type="id" name="x_vctx_soc" />
+    <item type="id" name="x_vctx_airbag" />
+    <item type="id" name="x_vctx_age" />
+    <item type="id" name="x_vctx_consent" />
+    <item type="id" name="x_vctx_share" />
+    <item type="id" name="x_vctx_receipt" />
+    <item type="id" name="x_vctx_center" />
+    <item type="id" name="x_vctx_revoke" />
+    <item type="id" name="x_vctx_normal" />
+    <item type="id" name="x_vctx_incident" />
+    <item type="id" name="x_vctx_missing" />
+    <item type="id" name="x_vctx_stale" />
+    <item type="id" name="x_vctx_power" />
+    <item type="id" name="x_ev_import_soc" />
+    <item type="id" name="x_ev_manual_soc" />
+    <item type="id" name="x_ev_soc_source" />
+</resources>

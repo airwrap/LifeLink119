@@ -22,4 +22,5 @@
     <item name="x_driving_restricted" type="id"/>
     <item name="x_driving_reconfirm" type="id"/>
     <item name="x_driving_extra" type="id"/>
+    <item name="x_driving_details" type="id"/>
 </resources>

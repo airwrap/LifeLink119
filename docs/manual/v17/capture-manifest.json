@@ -1,0 +1,340 @@
+{
+  "status": "PASS",
+  "version": "0.17.0-demo",
+  "platform": "Standard Android34 / actual native Activity Views",
+  "resolution": "1280x800",
+  "frames": [
+    {
+      "id": "home",
+      "title": "네 가지 시작 메뉴",
+      "path": "홈",
+      "kind": "앱 내 모의 동작",
+      "image": "images/home.jpg",
+      "sha256": "95633cfd50d027383cc39df782db6d57d3a772986c22ee9d4850b9d2e6707427"
+    },
+    {
+      "id": "more",
+      "title": "차량 상태와 추가 기능",
+      "path": "홈 → 더보기",
+      "kind": "앱 내 모의 동작",
+      "image": "images/more.jpg",
+      "sha256": "c61cdd350f61388bdf68b73822f4e974f91728e380a1ac8d73295e90fb2bb001"
+    },
+    {
+      "id": "agency",
+      "title": "119와 112 선택",
+      "path": "더보기 → 119·112 선택",
+      "kind": "앱 내 모의 동작",
+      "image": "images/agency.jpg",
+      "sha256": "d57f8867cd61b59b4a24bd38b7fae17b92a97a2f9d5998da555a66d8d36eb5ee"
+    },
+    {
+      "id": "tools",
+      "title": "상황별 체험과 설정",
+      "path": "더보기 → 설정·도구",
+      "kind": "앱 내 모의 동작",
+      "image": "images/tools.jpg",
+      "sha256": "972fb4ef7e76a8ee37085e92c751fe52af204797ce76643effd68007fb0891f3"
+    },
+    {
+      "id": "driving-setup",
+      "title": "주행 중 도움 요청",
+      "path": "설정·도구 → 주행 중 도움 요청",
+      "kind": "앱 내 모의 동작",
+      "image": "images/driving-setup.jpg",
+      "sha256": "ba85a1d582e8af1d4ee6ef07f10826bbfa2eedb3f468c07f74baee4fe1cdb38d"
+    },
+    {
+      "id": "driving",
+      "title": "119 긴급 요청 연결 화면",
+      "path": "홈 → 구조·구급",
+      "kind": "앱 내 모의 동작",
+      "image": "images/driving.jpg",
+      "sha256": "9191da3e22ddb4c9518f4d5ef1b2a186768e316faa5deeae95d0fe30b0594716"
+    },
+    {
+      "id": "driving-details",
+      "title": "상황과 선택 정보 전달",
+      "path": "119 연결 → 상황·정보 전달",
+      "kind": "앱 내 모의 동작",
+      "image": "images/driving-details.jpg",
+      "sha256": "a97df729e3aec3409325649d14f0f41a546d003b1809f9bace1c4405c5cf6ac4"
+    },
+    {
+      "id": "driving-ack",
+      "title": "상황실 역할의 내용 확인",
+      "path": "상황 전달 → 상황실 역할 · 내용 확인",
+      "kind": "앱 내 모의 동작",
+      "image": "images/driving-ack.jpg",
+      "sha256": "7714979e41be7ac46b258eaeeed70acda6230b9e6e221453676f84bf1082a9ba"
+    },
+    {
+      "id": "driving-location",
+      "title": "가상 위치의 선택적 공유",
+      "path": "상황·정보 전달 → 가상 위치만 공유",
+      "kind": "앱 내 모의 동작",
+      "image": "images/driving-location.jpg",
+      "sha256": "07175b0a988cf0162196a9b52c20b6a4b5bb8393d5dda16230d75122df905e2c"
+    },
+    {
+      "id": "vehicle-example",
+      "title": "출처를 구분하는 차량 상태",
+      "path": "차량 상태 → 일반 상태 예시",
+      "kind": "명시적으로 선택한 예시 데이터",
+      "image": "images/vehicle-example.jpg",
+      "sha256": "fa7af35ca143f356221daedea4cec6184b218cb2e4372b7cc6c8d409a370bb30"
+    },
+    {
+      "id": "vehicle-values",
+      "title": "도어·SoC·에어백 예시 값",
+      "path": "차량 상태 → 일반 상태 예시",
+      "kind": "명시적으로 선택한 예시 데이터",
+      "image": "images/vehicle-values.jpg",
+      "sha256": "fa7af35ca143f356221daedea4cec6184b218cb2e4372b7cc6c8d409a370bb30"
+    },
+    {
+      "id": "vehicle-receipt",
+      "title": "동의한 차량 상태의 앱 내 수신",
+      "path": "차량 상태 → 동의 → 선택한 차량 상태 전달",
+      "kind": "예시 데이터의 앱 내 전달",
+      "image": "images/vehicle-receipt.jpg",
+      "sha256": "cb757b456c04a8f9a8e3a1578907a04118af7ff1c24bd6a7ff823ffdc23d7470"
+    },
+    {
+      "id": "ev-result",
+      "title": "SoC 80%를 반영한 EV 계산",
+      "path": "차량 상태 → 배터리 잔량으로 EV 계산 → 최근 SoC 불러오기",
+      "kind": "예시 SoC와 수동 가정의 계산",
+      "image": "images/ev-result.jpg",
+      "sha256": "ff5014a9ec5390f62365b63a0508e14ada3a874066adca97b7155faadbf4d6dd"
+    },
+    {
+      "id": "vehicle-stale",
+      "title": "오래된 값의 전달 차단",
+      "path": "차량 상태 → 오래된 값 예시",
+      "kind": "만료 상태 예시",
+      "image": "images/vehicle-stale.jpg",
+      "sha256": "982e557c0fa4e8ead9adc2e618fc643609ef80bab797bab1a6c54d01110f085a"
+    },
+    {
+      "id": "handover",
+      "title": "안전 확보와 대응팀 인계",
+      "path": "상황·정보 전달 → 안전 확보 알림 → 인계 확인",
+      "kind": "앱 내 모의 동작",
+      "image": "images/handover.jpg",
+      "sha256": "3ca6d8d6da66e9fd8f9e72f5d8e39546f1a8b99c6e1fb8fbd5eaca9754bd1a0a"
+    },
+    {
+      "id": "finish",
+      "title": "종료 후 공유정보 정리",
+      "path": "인계 확인 → 완료·공유정보 정리",
+      "kind": "앱 내 모의 동작",
+      "image": "images/finish.jpg",
+      "sha256": "f54230d7bb61085ddc4e9b3495bbd439c49030500a7c1fc35ff8330dc9770639"
+    },
+    {
+      "id": "consult",
+      "title": "의료상담과 심리상담 선택",
+      "path": "홈 → 의료·심리상담",
+      "kind": "앱 내 모의 동작",
+      "image": "images/consult.jpg",
+      "sha256": "b51d93315d5a40c14a28d8d5d80a1e60e673ea9110ec293365d698b56e28b334"
+    },
+    {
+      "id": "medical-session",
+      "title": "119 의료상담 연결",
+      "path": "상담 → 119 응급의료상담",
+      "kind": "앱 내 모의 동작",
+      "image": "images/medical-session.jpg",
+      "sha256": "e2fbc5b18badf743407d6fdab3e09e619943f3cbfa3c301a4fe53ad2c70e3870"
+    },
+    {
+      "id": "video-request",
+      "title": "영상 안내 요청",
+      "path": "119 연결 → 영상 안내",
+      "kind": "앱 내 모의 동작",
+      "image": "images/video-request.jpg",
+      "sha256": "989e03e1cf518da5468e3192eca8d3e8a226c141e07a7110fe7ecd64fc6a77f1"
+    },
+    {
+      "id": "video-consent",
+      "title": "별도 영상 사용 동의",
+      "path": "영상 안내 → 요청",
+      "kind": "앱 내 모의 동작",
+      "image": "images/video-consent.jpg",
+      "sha256": "0a3d6e2b1623fae59b064fc34cc8f15dca874f58a1b414706ed403e7b8ab70a6"
+    },
+    {
+      "id": "video-active",
+      "title": "합성 영상과 상황실 안내",
+      "path": "동의 → 영상 안내 시작",
+      "kind": "합성 장면 · 실제 촬영·통화 없음",
+      "image": "images/video-active.jpg",
+      "sha256": "2d438e6a7bec86a8de6a076360e1660d49edc159ea6da8902d66daa2a078e797"
+    },
+    {
+      "id": "counsel109",
+      "title": "109 심리상담",
+      "path": "홈 → 의료·심리상담 → 109",
+      "kind": "앱 내 모의 동작",
+      "image": "images/counsel109.jpg",
+      "sha256": "304247730dcd2245cfbdce454dc580a071dc503de08e7ac9789c836cbd04be15"
+    },
+    {
+      "id": "emergency112",
+      "title": "112 긴급신고",
+      "path": "홈 → 경찰 신고",
+      "kind": "앱 내 모의 동작",
+      "image": "images/emergency112.jpg",
+      "sha256": "7114918fa76b479d3d488d2f72434e308a2ab2d96bfef07cecadc28c893ddf3d"
+    },
+    {
+      "id": "support",
+      "title": "상황에 맞는 추가 지원",
+      "path": "연결 화면 → 추가 지원",
+      "kind": "앱 내 모의 동작",
+      "image": "images/support.jpg",
+      "sha256": "5c9e7bccd393acec458246b1b5b132f4fbb711313d8782abf153b54feb676327"
+    },
+    {
+      "id": "phrases",
+      "title": "큰 의사표현 카드와 답장",
+      "path": "추가 지원 → 문자·의사표현",
+      "kind": "앱 내 모의 동작",
+      "image": "images/phrases.jpg",
+      "sha256": "5d4fca6ba755ac1a47d64364fc13ae25f28544360de448edf3ba62624ded3d6c"
+    },
+    {
+      "id": "sign",
+      "title": "수어통역 연결 상태",
+      "path": "추가 지원 → 수어통역",
+      "kind": "앱 내 모의 동작",
+      "image": "images/sign.jpg",
+      "sha256": "d10a55fc76785ee06ac3df28fb045a1bd5066ea9d739aa37e374f39383e9c7fc"
+    },
+    {
+      "id": "voice",
+      "title": "음성 안내 문장 강조",
+      "path": "시각장애 상황 예시 → 추가 지원 → 음성 도움말",
+      "kind": "앱 내 모의 동작",
+      "image": "images/voice.jpg",
+      "sha256": "cfa7aa405983d817bfbd92bba2d81f0815e21d89b777e76fff19ea018cd1d766"
+    },
+    {
+      "id": "easy",
+      "title": "하나씩 안내하는 쉬운 화면",
+      "path": "인지장애 상황 예시 → 추가 지원 → 쉬운 안내",
+      "kind": "앱 내 모의 동작",
+      "image": "images/easy.jpg",
+      "sha256": "8e6eea453af573995d4688ae9ae5e5829ff2179e28e87ee962da1fbc8150e225"
+    },
+    {
+      "id": "police-review",
+      "title": "기관 역할의 검토 단계",
+      "path": "이송·112 협조 예시 → 추가 지원 → 112 공동대응",
+      "kind": "앱 내 모의 동작",
+      "image": "images/police-review.jpg",
+      "sha256": "cb0cef32b325fd23ab0fbd7d3d4f61c742e91e4d7b2274fedc2ced072768f6ad"
+    },
+    {
+      "id": "police-approved",
+      "title": "가상 승인 결과",
+      "path": "112 공동대응 → 가상 112 역할 승인",
+      "kind": "앱 내 모의 동작",
+      "image": "images/police-approved.jpg",
+      "sha256": "dcba5f9f360324edf71dd64065ec659b129caa491514e1804cb508d2cc1c1a4e"
+    },
+    {
+      "id": "navigation-gate",
+      "title": "전문가 안내가 필요한 목적지 설정",
+      "path": "추가 지원 → 만남 장소 확인",
+      "kind": "앱 내 모의 동작",
+      "image": "images/navigation-gate.jpg",
+      "sha256": "40d3a0c137195eca35b41c94f3a5f8798ec54a6085be7d328a85b1043492794d"
+    },
+    {
+      "id": "location",
+      "title": "선택적으로 공유하는 가상 위치",
+      "path": "추가 지원 → 위치·차량 정보",
+      "kind": "앱 내 모의 동작",
+      "image": "images/location.jpg",
+      "sha256": "2b77e244c7847148a10139a970b1b0076daa5c352a0f24b91d95d80af70b04f7"
+    },
+    {
+      "id": "cooperation-review",
+      "title": "참여 가능한 협력 차량 확인",
+      "path": "설정·도구 → 주변 차량 협력 → 상황 확인",
+      "kind": "앱 내 모의 동작",
+      "image": "images/cooperation-review.jpg",
+      "sha256": "00298f416bcfa590f62af00feff5d97a89182cbcbda7d7f7957f801d80aaa067"
+    },
+    {
+      "id": "cooperation-mission",
+      "title": "수락 후 가상 임무 부여",
+      "path": "협력 차량 초대 → 수락 → 119 역할 임무 부여",
+      "kind": "앱 내 모의 동작",
+      "image": "images/cooperation-mission.jpg",
+      "sha256": "089525928111a0835e0e73dc1d7d3daf56a7f443a38ab742f02da7f996541ae7"
+    },
+    {
+      "id": "cooperation-display",
+      "title": "별도 승인 후 화면 표시",
+      "path": "표시 승인 요청 → 검토 → 한시 승인 → 시작",
+      "kind": "앱 화면 표시 모형 · 실제 차량 등화 아님",
+      "image": "images/cooperation-display.jpg",
+      "sha256": "1731a2c78cd799dca657558224d175913412e093d2d62c1a97f520167b31daa8"
+    },
+    {
+      "id": "manual-topics",
+      "title": "오프라인 응급 매뉴얼 목록",
+      "path": "더보기 → 응급 매뉴얼",
+      "kind": "앱 내 모의 동작",
+      "image": "images/manual-topics.jpg",
+      "sha256": "0948170aea3e3989f41da4a93dcf42f23903d1c7dea32e7e488ea63296ad1e2f"
+    },
+    {
+      "id": "manual-detail",
+      "title": "응급 매뉴얼 읽기",
+      "path": "응급 매뉴얼 → 첫 번째 항목",
+      "kind": "앱 내 모의 동작",
+      "image": "images/manual-detail.jpg",
+      "sha256": "0ee450a44434059a3d8c69b365c76ca4c5c0a4fb6ebb5a5f3482b96ef856a28a"
+    },
+    {
+      "id": "accessibility",
+      "title": "큰 글씨와 쉬운 안내 설정",
+      "path": "더보기 → 설정·도구 → 접근성 설정",
+      "kind": "앱 내 모의 동작",
+      "image": "images/accessibility.jpg",
+      "sha256": "90ccaba27db4fb1476a9e236caefed891510e8c5d535fe1b74813db38be9b030"
+    },
+    {
+      "id": "privacy",
+      "title": "의료정보 잠금과 관리",
+      "path": "설정·도구 → 의료정보 잠금·PIN",
+      "kind": "앱 내 모의 동작",
+      "image": "images/privacy.jpg",
+      "sha256": "598a0739865632ac55e392f09e6db3feeb7a45a7780177270e20832dae5f3af7"
+    },
+    {
+      "id": "gallery",
+      "title": "19개 상황별 체험",
+      "path": "설정·도구 → 상황별 체험",
+      "kind": "앱 내 모의 동작",
+      "image": "images/gallery.jpg",
+      "sha256": "6ce021619b45a5dc233eb0a0f001442d26904790603b60f61d8a2a5b9c96e568"
+    }
+  ],
+  "protected": [
+    {
+      "feature": "안심콜·건강정보·가족 관리",
+      "capture": "NOT_CAPTURED",
+      "privacyValidation": "Native UI regression: FLAG_SECURE refused; same APK hash",
+      "pinEntered": false,
+      "recordsModified": false
+    }
+  ],
+  "displayRestored": true,
+  "medical": "No PIN submitted; no records created, changed or reset",
+  "apkSha256": "2f46c2524b371e2d11a70d18b0ea76f7f4d35288366dfd5a8ed7dbf42ad821f5"
+}

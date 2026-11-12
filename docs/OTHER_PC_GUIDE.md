@@ -1,8 +1,10 @@
-# 새 PC에서 개발 시작하기 · LifeLink 119 v0.11
+# 새 PC에서 개발 시작하기 · LifeLink 119 v0.18
 
 **시연 모드 | 실제 신고·상담 연결 아님**
 
 비공개 저장소: <https://github.com/airwrap/LifeLink119>. 초대받은 GitHub 계정으로 접근합니다. 소스·테스트·문서·Gradle wrapper를 공유하며 APK·JDK·SDK·AVD·가상환경·빌드 캐시·검증 로그·`local.properties`는 포함하지 않습니다.
+
+소개 영상 소스는 별도 비공개 저장소 <https://github.com/airwrap/LifeLink119-video>에 있습니다. 두 프로젝트를 같은 부모 폴더 아래 나란히 배치하고 영상 저장소의 `MIGRATION.md`를 따릅니다. 본체 빌드에 영상 도구는 필요하지 않습니다.
 
 ## 코드 받기
 
@@ -127,3 +129,24 @@ GitHub Actions는 Windows에서 Python 테스트·계약 검사, Linux에서 And
 | Android와 PC 연결 실패 | debug 빌드·서버 health·대상 serial의 ADB reverse; release는 보조 HTTP 연결 비활성 |
 
 macOS/Linux Android 빌드는 JDK 17과 SDK 준비 뒤 `./gradlew :app:assembleDebug :app:testDebugUnitTest`를 사용합니다. Pleos 이미지의 호스트 OS·CPU 지원은 공식 배포 안내를 확인해야 하며 해당 OS의 런처·AVD 동작은 이번에 검증하지 않았습니다.
+
+
+## v0.17 UI와 전체 매뉴얼
+
+현재 앱은 차콜 배경과 밝은 버튼을 사용합니다. [전체 매뉴얼 HTML](manual/v17/output/LifeLink119_Manual_v0.17.html)은 설치 없이 로컬에서 열 수 있고, 실제 공개 화면과 보호 화면의 절차를 구분해 안내합니다. [PDF](manual/v17/output/pdf/LifeLink119_Manual_v0.17.pdf)는 인쇄·제출용입니다. 빌드·UI·SDK 검증은 [v0.17 기록](UI_BRIGHT_CONTROLS_V17.md)을 참고하세요.
+
+SDK 검사 결과의 기본 위치는 `verification/pleos-sdk-current/results.json`입니다. cold boot 뒤 Console 게시자가 늦게 준비될 수 있어 최대 120초를 기다립니다. 별도 APK 설치기는 현재 Android 사용자를 확인하고 앱 데이터를 유지한 채 시간 제한이 있는 push+PackageManager 설치를 사용합니다. 실제 차량·추가 차량 제어 권한이나 실제 기관 연결은 필요하지 않습니다.
+
+## 차량 데이터 기능 확인
+
+기존 `Vehicle:2.3.2`와 JDK/SDK 설정을 그대로 사용합니다. 앱에 문서화된 읽기 권한 CAR_DOORS·CAR_ENERGY·CAR_SAFETY가 선언되어 있습니다. 임의 차량 제어 권한이나 실제 신고 API 설정은 필요하지 않습니다.
+
+- **일반 Android 에뮬레이터**: UI 개발과 명시적 예시 회귀가 가능합니다. 차량 상태에서 SDK 조회 시 확인 불가가 정상이며 이를 SDK 성공으로 간주하지 않습니다.
+- **정상 Pleos Connect 에뮬레이터**: 더보기 → 차량 상태 → 새로 조회. Virtual Console에서 도어 상태를 변경하고 SDK 반환값이 앱에 반영되는지 확인합니다. 표준 Android의 예시 화면 검사와 별도로 기록합니다.
+- **119·112 연결 후**: 최신 차량 조회값에 동의 → 앱 내 전달 → 철회/30초 만료를 확인합니다. EV 계산에서는 최근 SoC를 직접 불러옵니다. 실제 통화·기관/PC 전송·차량 전원 제어는 하지 않습니다.
+
+이 개발 PC는 별도 AVD의 1280×720·4GB·swiftshader·cold boot·GUI 엔진으로 도어와 SoC의 실제 SDK 값 변화를 검증했습니다. 에어백은 현재 이미지에서 미지원입니다. [검증 환경·결과](SDK_RUNTIME_VERIFICATION_V16.md)를 참고하세요. `sys.boot_completed`, 차량 서비스, Console emulator_active/bridge_ready를 먼저 확인하고 heartbeat를 SDK 조회 동안 유지해야 합니다. 부팅 장애를 해결하려고 기존 AVD 데이터를 초기화하거나 실제 CarUX 제한을 끄지 마세요.
+
+JDK 17·API 34 SDK·공식 Pleos 이미지·Python 3을 설치한 Windows PC에서는 프로젝트 루트의 `Verify-Pleos-SDK.cmd`를 실행합니다. 빌드·단위 테스트·lint와 별도 읽기 전용 검사 APK 준비 후 허용된 테스트 AVD에서 공식 Console 값 변경 → 설치 앱 SDK 값 비교 → 원복을 수행합니다. 처음 실행 시 cold boot에 수 분이 걸릴 수 있습니다. SDK 값 검사에는 실제 차량·전화·상담 서버·Playwright가 필요하지 않습니다. 기존 포트가 다른 AVD에 배정되어 있으면 중단하며 기존 데이터를 지우지 않습니다. 검사 앱과 서비스 앱은 같은 PC의 debug 키로 서명해야 합니다.
+
+자동 검사에서 Console bridge가 준비되지 않았거나 SDK가 값을 읽지 못하면 실패/차단으로 남깁니다. 표준 Android의 예시 버튼 성공으로 대체하지 않습니다. 이전 APK 이름·화면·검사 수치는 각 버전의 기록이며 최신 SDK 결과는 README의 v0.16.1 항목입니다.
