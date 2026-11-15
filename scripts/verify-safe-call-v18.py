@@ -88,7 +88,7 @@ def main():
         for name,keys in [('lifelink_medical_lock_v1',{'pin_salt','pin_verifier'}),('lifelink_personal_health_v1',{'record_cipher','records_cipher'})]:
             assert not any(n.get('name') in keys for n in ET.fromstring(prefs(name)))
     try:
-        digest=verify_installed_apk(adb,ROOT/'app/build/outputs/apk/debug/app-debug.apk',sdk,'0.18.0-demo')
+        digest=verify_installed_apk(adb,ROOT/'app/build/outputs/apk/debug/app-debug.apk',sdk)
         run('shell','am','force-stop','com.lifelink119.app');run('shell','am','start','-W','-n','com.lifelink119.app/.MainActivity')
         c.start();wait('x_emergency')
         tap('x_more');tap('x_safe_official');wait('x_agency_status');tap('x_agency_proxy')
@@ -96,7 +96,11 @@ def main():
         wait('x_agency_open');mark('Public official registration guide separates self/proxy and requires no medical PIN')
         tap('x_agency_open');time.sleep(1)
         activities=run('shell','dumpsys','activity','activities').decode(errors='replace')
-        if 'https://u119.nfa.go.kr/' in activities:
+        if '.ui.OfficialHealthBrowserActivity' in activities:
+            wait('official_web_origin','HTTPS · u119.nfa.go.kr')
+            mark('Internal official browser displays the public HTTPS origin without attached personal data')
+            tap('official_web_close');wait('x_agency_status')
+        elif 'https://u119.nfa.go.kr/' in activities:
             mark('Official signup button opens its fixed public URL without attached personal data')
             run('shell','input','keyevent','4');time.sleep(.3)
             run('shell','am','start','-W','-f','0x14000000','-n','com.lifelink119.app/.MainActivity');wait('x_agency_status')

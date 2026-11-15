@@ -4,21 +4,17 @@ Uses the installed native UI; preserves the original ADB reverse and existing co
 """
 import argparse
 import json
-import os
 from pathlib import Path
 import subprocess
-import sys
-import threading
 import time
 import urllib.request
 import xml.etree.ElementTree as ET
 from native_window_client import WindowClient
 from qa_avd_guard import QaAvdGuard, android_sdk
 from ui_snapshot_client import verify_installed_apk
+from qa_console import QaConsole
 
 ROOT = Path(__file__).resolve().parents[1]
-sys.path.insert(0, str(ROOT/'console'))
-from server import make_server
 
 
 def main():
@@ -27,14 +23,13 @@ def main():
     sdk = android_sdk(); adb = [str(sdk/'platform-tools/adb.exe'), '-s', args.serial]
     guard = QaAvdGuard(adb).acquire_clean()
     restore_microphone = guard.microphone_for_test()
-    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk, '0.18.0-demo')
+    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk)
     out = ROOT/'verification/emergency-support'; out.mkdir(parents=True, exist_ok=True)
     checks = []; result = {'status': 'FAIL', 'apkSha256': digest, 'checks': checks, 'actualCalls': 0, 'privateDataCreated': False}
-    # App and server deliberately require the same Host port. Do not relax Host validation for an ADB tunnel.
-    # Refuse a busy port rather than terminating a user's existing console.
-    original_mode = os.environ.get('LIFELINK_LLM_MODE')
-    os.environ['LIFELINK_LLM_MODE'] = 'mock'  # Isolated process: this test cannot call an external model.
-    server = make_server(8781); thread = threading.Thread(target=server.serve_forever, daemon=True); thread.start()
+    # Fresh production server behind a bounded native-only QA relay. Existing :8781
+    # and production Host/Origin validation are preserved; no external model is used.
+    fixture = QaConsole(adb).__enter__()
+    server = fixture.server
     responses = []
     original_send = server.RequestHandlerClass.send_data
     def traced_send(handler, status, content, *args):
@@ -42,9 +37,6 @@ def main():
         return original_send(handler, status, content, *args)
     server.RequestHandlerClass.send_data = traced_send
     def run(*cmd): return subprocess.run(adb+list(cmd), check=True, capture_output=True, timeout=20).stdout.decode().strip()
-    original = run('reverse', '--list')
-    previous = next((line.split()[-1] for line in original.splitlines() if 'tcp:8781' in line.split()[:-1]), None)
-    run('reverse', 'tcp:8781', 'tcp:'+str(server.server_port))
     client = WindowClient(adb)
     def node(key): return ET.fromstring(client.node(key)).find('.//node')
     def tap(key):
@@ -134,11 +126,7 @@ def main():
             if node('x_finish_home') is not None: tap('x_finish_home')
         except Exception: pass
         client.close(); restore_microphone(); guard.verify_target()
-        run('reverse','--remove','tcp:8781')
-        if previous: run('reverse','tcp:8781',previous)
-        server.shutdown(); server.server_close(); thread.join()
-        if original_mode is None: os.environ.pop('LIFELINK_LLM_MODE', None)
-        else: os.environ['LIFELINK_LLM_MODE'] = original_mode
+        fixture.close()
         (out/'results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
     print('UI verification PASS',flush=True)
 

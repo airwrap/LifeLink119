@@ -19,7 +19,7 @@ def main():
     sdk = android_sdk(); adb = [str(sdk/'platform-tools/adb.exe'), '-s', args.serial]
     guard = QaAvdGuard(adb).acquire_clean()
     restore_microphone = guard.microphone_for_test(); user = guard.verify_target()
-    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk, '0.18.0-demo')
+    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk)
     os.environ['LIFELINK_TEST_PIN'] = ''.join(str(secrets.randbelow(10)) for _ in range(8))
     client = SnapshotClient(adb, auto_auth=True)
     result = {'status': 'FAIL', 'apkSha256': digest, 'checks': [], 'actualCalls': 0, 'sdk': {}}

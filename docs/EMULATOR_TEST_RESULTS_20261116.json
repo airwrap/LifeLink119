@@ -1,0 +1,410 @@
+{
+  "schemaVersion": 1,
+  "recordedAt": "2026-11-16T01:33:07.639601+09:00",
+  "appVersion": "0.18.2-browser",
+  "appCodeCommit": "a4fcfba102a336c7533532e07dcfbe1535951dc7",
+  "productionCodeChangedByThisVerification": false,
+  "debugUnit": {
+    "tests": 292,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "python": {
+    "console": {
+      "tests": 98,
+      "status": "PASS"
+    },
+    "qaHarness": {
+      "tests": 10,
+      "status": "PASS"
+    }
+  },
+  "androidInstrumentation": {
+    "debug": {
+      "tests": 5,
+      "status": "PASS"
+    },
+    "signedRelease": {
+      "tests": 5,
+      "status": "PASS"
+    }
+  },
+  "uiSuiteCount": 19,
+  "uiChecks": 157,
+  "uiStatus": "PASS",
+  "lint": {
+    "debug": {
+      "errors": 0,
+      "dependencyUpdateWarnings": 2
+    },
+    "demo": {
+      "errors": 0,
+      "dependencyUpdateWarnings": 2
+    }
+  },
+  "displaySizes": [
+    "2560x1440 Pleos 2.1.0",
+    "1280x720 standard API 34",
+    "1024x600 standard API 34, home-only; scrolling required"
+  ],
+  "lifeLinkCrashBufferEntries": {
+    "emulator-5584": 0,
+    "emulator-5588": 0
+  },
+  "signedDevelopmentReleaseSha256": "a87aad859c4a5ccb592707c1863fe4357b57bfabab1f24b8ddcc2b1df98a620c",
+  "unchangedSubmissionApkSha256": "d013570c1224616a987c5f174cd29874181e282c765470ee707cf22fd6bcc095",
+  "preservedUserEmulator": "emulator-5586",
+  "preservedConsolePort": 8781,
+  "realEmergencyCallsMade": 0,
+  "limitations": [
+    "No real account credentials or SMS verification used; SafeCall login form only.",
+    "No official agency data import, dispatch or emergency calls.",
+    "No human microphone or in-car acoustic accuracy claim.",
+    "Emulator SDK values are simulation; airbag property unsupported.",
+    "1024x600 needs scrolling for secondary home actions.",
+    "Medical content was tested for fixed-rule behavior, not clinical validation."
+  ],
+  "suites": [
+    {
+      "suite": "assistance-ui/current-official",
+      "status": "PASS",
+      "checks": [
+        "Five home actions are reachable with automotive touch targets",
+        "119 긴급신고 starts with one tap, no PIN, default private, and can end",
+        "119 응급상담 starts with one tap, no PIN, default private, and can end",
+        "109 마음상담 starts with one tap, no PIN, default private, and can end",
+        "112 경찰 신고 starts with one tap, no PIN, default private, and can end",
+        "Driving restriction preserves urgent entry and blocks video, details and text promotion",
+        "Family information still requires authentication; no protected frame captured"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95"
+    },
+    {
+      "suite": "assistance-ui/standard-1280",
+      "status": "PASS",
+      "checks": [
+        "Five home actions are reachable with automotive touch targets",
+        "119 긴급신고 starts with one tap, no PIN, default private, and can end",
+        "119 응급상담 starts with one tap, no PIN, default private, and can end",
+        "109 마음상담 starts with one tap, no PIN, default private, and can end",
+        "112 경찰 신고 starts with one tap, no PIN, default private, and can end",
+        "Driving restriction preserves urgent entry and blocks video, details and text promotion",
+        "Family information still requires authentication; no protected frame captured"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95"
+    },
+    {
+      "suite": "assistance-ui/compact-1024",
+      "status": "PASS",
+      "checks": [
+        "Five home actions are reachable with automotive touch targets"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95"
+    },
+    {
+      "suite": "refined-ux",
+      "status": "PASS",
+      "checks": [
+        "Manual fallback shows one question and exactly three answer choices",
+        "Sequential answers record chest pain; worsening replaces questions with safety guidance",
+        "Handover retains multiple symptom statements with source labels",
+        "Call-state screen has one voice entry; optional confirmation is sequential and retry remains available",
+        "Absent normal breathing stops the symptom questionnaire immediately",
+        "User-confirmed operator connection prevents AI audio"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95"
+    },
+    {
+      "suite": "safe-call-form",
+      "status": "PASS",
+      "checks": [
+        "Applicant, disease, facility, disability and responder fields retain input across validation failure",
+        "Repeated rows add and remove without losing other sections or an existing guardian",
+        "Guardian name, two relationship levels, contacts, email, residence and SMS preference are editable",
+        "Five sections save and display every supplied field after relock and configuration changes",
+        "Structured medical and guardian data remain encrypted at rest",
+        "App restart and authentication restore the saved structured record",
+        "Guardian reset changes the draft only and cancel preserves the saved guardian",
+        "Only this QA run data and temporary PIN are erased"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "qaDataRemoved": true
+    },
+    {
+      "suite": "v18",
+      "status": "PASS",
+      "checks": [
+        "Public official registration guide separates self/proxy and requires no medical PIN",
+        "Internal official browser displays the public HTTPS origin without attached personal data",
+        "Legacy manual -> home -> medical PIN authentication opens protected information",
+        "Emergency request starts while unregistered and medically locked",
+        "Unselected beneficiary is distinct from unregistered",
+        "Real Android picker/touch covers matching, different, vehicle, unknown and shared synthetic lines",
+        "Timeout, lookup error and unsupported are not misreported as unregistered",
+        "Proxy lookup requires an explicit authority attestation",
+        "Proxy attestation and per-request consent/revoke work",
+        "Validation failure keeps the unsaved editor fields",
+        "Day/night configuration changes preserve the editor draft",
+        "60-second relock and reauthentication preserve the memory-only draft",
+        "Local self record stores registration reference and direct medical history",
+        "Family records remain distinct and sensitive fields are encrypted at rest",
+        "Deleting one family record preserves the self record",
+        "Home locks medical information and reauthentication preserves saved data",
+        "Only QA-created medical data and temporary PIN are removed"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "qaDataRemoved": true
+    },
+    {
+      "suite": "emergency-support",
+      "status": "PASS",
+      "checks": [
+        "Vehicle collection remains opt-in; emergency retry remains accessible",
+        "Scenario 1: synthetic airbag and location automatically populate packet",
+        "Synthetic PC roundtrip and revocation; real data cannot enter PC payload",
+        "Scenario 2: no airbag does not imply no accident or no injury",
+        "Scenario 3: minimal moving UI, details only after synthetic stop plus platform permission",
+        "Scenario 4: delay/callback confirmation and retry retain the incident summary",
+        "Scenario 5: dispatch-wait report, one-question flow, worsening escalation and handover summary",
+        "Loopback LLM proxy accepts consented step codes and returns only an approved phrase",
+        "Scenario 6: failed LLM keeps offline guidance and emergency retry available",
+        "Operator-confirmed call blocks automatic TTS/microphone without changing call status",
+        "SDK/location unavailable scenario contains no invented values",
+        "Summary export is gated by separate explicit consent"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95"
+    },
+    {
+      "suite": "emergency-support",
+      "status": "PASS",
+      "checks": [
+        "Documented SDK collection completes without fabricating unsupported signals; output stores statuses only",
+        "Explicit authentication saves encrypted answers/timestamps without plaintext or location",
+        "Restart restores authenticated observations; connection remains unknown and AI/voice do not auto-resume",
+        "Home locks restored observations while emergency retry stays available; authentication restores access",
+        "Backgrounding masks patient observations and leaves emergency access available"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "cleanup": "PASS"
+    },
+    {
+      "suite": "refined-ux",
+      "status": "PASS",
+      "checks": [
+        "An existing saved health record is never attached to an incident automatically",
+        "Authenticated patient selection reuses saved history, allergies and medication in the human-readable packet",
+        "Removing health information immediately removes it from the packet",
+        "Family PIN expiry removes saved health data while keeping the ongoing foreground emergency dialogue available",
+        "Backgrounding revokes incident health selection; private information does not reappear on return"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "cleanup": "PASS"
+    },
+    {
+      "suite": "emergency-support",
+      "status": "PASS",
+      "checks": [
+        "Non-automotive install/start succeeds",
+        "All five SDK fields unavailable without synthetic fallback",
+        "Offline companion and retry remain available"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95"
+    },
+    {
+      "suite": "vehicle-context-v16/native",
+      "status": "PASS",
+      "checks": [
+        "Ordinary Android reports unavailable SDK values and never falls back to example success",
+        "No active session means vehicle sharing remains disabled",
+        "119 remains available without PIN; latest snapshot requires explicit consent and supports revocation",
+        "Explicit example SOC 80 percent yields 27.20 kWh with declared manual assumptions",
+        "Changed SOC 15 percent updates EV calculation; airbag remains an observation, not an automatic emergency",
+        "Missing and stale observations cannot be shared or imported as current SOC",
+        "30-second expiry withdraws local receipt and blocks imported SOC until explicit manual selection or refresh",
+        "Leaving app clears observations and vehicle consent while preserving the emergency session",
+        "Foreground polling stops on page exit; combined additional restriction gate blocks details without blocking119"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95"
+    },
+    {
+      "suite": "voice-companion/local",
+      "status": "PASS",
+      "checks": [
+        "One start begins spoken question; answer controls are collapsed by default",
+        "TTS completion automatically starts on-device microphone recognition",
+        "Two unanswered turns pause; no invented patient observation",
+        "Visible stop cancels playback and recognition immediately",
+        "Confirmed operator call blocks voice start; emergency retry remains available"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95"
+    },
+    {
+      "suite": "voice-companion/external",
+      "status": "PASS",
+      "checks": [
+        "One start begins spoken question; answer controls are collapsed by default",
+        "Real configured LLM chooses approved question through app and loopback proxy",
+        "TTS completion automatically starts on-device microphone recognition",
+        "Two unanswered turns pause; no invented patient observation",
+        "Visible stop cancels playback and recognition immediately",
+        "Confirmed operator call blocks voice start; emergency retry remains available"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "proxyResponses": [
+        {
+          "status": 200,
+          "code": null,
+          "phraseId": "CONSCIOUSNESS",
+          "fallback": false
+        },
+        {
+          "status": 200,
+          "code": null,
+          "phraseId": "CONSCIOUSNESS",
+          "fallback": false
+        }
+      ]
+    },
+    {
+      "suite": "voice-companion",
+      "status": "PASS",
+      "checks": [
+        "Unavailable real proxy falls back to fixed question without stopping the app",
+        "119 retry remains available after actual network connection failure"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "fallbackSeconds": 3.33,
+      "tunnelRestored": true
+    },
+    {
+      "suite": "minimal-voice",
+      "status": "PASS",
+      "checks": [
+        "One visible external-AI choice survives application restart; no repeated onboarding",
+        "One action from the 119 screen starts spoken questions without consent/start interstitials",
+        "Saved permission reaches the real LLM; voice can still be stopped immediately",
+        "Six synthetic voice answers advance automatically and produce a clearly simulated handover",
+        "Revocation is persistent; declining external AI does not repeat onboarding or disable local voice",
+        "Automatic demo stops on request; confirmed operator call still blocks voice"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "proxyResponses": [
+        {
+          "status": 200,
+          "code": null,
+          "phraseId": "CONSCIOUSNESS",
+          "fallback": false
+        },
+        {
+          "status": 200,
+          "code": null,
+          "phraseId": "CONSCIOUSNESS",
+          "fallback": false
+        },
+        {
+          "status": 200,
+          "code": null,
+          "phraseId": "BREATHING",
+          "fallback": false
+        },
+        {
+          "status": 200,
+          "code": null,
+          "phraseId": "CONSCIOUSNESS",
+          "fallback": false
+        }
+      ]
+    },
+    {
+      "suite": "current-browser",
+      "status": "PASS",
+      "checks": [
+        "Official SafeCall homepage -> login form via real touch; secure window retained",
+        "Closing returns to app; reopening begins a fresh public website session",
+        "Real QA network loss displays recoverable connection error",
+        "Restoring network and retrying reloads the official site",
+        "Embedded official information page loads: nfa.go.kr",
+        "Embedded official information page loads: myhealthway.go.kr"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "networkSettingsRestored": true,
+      "officialLoginCompleted": false,
+      "credentialsEntered": false,
+      "smsRequested": false
+    },
+    {
+      "suite": "current-console",
+      "status": "PASS",
+      "checks": [
+        "MEDICAL: create -> operator review/guidance -> revoke -> close",
+        "VIDEO: create -> operator review/guidance -> revoke -> close",
+        "TRANSPORT: create -> operator review/guidance -> revoke -> close",
+        "POLICE: create -> operator review/guidance -> revoke -> close",
+        "WELLBEING: create -> operator review/guidance -> revoke -> close",
+        "PC route loads: /manual",
+        "PC route loads: /experience-console",
+        "PC route loads: /cooperation",
+        "Cooperation creation requires explicit synthetic-location consent",
+        "Cooperation invite -> consent -> authorize -> simulated beacon -> handover"
+      ]
+    },
+    {
+      "suite": "current-tools",
+      "status": "PASS",
+      "checks": [
+        "Gallery S01: enter, simulated connection, end and clear",
+        "Gallery S02: enter, simulated connection, end and clear",
+        "Gallery S03: enter, simulated connection, end and clear",
+        "Gallery S04: enter, simulated connection, end and clear",
+        "Gallery S05: enter, simulated connection, end and clear",
+        "Gallery S06: enter, simulated connection, end and clear",
+        "Gallery S07: enter, simulated connection, end and clear",
+        "Gallery S08: enter, simulated connection, end and clear",
+        "Gallery S09: enter, simulated connection, end and clear",
+        "Gallery S10: enter, simulated connection, end and clear",
+        "Gallery S11: enter, simulated connection, end and clear",
+        "Gallery S12: enter, simulated connection, end and clear",
+        "Gallery S13: enter, simulated connection, end and clear",
+        "Gallery S14: enter, simulated connection, end and clear",
+        "Gallery E01: enter, simulated connection, end and clear",
+        "Gallery E02: enter, simulated connection, end and clear",
+        "Gallery E03: enter, simulated connection, end and clear",
+        "Gallery E04: enter, simulated connection, end and clear",
+        "Gallery D01: enter, simulated connection, end and clear",
+        "Offline manual first: open content and return",
+        "Offline manual cpr: open content and return",
+        "Offline manual aed: open content and return",
+        "Offline manual bleeding: open content and return",
+        "Offline manual burn: open content and return",
+        "Offline manual seizure: open content and return",
+        "Large text and easy wording persist across restart",
+        "Synthetic digital-key driver selection changes and clears",
+        "Phrase selection and simulated operator reply appear in conversation",
+        "Sign-interpreter mock requires consent and can be stopped",
+        "Guided synthetic video: request, consent, play, next, revoke",
+        "Synthetic front video: consent, preview, stop",
+        "Synthetic rear video: consent, preview, stop",
+        "Synthetic phone video: consent, preview, stop",
+        "112 mock cooperation includes independent review, rejection and approval",
+        "Mock navigation requires operator guidance, shared location and user confirmation",
+        "Nearby-vehicle mock: consent, invite, accept, authorize, display, revoke, handover"
+      ],
+      "apkSha256": "af73695c2ec5091e8177307f51d8809d1d7eb138092c4d908d93dc75a9690b95",
+      "cleanup": "PASS"
+    },
+    {
+      "suite": "current-release",
+      "status": "PASS",
+      "checks": [
+        "Signed, non-debuggable release opens the current home",
+        "x_emergency: one-action mock connection and end",
+        "x_medical: one-action mock connection and end",
+        "x_109: one-action mock connection and end",
+        "x_home_112: one-action mock connection and end",
+        "Offline automatic voice demonstration completes with synthetic handover"
+      ],
+      "apkSha256": "a87aad859c4a5ccb592707c1863fe4357b57bfabab1f24b8ddcc2b1df98a620c"
+    }
+  ]
+}

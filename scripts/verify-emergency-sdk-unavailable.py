@@ -19,7 +19,7 @@ def main():
     restore_microphone = guard.microphone_for_test()
     features = subprocess.check_output(adb+['shell','pm','list','features'],timeout=20).decode()
     if 'android.hardware.type.automotive' in features: raise RuntimeError('This check requires a non-automotive QA AVD')
-    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk, '0.18.0-demo')
+    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk)
     subprocess.run(adb+['shell','am','force-stop','com.lifelink119.app'],check=True,capture_output=True)
     subprocess.run(adb+['shell','am','start','-W','-n','com.lifelink119.app/.MainActivity'],check=True,capture_output=True)
     c = SnapshotClient(adb); result = {'status':'FAIL','apkSha256':digest,'actualCalls':0,'privateDataCreated':False}

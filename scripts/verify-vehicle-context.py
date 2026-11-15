@@ -7,6 +7,7 @@ from pathlib import Path
 import argparse, json, os, subprocess, time, xml.etree.ElementTree as ET
 from native_window_client import WindowClient
 from ui_snapshot_client import verify_installed_apk
+from qa_avd_guard import QaAvdGuard
 
 ROOT=Path(__file__).resolve().parents[1]
 
@@ -16,7 +17,7 @@ def main():
     sdk=Path(os.environ.get('ANDROID_HOME',Path(os.environ['LOCALAPPDATA'])/'Android/Sdk'))
     adb=[str(sdk/'platform-tools/adb.exe'),'-s',a.serial]
     def run(*args):return subprocess.check_output(adb+list(args),timeout=45).decode(errors='replace')
-    assert run('emu','avd','name').splitlines()[0]=='LifeLink119_Android34_UI_20261107'
+    guard = QaAvdGuard(adb).acquire_clean()
     assert 'feature:android.hardware.type.automotive' not in run('shell','pm','list','features')
     out=ROOT/'verification/vehicle-context-v16/native';out.mkdir(parents=True,exist_ok=True)
     c=WindowClient(adb);checks=[];captures=[];result={'status':'FAIL'}
@@ -106,7 +107,7 @@ def main():
         tap('x_driving_quick');wait('x_driving_restricted','플랫폼 조작 제한');tap('x_end')
         tap('x_home');tap('x_more');tap('x_tools');tap('x_test_restriction');tap('x_home')
         mark('Foreground polling stops on page exit; combined additional restriction gate blocks details without blocking119')
-        digest=verify_installed_apk(adb,ROOT/'app/build/outputs/apk/debug/app-debug.apk',sdk,'0.16.0-demo')
+        digest=verify_installed_apk(adb,ROOT/'app/build/outputs/apk/debug/app-debug.apk',sdk)
         result={'status':'PASS','checks':checks,'captures':captures,'apkSha256':digest,
             'serial':a.serial,'platform':'standard Android34: explicit fixtures, not real Pleos signal validation',
             'medical':'No PIN entered, no private data captured or reset'}

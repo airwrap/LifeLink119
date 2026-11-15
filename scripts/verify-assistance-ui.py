@@ -28,7 +28,7 @@ def main():
     sdk = android_sdk()
     adb = [str(sdk / 'platform-tools/adb.exe'), '-s', args.serial]
     QaAvdGuard(adb).acquire_clean()
-    digest = verify_installed_apk(adb, ROOT / 'app/build/outputs/apk/debug/app-debug.apk', sdk, '0.18.0-demo')
+    digest = verify_installed_apk(adb, ROOT / 'app/build/outputs/apk/debug/app-debug.apk', sdk)
     out = ROOT / 'verification/assistance-ui' / args.label
     out.mkdir(parents=True, exist_ok=True)
     client = WindowClient(adb)
@@ -37,6 +37,20 @@ def main():
 
     def node(key):
         return ET.fromstring(client.node(key)).find('.//node')
+
+    def reachable_node(key):
+        value = node(key)
+        if value is not None:
+            return value
+        if args.allow_scroll:
+            for direction in ('up', 'down'):
+                for _ in range(15):
+                    if not client.scroll(direction):
+                        break
+                    value = node(key)
+                    if value is not None:
+                        return value
+        raise AssertionError('Missing visible control: ' + key)
 
     def wait(key, expected='', seconds=10):
         until = time.monotonic() + seconds
@@ -130,7 +144,7 @@ def main():
             tap('x_home')
             tap('x_emergency')
             wait('x_session_status', '가상 상담원 응답')
-            if node('x_guided_video').get('enabled') != 'false' or node('x_driving_details').get('enabled') != 'false':
+            if reachable_node('x_guided_video').get('enabled') != 'false' or reachable_node('x_driving_details').get('enabled') != 'false':
                 raise AssertionError('Driving restriction bypassed')
             tap('x_home')
             tap('x_109')

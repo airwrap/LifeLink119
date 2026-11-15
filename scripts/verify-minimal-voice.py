@@ -8,6 +8,7 @@ import xml.etree.ElementTree as ET
 from native_window_client import WindowClient
 from qa_avd_guard import QaAvdGuard, android_sdk
 from ui_snapshot_client import verify_installed_apk
+from qa_console import QaConsole
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -16,11 +17,10 @@ def main():
     p = argparse.ArgumentParser(); p.add_argument('--serial', required=True); args = p.parse_args()
     sdk = android_sdk(); adb = [str(sdk/'platform-tools/adb.exe'), '-s', args.serial]
     guard = QaAvdGuard(adb).acquire_clean()
-    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk, '0.18.0-demo')
+    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk)
     def run(*a): return subprocess.check_output(adb+list(a), timeout=30).decode().strip()
-    user = run('shell', 'am', 'get-current-user')
-    # Documented permission on the QA device; microphone is not used by the scripted demo.
-    run('shell','pm','grant','--user',user,'com.lifelink119.app','android.permission.RECORD_AUDIO')
+    restore_microphone = guard.microphone_for_test()
+    fixture = QaConsole(adb, external=True)
     client = WindowClient(adb)
     out = ROOT/'verification/minimal-voice'; out.mkdir(parents=True, exist_ok=True)
     checks = []; result = dict(status='FAIL', apkSha256=digest, checks=checks, actualCalls=0,
@@ -55,6 +55,7 @@ def main():
         if node('x_emergency') is None: tap('x_home')
         tap('x_more'); tap('x_ai_preferences')
     try:
+        fixture.__enter__()
         client.start(choose_setup=False)
         first = node('x_ai_setup_allow') is not None
         result['firstRunScreenObserved'] = first
@@ -63,12 +64,19 @@ def main():
         restart(); wait('x_emergency'); assert node('x_ai_setup_allow') is None
         mark('One visible external-AI choice survives application restart; no repeated onboarding')
         tap('x_emergency'); tap('x_ai_quick')
-        wait('x_es_voice_status','질문을 읽고'); shot('02-one-action')
+        wait('x_es_voice_status','질문을 읽고')
         assert node('x_es_llm_consent') is None and node('x_es_start_ai') is None
         mark('One action from the 119 screen starts spoken questions without consent/start interstitials')
-        wait('x_es_voice_status','듣고 있습니다',30)
-        all_text = ' '.join(n.get('text','') for n in ET.fromstring(client.dump()).iter('node'))
-        assert '검증된 쉬운 문장 사용' in all_text
+        # Check while the response is active, before silence legitimately clears it.
+        # Frame capture may outlast a short microphone turn on slow emulators.
+        provider_seen = False
+        for _ in range(12):
+            all_text = ' '.join(n.get('text','') for n in ET.fromstring(client.dump()).iter('node'))
+            if '검증된 쉬운 문장 사용' in all_text:
+                provider_seen = True; break
+            if not client.scroll('down'): time.sleep(.3)
+        assert provider_seen, 'Approved external response was not observed in the rendered UI'
+        assert any(r['phraseId'] and r['fallback'] is False for r in fixture.responses)
         tap('x_es_mute')
         mark('Saved permission reaches the real LLM; voice can still be stopped immediately')
         tap('x_home'); tap('x_more'); tap('x_ai_auto_demo')
@@ -94,10 +102,14 @@ def main():
         mark('Automatic demo stops on request; confirmed operator call still blocks voice')
         result['status'] = 'PASS'
     finally:
-        client.close(); guard.verify_target()
-        run('shell','am','force-stop','com.lifelink119.app')
-        guard.acquire_clean()
-        (out/'results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
+        try:
+            client.close(); guard.verify_target()
+            run('shell','am','force-stop','com.lifelink119.app')
+            guard.acquire_clean()
+        finally:
+            fixture.close(); restore_microphone()
+            result['proxyResponses'] = fixture.responses
+            (out/'results.json').write_text(json.dumps(result,ensure_ascii=False,indent=2),encoding='utf-8')
 
 
 if __name__ == '__main__': main()

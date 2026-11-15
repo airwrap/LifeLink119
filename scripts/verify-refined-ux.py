@@ -12,7 +12,7 @@ def main():
     sdk = android_sdk(); adb = [str(sdk/'platform-tools/adb.exe'), '-s', args.serial]
     guard = QaAvdGuard(adb).acquire_clean()
     restore_microphone = guard.microphone_for_test()
-    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk, '0.18.0-demo')
+    digest = verify_installed_apk(adb, ROOT/'app/build/outputs/apk/debug/app-debug.apk', sdk)
     out = ROOT/'verification/refined-ux'; out.mkdir(parents=True, exist_ok=True)
     client = WindowClient(adb); checks=[]
     result = dict(status='FAIL', apkSha256=digest, checks=checks, actualCalls=0, realPatientData=False)

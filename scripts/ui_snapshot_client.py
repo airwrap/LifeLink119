@@ -7,9 +7,20 @@ import time
 import os
 import re
 import xml.etree.ElementTree as ET
+from pathlib import Path
 
-def verify_installed_apk(adb,apk,sdk,version):
+def current_app_version():
+    """Read the tracked build version, not the APK whose identity is being checked."""
+    build = Path(__file__).resolve().parents[1] / 'app/build.gradle.kts'
+    versions = re.findall(r'\bversionName\s*=\s*"([^"\r\n]+)"', build.read_text(encoding='utf-8'))
+    if len(versions) != 1:
+        raise RuntimeError('Current source version is ambiguous; APK verification refused')
+    return versions[0]
+
+
+def verify_installed_apk(adb,apk,sdk,version=None):
     """Use identical APK bytes when the busy package dumpsys omits metadata."""
+    version = current_app_version() if version is None else version
     user=subprocess.check_output(adb+['shell','am','get-current-user'],timeout=15).decode().strip()
     if not user.isdigit():
         raise RuntimeError('Could not identify the current Android user')
