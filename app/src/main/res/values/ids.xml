@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <item type="id" name="official_web_import" />
+    <item type="id" name="safe_import_review" />
+    <item type="id" name="safe_import_self" />
+    <item type="id" name="safe_import_guardian" />
+    <item type="id" name="safe_import_save" />
+    <item type="id" name="safe_import_edit" />
+    <item type="id" name="safe_import_cancel" />
+    <item type="id" name="safe_import_status" />
     <item name="open_cooperation" type="id" />
     <item name="coop_status" type="id" />
     <item name="coop_state" type="id" />

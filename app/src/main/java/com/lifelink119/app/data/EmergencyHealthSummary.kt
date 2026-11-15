@@ -3,7 +3,17 @@ package com.lifelink119.app.data
 /** Local, deterministic readout for a human responder. Never prompt text or medical guidance. */
 object EmergencyHealthSummary {
     fun build(record: PersonalHealthRecord): String = buildString {
-        appendLine("가족 안심콜 정보 · 차량에 직접 입력 · 공식 조회 아님")
+        appendLine(
+            if (record.webSource == null) "가족 안심콜 정보 · 차량에 직접 입력 · 공식 조회 아님"
+            else "가족 안심콜 정보 · 웹화면 복사와 기존 입력 · 사용자 확인 · 기관 API 검증 아님"
+        )
+        record.webSource?.let {
+            val fetched =
+                java.text
+                    .SimpleDateFormat("yyyy-MM-dd HH:mm", java.util.Locale.KOREA)
+                    .format(java.util.Date(it.retrievedAt))
+            appendLine("웹 정보 가져온 시각: $fetched${if (it.editedAfterImport) " · 이후 직접 수정" else ""}")
+        }
         fun field(name: String, value: String) {
             if (value.isNotBlank())
                 appendLine("$name: ${value.replace(Regex("[\\r\\n\\t\\p{Cc}]+"), " ")}")
@@ -18,7 +28,10 @@ object EmergencyHealthSummary {
         )
         field("알레르기", record.allergies)
         field("과거 질환·수술력", record.safeCall.pastHistory)
-        field("복용약 · 직접 입력", record.medicationHistory)
+        field(
+            if (record.webSource == null) "복용약 · 직접 입력" else "복용약 · 사용자 확인 필요",
+            record.medicationHistory,
+        )
         field("거동", record.safeCall.mobility)
         if (record.safeCall.canCall != OptionalAnswer.UNSPECIFIED)
             field("전화통화 가능", record.safeCall.canCall.label)

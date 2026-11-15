@@ -303,6 +303,11 @@ class MainActivity : Activity() {
         data: android.content.Intent?,
     ) {
         super.onActivityResult(requestCode, resultCode, data)
+        if (
+            ::expansion.isInitialized &&
+                expansion.officialImportResult(requestCode, resultCode, data)
+        )
+            return
         if (::expansion.isInitialized) expansion.nativeMedicalResult(requestCode, resultCode)
     }
 

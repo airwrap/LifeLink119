@@ -7,7 +7,7 @@ import com.lifelink119.app.core.RegistrationRole
 import org.json.JSONArray
 import org.json.JSONObject
 
-/** User-entered local data only. It is never used by the mock dispatch gateway. */
+/** User-entered or explicitly reviewed web-form copy. Never used by the mock dispatch gateway. */
 data class PersonalHealthRecord(
     val name: String = "",
     val conditions: String = "",
@@ -20,6 +20,7 @@ data class PersonalHealthRecord(
     val updatedAt: Long = 0L,
     val proxyConsent: Boolean = false,
     val safeCall: SafeCallDetails = SafeCallDetails(),
+    val webSource: SafeCallWebSource? = null,
 ) {
     override fun toString() = "PersonalHealthRecord([REDACTED])"
 }
@@ -36,12 +37,13 @@ object PersonalHealthCodec {
                 r.registeredPhone.matches(Regex("[+0-9 ()-]{7,24}")) &&
                     r.registeredPhone.count(Char::isDigit) in 7..15) &&
             (r.role != RegistrationRole.PROXY || r.proxyConsent) &&
-            SafeCallDetailsCodec.error(r.safeCall) == null
+            SafeCallDetailsCodec.error(r.safeCall) == null &&
+            (r.webSource == null || SafeCallWebImport.validSource(r.webSource))
 
     fun encode(r: PersonalHealthRecord): String {
         require(validate(r))
         return JSONObject()
-            .put("version", 3)
+            .put("version", 4)
             .put("name", r.name)
             .put("conditions", r.conditions)
             .put("allergies", r.allergies)
@@ -53,6 +55,15 @@ object PersonalHealthCodec {
             .put("updatedAt", r.updatedAt)
             .put("proxyConsent", r.proxyConsent)
             .put("safeCall", SafeCallDetailsCodec.encode(r.safeCall))
+            .put(
+                "webSource",
+                r.webSource?.let {
+                    JSONObject()
+                        .put("retrievedAt", it.retrievedAt)
+                        .put("fields", JSONArray(it.fields))
+                        .put("editedAfterImport", it.editedAfterImport)
+                } ?: JSONObject.NULL,
+            )
             .toString()
     }
 
@@ -60,7 +71,7 @@ object PersonalHealthCodec {
         MedicalStoragePolicy.requirePlaintextSize(raw.toByteArray(Charsets.UTF_8).size)
         val o = JSONObject(raw)
         val version = o.getInt("version")
-        require(version in 1..3)
+        require(version in 1..4)
         return PersonalHealthRecord(
                 o.getString("name"),
                 o.getString("conditions"),
@@ -76,6 +87,17 @@ object PersonalHealthCodec {
                 if (version == 1) false else o.getBoolean("proxyConsent"),
                 if (version < 3) SafeCallDetails()
                 else SafeCallDetailsCodec.decode(o.getJSONObject("safeCall")),
+                if (version < 4 || o.isNull("webSource")) null
+                else
+                    o.getJSONObject("webSource").let { source ->
+                        val fields = source.getJSONArray("fields")
+                        require(fields.length() <= SafeCallWebImport.labels.size)
+                        SafeCallWebSource(
+                            source.getLong("retrievedAt"),
+                            (0 until fields.length()).map { fields.getString(it) },
+                            source.getBoolean("editedAfterImport"),
+                        )
+                    },
             )
             .also { require(validate(it)) }
     }

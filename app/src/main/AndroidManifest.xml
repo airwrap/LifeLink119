@@ -8,7 +8,7 @@
     <uses-permission android:name="pleos.car.permission.FUSED_LOCATION" />
     <uses-permission android:name="pleos.car.permission.NAVI_ROUTE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
-    <!-- Official HTTPS websites in the embedded browser; no native login/data extraction. -->
+    <!-- Official HTTPS websites; explicit local form import excludes login credentials. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="android.hardware.type.automotive" android:required="false" tools:replace="android:required" />
 

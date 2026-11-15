@@ -4,6 +4,7 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.content.ClipData
 import android.content.ClipboardManager
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.net.Uri
@@ -19,10 +20,17 @@ import com.lifelink119.app.R
 import com.lifelink119.app.core.DrivingRestrictions
 import com.lifelink119.app.core.OfficialBrowserPolicy
 import com.lifelink119.app.core.OfficialHealthSite
+import com.lifelink119.app.data.MedicalCrypto
+import com.lifelink119.app.data.SafeCallImportSession
+import com.lifelink119.app.data.SafeCallWebImport
 import com.lifelink119.app.vehicle.DrivingRestrictionsGateway
 import java.io.ByteArrayInputStream
+import org.json.JSONObject
+import org.json.JSONTokener
 
-/** An isolated, temporary web session. It never reads a login form or imports website data. */
+/**
+ * Isolated temporary web session. Only explicit, whitelisted medical form extraction is allowed.
+ */
 class OfficialHealthBrowserActivity : Activity() {
     companion object {
         const val EXTRA_SITE = "officialSite"
@@ -43,6 +51,8 @@ class OfficialHealthBrowserActivity : Activity() {
     private var preparing = false
     private var webReady = false
     private var dialog: AlertDialog? = null
+    private var extracting = false
+    private var navigationEpoch = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +125,14 @@ class OfficialHealthBrowserActivity : Activity() {
             }
         root.addView(label("LifeLink 119 시연 모드 · 아래는 실제 공식 웹사이트입니다", 17f))
         val controls = LinearLayout(this).apply { setPadding(dp(12), 0, dp(12), 0) }
+        val canImport =
+            site == OfficialHealthSite.SAFE_CALL &&
+                intent.hasExtra(SafeCallImportSession.EXTRA_NONCE)
+        fun copyAddress() {
+            getSystemService(ClipboardManager::class.java)
+                .setPrimaryClip(ClipData.newPlainText(site.label, site.url))
+            Toast.makeText(this, "공식 사이트 주소를 복사했습니다", Toast.LENGTH_SHORT).show()
+        }
         back = action("뒤로", R.id.official_web_back, ::goBack)
         controls.addView(
             action("앱으로 돌아가기", R.id.official_web_close) { finish() },
@@ -125,12 +143,8 @@ class OfficialHealthBrowserActivity : Activity() {
             LinearLayout.LayoutParams(0, dp(80), 1f).apply { marginStart = dp(8) },
         )
         controls.addView(
-            action("공식 주소 복사", R.id.official_web_copy) {
-                // Copy the public entry only, never a visited URL, auth query or cookie.
-                getSystemService(ClipboardManager::class.java)
-                    .setPrimaryClip(ClipData.newPlainText(site.label, site.url))
-                Toast.makeText(this, "공식 사이트 주소를 복사했습니다", Toast.LENGTH_SHORT).show()
-            },
+            if (canImport) action("내 정보 가져오기", R.id.official_web_import, ::importForm)
+            else action("공식 주소 복사", R.id.official_web_copy, ::copyAddress),
             LinearLayout.LayoutParams(0, dp(80), 1f).apply { marginStart = dp(8) },
         )
         root.addView(controls)
@@ -144,7 +158,7 @@ class OfficialHealthBrowserActivity : Activity() {
                 )
                 .apply { id = R.id.official_web_origin }
         root.addView(origin)
-        root.addView(label("정차 중 이용 · 로그인 정보는 닫을 때 정리 · 차량 건강정보 자동 가져오기 아님", 17f))
+        root.addView(label("정차 중 이용 · 로그인 정보는 닫을 때 정리 · 가져온 정보는 확인 후 암호화 저장", 17f))
         progress =
             ProgressBar(this, null, android.R.attr.progressBarStyleHorizontal).apply { max = 100 }
         root.addView(progress, LinearLayout.LayoutParams(-1, dp(4)))
@@ -157,15 +171,22 @@ class OfficialHealthBrowserActivity : Activity() {
             }
         content.addView(status, FrameLayout.LayoutParams(-1, -1))
         root.addView(content, LinearLayout.LayoutParams(-1, 0, 1f))
-        root.addView(
+        val bottom = LinearLayout(this)
+        bottom.addView(
             action("사이트 처음부터 다시 열기", R.id.official_web_retry) {
                 if (allowed && resumed && webReady) {
                     stopSession()
                     beginSession()
                 } else showMessage("정차 후 차량 제한이 해제되면 이용할 수 있습니다. 웹 기능이 없으면 휴대전화·PC를 이용해 주세요.")
             },
-            LinearLayout.LayoutParams(-1, dp(72)),
+            LinearLayout.LayoutParams(0, dp(72), 1f),
         )
+        if (canImport)
+            bottom.addView(
+                action("공식 주소 복사", R.id.official_web_copy, ::copyAddress),
+                LinearLayout.LayoutParams(0, dp(72), 1f),
+            )
+        root.addView(bottom)
         setContentView(root)
         updateBack()
     }
@@ -253,6 +274,8 @@ class OfficialHealthBrowserActivity : Activity() {
                 else blocked()
 
             override fun onPageStarted(view: WebView, url: String?, favicon: Bitmap?) {
+                navigationEpoch++
+                extracting = false
                 if (view !in pages) return
                 if (url == "about:blank") return
                 if (!allowed || url == null || !OfficialBrowserPolicy.allows(url)) {
@@ -284,6 +307,7 @@ class OfficialHealthBrowserActivity : Activity() {
                 error: WebResourceError,
             ) {
                 if (request.isForMainFrame && view == pages.lastOrNull()) {
+                    navigationEpoch++
                     showMessage("사이트에 연결하지 못했습니다. 인터넷 연결을 확인한 뒤 다시 열어주세요.")
                 }
             }
@@ -303,6 +327,7 @@ class OfficialHealthBrowserActivity : Activity() {
                 error: SslError,
             ) {
                 handler.cancel()
+                navigationEpoch++
                 if (view !in pages) return
                 view.stopLoading()
                 showMessage("사이트의 보안 인증서를 확인할 수 없어 연결을 중단했습니다. 기기 시각과 인터넷 연결을 확인해 주세요.")
@@ -380,6 +405,85 @@ class OfficialHealthBrowserActivity : Activity() {
         progress.visibility = View.GONE
     }
 
+    private fun importForm() {
+        if (
+            extracting ||
+                !allowed ||
+                !resumed ||
+                status.visibility == View.VISIBLE ||
+                site != OfficialHealthSite.SAFE_CALL
+        )
+            return
+        val view = pages.lastOrNull() ?: return
+        if (!SafeCallWebImport.allowsOrigin(view.url.orEmpty())) {
+            showNotice("안심콜 사이트에서 본인 인증을 마치고 내 병력정보 화면을 열어주세요.")
+            return
+        }
+        val nonce = intent.getStringExtra(SafeCallImportSession.EXTRA_NONCE) ?: return
+        val generation = session
+        val epoch = navigationEpoch
+        extracting = true
+        val timeout = Runnable {
+            if (session == generation && navigationEpoch == epoch && extracting) {
+                extracting = false
+                navigationEpoch++
+                showNotice("정보를 읽는 시간이 초과되었습니다. 웹 화면이 완전히 열린 후 다시 시도해 주세요.")
+            }
+        }
+        view.postDelayed(timeout, 8000)
+        runCatching {
+                val script =
+                    assets.open("safe-call-extract.js").bufferedReader(Charsets.UTF_8).use {
+                        it.readText()
+                    }
+                view.evaluateJavascript(script) { encoded ->
+                    view.removeCallbacks(timeout)
+                    if (
+                        session != generation ||
+                            navigationEpoch != epoch ||
+                            !allowed ||
+                            !resumed ||
+                            view != pages.lastOrNull() ||
+                            !SafeCallWebImport.allowsOrigin(view.url.orEmpty()) ||
+                            isFinishing
+                    )
+                        return@evaluateJavascript
+                    extracting = false
+                    runCatching {
+                            require(encoded.length <= SafeCallImportSession.MAX_CIPHER_CHARS)
+                            val raw =
+                                JSONTokener(encoded).nextValue() as? String ?: error("No form")
+                            val result = JSONObject(raw)
+                            require(!result.has("error"))
+                            val retrievedAt = System.currentTimeMillis()
+                            // Validate before crossing processes. This does not save or authorize
+                            // sharing.
+                            SafeCallWebImport.prepare(raw, retrievedAt, null)
+                            val cipher =
+                                MedicalCrypto.encrypt(
+                                    SafeCallImportSession.wrap(raw, nonce, retrievedAt)
+                                )
+                            require(cipher.length <= SafeCallImportSession.MAX_CIPHER_CHARS)
+                            setResult(
+                                RESULT_OK,
+                                Intent().putExtra(SafeCallImportSession.EXTRA_CIPHER, cipher),
+                            )
+                            finish()
+                        }
+                        .onFailure {
+                            showNotice(
+                                "정보를 가져오지 못했습니다. 본인 인증을 마치고 병력정보 화면을 열어주세요. 가려진 정보·지원하지 않는 항목 형식은 가져오지 않으며 기존 저장 정보는 유지됩니다."
+                            )
+                        }
+                }
+            }
+            .onFailure {
+                view.removeCallbacks(timeout)
+                extracting = false
+                showNotice("현재 웹 화면에서 정보를 읽을 수 없습니다. 잠시 후 다시 시도해 주세요.")
+            }
+    }
+
     private fun showNotice(message: String) {
         if (dialog?.isShowing == true || isFinishing || isDestroyed || !resumed) return
         dialog =
@@ -396,6 +500,8 @@ class OfficialHealthBrowserActivity : Activity() {
     }
 
     private fun closePopup() {
+        navigationEpoch++
+        extracting = false
         val child = pages.removeAt(pages.lastIndex)
         content.removeView(child)
         child.stopLoading()
@@ -433,6 +539,8 @@ class OfficialHealthBrowserActivity : Activity() {
 
     private fun stopSession() {
         ++session
+        extracting = false
+        navigationEpoch++
         preparing = false
         dialog?.dismiss()
         dialog = null

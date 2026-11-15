@@ -50,6 +50,7 @@ class ExpansionUi(
         EDIT,
         MY_HEALTH,
         MY_HEALTH_EDIT,
+        SAFE_CALL_IMPORT,
         HEALTH_LINK,
         HEALTH_EXAMPLE,
         CARD,
@@ -99,6 +100,7 @@ class ExpansionUi(
     private val repository = FakeProfileRepository(host, catalog)
     private val personalHealth = PersonalHealthStore(host)
     private val healthDraft = HealthEditorDraft()
+    private val webImport = SafeCallImportSession(SystemClock::elapsedRealtime)
     private var healthRecordId = "SELF"
     private val emergencyHealth = EmergencyHealthSelection()
     private var healthForIncident: String? = null
@@ -120,6 +122,7 @@ class ExpansionUi(
             Page.EDIT,
             Page.MY_HEALTH,
             Page.MY_HEALTH_EDIT,
+            Page.SAFE_CALL_IMPORT,
             Page.HEALTH_LINK,
             Page.HEALTH_EXAMPLE,
             Page.PERSON,
@@ -312,7 +315,15 @@ class ExpansionUi(
                 )
                 page = runCatching { Page.valueOf(o.getString("page")) }.getOrDefault(Page.HOME)
                 if (page in setOf(Page.EDIT, Page.CARD)) page = Page.PROFILES
-                if (page in setOf(Page.HEALTH_LINK, Page.HEALTH_EXAMPLE, Page.MY_HEALTH_EDIT))
+                if (
+                    page in
+                        setOf(
+                            Page.HEALTH_LINK,
+                            Page.HEALTH_EXAMPLE,
+                            Page.MY_HEALTH_EDIT,
+                            Page.SAFE_CALL_IMPORT,
+                        )
+                )
                     page = Page.MY_HEALTH
                 if (
                     engine.current == null &&
@@ -351,7 +362,15 @@ class ExpansionUi(
             .put("session", ExperienceStateCodec.encodePrivacySafe(engine.current))
             .put(
                 "page",
-                if (page in setOf(Page.HEALTH_LINK, Page.HEALTH_EXAMPLE, Page.MY_HEALTH_EDIT))
+                if (
+                    page in
+                        setOf(
+                            Page.HEALTH_LINK,
+                            Page.HEALTH_EXAMPLE,
+                            Page.MY_HEALTH_EDIT,
+                            Page.SAFE_CALL_IMPORT,
+                        )
+                )
                     Page.MY_HEALTH.name
                 else page.name,
             )
@@ -359,6 +378,7 @@ class ExpansionUi(
             .toString()
 
     fun release() {
+        webImport.clear()
         healthDraft.clear()
         main.removeCallbacksAndMessages(null)
         vehicleContext.close()
@@ -411,6 +431,22 @@ class ExpansionUi(
 
     fun nativeMedicalResult(request: Int, result: Int) = privacy.nativeResult(request, result)
 
+    fun officialImportResult(request: Int, result: Int, data: android.content.Intent?): Boolean {
+        if (request != SafeCallImportSession.REQUEST) return false
+        if (
+            result == Activity.RESULT_OK &&
+                webImport.accept(data?.getStringExtra(SafeCallImportSession.EXTRA_CIPHER))
+        ) {
+            page = Page.SAFE_CALL_IMPORT
+            message = "가져온 정보를 확인한 후 저장해 주세요."
+        } else {
+            webImport.clear()
+            message = "웹 정보 가져오기를 취소했거나 시간이 만료되었습니다. 기존 정보는 유지했습니다."
+        }
+        requestRender()
+        return true
+    }
+
     fun microphoneResult(granted: Boolean) = emergencySupportUi.microphoneResult(granted)
 
     private fun medicalUnlocked() = engine.privateUnlocked && privacy.authorized
@@ -440,6 +476,7 @@ class ExpansionUi(
     }
 
     fun home() {
+        webImport.clear()
         healthDraft.clear()
         healthRecordId = "SELF"
         healthLinkExample.revoke()
@@ -466,6 +503,7 @@ class ExpansionUi(
     fun effectiveRestrictions() = engine.restrictions
 
     fun back(): Boolean {
+        if (page == Page.SAFE_CALL_IMPORT) webImport.clear()
         if (page == Page.HOME) return false
         if (page == Page.EMERGENCY_SUPPORT && emergencySupportUi.back()) {
             requestRender()
@@ -484,6 +522,7 @@ class ExpansionUi(
                 Page.FINISH -> Page.HOME
                 Page.AGENCY -> Page.MORE
                 Page.MY_HEALTH_EDIT,
+                Page.SAFE_CALL_IMPORT,
                 Page.HEALTH_LINK -> Page.MY_HEALTH
                 Page.HEALTH_EXAMPLE -> Page.HEALTH_LINK
                 Page.GALLERY,
@@ -514,6 +553,7 @@ class ExpansionUi(
             return
         }
         if (page == Page.MY_HEALTH_EDIT && p != page) healthDraft.clear()
+        if (page == Page.SAFE_CALL_IMPORT && p != page) webImport.clear()
         if (
             page in setOf(Page.HEALTH_LINK, Page.HEALTH_EXAMPLE) &&
                 p !in setOf(Page.HEALTH_LINK, Page.HEALTH_EXAMPLE)
@@ -1044,6 +1084,7 @@ class ExpansionUi(
                         Page.EDIT,
                         Page.MY_HEALTH,
                         Page.MY_HEALTH_EDIT,
+                        Page.SAFE_CALL_IMPORT,
                         Page.HEALTH_LINK,
                         Page.HEALTH_EXAMPLE,
                         Page.CARD,
@@ -1099,6 +1140,7 @@ class ExpansionUi(
             Page.EDIT -> editProfile()
             Page.MY_HEALTH -> personalHealthPage()
             Page.MY_HEALTH_EDIT -> personalHealthEdit()
+            Page.SAFE_CALL_IMPORT -> safeCallImportPage()
             Page.HEALTH_LINK -> healthLinkPage()
             Page.HEALTH_EXAMPLE -> healthExamplePage()
             Page.CARD -> cardPage()
@@ -1959,6 +2001,7 @@ class ExpansionUi(
                                 engine.restoreProfiles()
                                 repository.eraseMedicalData()
                                 personalHealth.erase()
+                                webImport.clear()
                                 EmergencyCheckpointStore(host).clear()
                                 privacy.clearAfterMedicalDataErased()
                                 page = Page.HOME
@@ -1971,9 +2014,90 @@ class ExpansionUi(
             )
         }
 
+    private fun safeCallImportPage() =
+        shell("안심콜 정보 가져오기 · 저장 전 확인") {
+            val prepared = runCatching {
+                webImport.preview(personalHealth.load(), MedicalCrypto::decrypt)
+            }
+            if (prepared.isFailure) {
+                webImport.clear()
+                add(
+                    text(
+                        "웹 정보를 확인할 수 없거나 10분이 지났습니다. 기존 정보는 유지했습니다. 공식 사이트에서 다시 가져와 주세요.",
+                        23f,
+                        warning,
+                        false,
+                        R.id.safe_import_status,
+                    ),
+                    16,
+                )
+                add(button("우리 가족 안심콜로 돌아가기", R.id.safe_import_cancel) { go(Page.MY_HEALTH) }, 16)
+                return@shell
+            }
+            val status = text("", 21f, warning, false, R.id.safe_import_status)
+            add(
+                SafeCallImportReviewUi.create(
+                    host,
+                    prepared.getOrThrow(),
+                    save = { guardianConfirmed ->
+                        if (medicalUnlocked() && !engine.restrictions.complexBlocked) {
+                            runCatching {
+                                    val current =
+                                        webImport.preview(
+                                            personalHealth.load(),
+                                            MedicalCrypto::decrypt,
+                                        )
+                                    check(!current.identityConflict)
+                                    val saved =
+                                        current.record.copy(
+                                            safeCall =
+                                                current.record.safeCall.copy(
+                                                    guardianCallConfirmed = guardianConfirmed
+                                                )
+                                        )
+                                    require(PersonalHealthCodec.validate(saved))
+                                    personalHealth.save(saved)
+                                }
+                                .onSuccess {
+                                    webImport.clear()
+                                    healthRecordId = "SELF"
+                                    page = Page.MY_HEALTH
+                                    message = "확인한 웹 정보를 이 기기에 암호화 저장했습니다."
+                                    requestRender()
+                                }
+                                .onFailure {
+                                    status.text =
+                                        "저장하지 못했습니다. 기존 정보를 유지했습니다. 만료 여부와 보호자 연락처를 확인해 주세요."
+                                }
+                        }
+                    },
+                    edit = {
+                        if (medicalUnlocked() && !engine.restrictions.complexBlocked) {
+                            runCatching {
+                                    val current =
+                                        webImport.preview(
+                                            personalHealth.load(),
+                                            MedicalCrypto::decrypt,
+                                        )
+                                    check(!current.identityConflict)
+                                    healthRecordId = "SELF"
+                                    healthDraft.clear()
+                                    healthDraft.begin(current.record)
+                                    go(Page.MY_HEALTH_EDIT)
+                                }
+                                .onFailure { status.text = "가져온 정보가 만료되었습니다. 다시 가져와 주세요." }
+                        }
+                    },
+                    cancel = { go(Page.MY_HEALTH) },
+                ),
+                12,
+            )
+            add(status, 12)
+        }
+
     private fun personalHealthPage() =
         shell("우리 가족 안심콜") {
-            add(text("이 기기에 암호화 보관합니다. 공식 안심콜 등록·조회는 별도입니다.", 19f, muted), 10)
+            add(text("직접 입력하거나 본인 안심콜 웹 정보를 가져와 이 기기에 암호화 보관합니다.", 19f, muted), 10)
             add(
                 text(
                     "사고 시 인증 후 이 화면에서 저장 정보를 확인할 수 있습니다. 신고 시에는 상황요원에게 필요한 내용을 알려주세요. 자동 전송은 지원하지 않습니다.",
@@ -2079,7 +2203,25 @@ class ExpansionUi(
                         field("이름", record.name)
                         field("병력", record.conditions)
                         field("알레르기", record.allergies)
-                        field("투약 내역 · 직접 입력", record.medicationHistory)
+                        field("투약 내역", record.medicationHistory)
+                        record.webSource?.let { source ->
+                            field(
+                                "정보 출처",
+                                "안심콜 웹 화면 복사와 기존 입력 · 사용자 확인" +
+                                    if (source.editedAfterImport) " · 이후 직접 수정" else "",
+                            )
+                            field(
+                                "웹 정보 가져온 시각",
+                                java.text.DateFormat.getDateTimeInstance()
+                                    .format(java.util.Date(source.retrievedAt)),
+                            )
+                            field(
+                                "웹에서 가져온 항목",
+                                source.fields
+                                    .mapNotNull { SafeCallWebImport.labels[it] }
+                                    .joinToString(" · "),
+                            )
+                        }
                         SafeCallSummary.sections(record.safeCall).forEach { (section, fields) ->
                             add(text(section, 24f, accent, true), 24)
                             if (fields.isEmpty()) field("보호자", "입력 없음")
@@ -2090,7 +2232,7 @@ class ExpansionUi(
                             "등록 연락처",
                             if (record.registeredPhone.isBlank()) "확인 안 됨"
                             else
-                                "끝 ${record.registeredPhone.filter(Char::isDigit).takeLast(4)} · 직접 입력",
+                                "끝 ${record.registeredPhone.filter(Char::isDigit).takeLast(4)} · 사용자 확인",
                         )
                         field(
                             "마지막 수정",
@@ -2216,7 +2358,7 @@ class ExpansionUi(
                                 else RegistrationRole.PROXY,
                         )
                 )
-            add(text("직접 입력한 정보만 저장합니다. 투약 내역은 날짜와 약 이름을 적어주세요.", 20f, muted), 12)
+            add(text("입력하거나 가져온 정보를 확인한 뒤 저장합니다. 투약 내역은 날짜와 약 이름을 적어주세요.", 20f, muted), 12)
             val safeForm =
                 SafeCallForm(
                     host,
@@ -2351,6 +2493,7 @@ class ExpansionUi(
                     record.updatedAt,
                     proxyConsent,
                     healthDraft.begin(record).safeCall,
+                    record.webSource?.copy(editedAfterImport = true),
                 )
             captureDraft = { healthDraft.update(entered()) }
             val draftWatcher =
@@ -2401,6 +2544,7 @@ class ExpansionUi(
                             System.currentTimeMillis(),
                             proxyConsent,
                             healthDraft.begin(record).safeCall,
+                            record.webSource?.copy(editedAfterImport = true),
                         )
                     if (
                         listOf(
@@ -3654,7 +3798,7 @@ else->"아직 목적지 없음"}}",
             )
             add(
                 text(
-                    "공식 사이트에서 로그인해도 이 차량으로 정보를 자동으로 가져오지 않습니다. 차량에 보관할 정보는 ‘우리 가족 안심콜’에 직접 입력하고, 사고 시 인증 후 확인할 수 있습니다.",
+                    "공식 안심콜에서 직접 로그인·본인 인증 후 병력정보 화면을 열고 ‘내 정보 가져오기’를 누르세요. 앱 잠금을 푼 뒤 내용을 확인하면 이 차량에 암호화 보관합니다.",
                     21f,
                     muted,
                 ),
@@ -3678,7 +3822,7 @@ else->"아직 목적지 없음"}}",
             }
             add(
                 text(
-                    "소방청 정보 불러오기·119 자동 전달: 기관 연계 협의가 필요합니다.",
+                    "웹 화면에 로드된 항목만 가져옵니다. 공식 API 연계·119 자동 전달은 기관 협의가 필요합니다.",
                     19f,
                     muted,
                     false,
@@ -3697,7 +3841,9 @@ else->"아직 목적지 없음"}}",
         inAction = true
         lockMedical()
         inAction = false
-        if (!OfficialHealthNavigation.open(host, site)) {
+        val nonce = if (site == OfficialHealthSite.SAFE_CALL) webImport.begin() else null
+        if (!OfficialHealthNavigation.open(host, site, nonce)) {
+            webImport.clear()
             AlertDialog.Builder(host)
                 .setTitle("휴대전화·PC에서 열어주세요")
                 .setMessage(site.url + "\n\n내장 웹 화면을 시작하지 못했습니다. 휴대전화나 PC에서 공식 사이트를 이용해 주세요.")

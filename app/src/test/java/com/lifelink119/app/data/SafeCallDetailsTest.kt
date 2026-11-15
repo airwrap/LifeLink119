@@ -63,7 +63,7 @@ class SafeCallDetailsTest {
                 safeCall = populated(),
             )
         val raw = PersonalHealthCodec.encode(record)
-        assertEquals(3, JSONObject(raw).getInt("version"))
+        assertEquals(4, JSONObject(raw).getInt("version"))
         assertEquals(record, PersonalHealthCodec.decode(raw))
         assertEquals(
             listOf(record),

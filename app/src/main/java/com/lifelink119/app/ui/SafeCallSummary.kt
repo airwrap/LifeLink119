@@ -20,7 +20,7 @@ internal object SafeCallSummary {
                 listOf(
                     "과거질환 (수술력)" to d.pastHistory,
                     "현재질환" to d.currentConditions.joinToString(" · "),
-                    "법정감염병 · 직접 입력" to d.infectiousDiseases.joinToString(" · "),
+                    "법정감염병" to d.infectiousDiseases.joinToString(" · "),
                     "진료기관명" to d.facilityName,
                     "진료과목" to d.specialty,
                     "진료기관 연락처 (주간)" to d.dayPhone,

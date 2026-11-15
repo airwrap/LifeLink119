@@ -32,6 +32,18 @@ object MedicalCrypto {
         return KeyGenerator.getInstance(algorithm, STORE).apply { init(spec.build()) }.generateKey()
     }
 
+    /**
+     * Create in the main process before opening the isolated import process, avoiding first-key
+     * races.
+     */
+    fun prepareStorageKey() {
+        key(
+            DATA_ALIAS,
+            KeyProperties.KEY_ALGORITHM_AES,
+            KeyProperties.PURPOSE_ENCRYPT or KeyProperties.PURPOSE_DECRYPT,
+        )
+    }
+
     fun encrypt(raw: String): String {
         val bytes = raw.toByteArray(Charsets.UTF_8)
         return try {

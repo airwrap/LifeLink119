@@ -29,7 +29,7 @@ data class SafeCallGuardian(
     override fun toString() = "SafeCallGuardian([REDACTED])"
 }
 
-/** User-entered copy of the five supplied official form sections, never an agency response. */
+/** User-confirmed local copy of the five supplied form sections, never an official API response. */
 data class SafeCallDetails(
     val applicationType: String = "",
     val applicationDetail: String = "",
