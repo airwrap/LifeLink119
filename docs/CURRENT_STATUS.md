@@ -1,6 +1,10 @@
 # 현재 개발 상태
 
-기준일: 2026-11-15. 앱 버전: 0.18.0-demo. 과거 버전별 기록은 README 아래에 보존한다.
+기준일: 2026-11-15. 앱 버전: **0.18.1**. 과거 버전별 기록은 [개발 이력](../HISTORY.md)에 보존한다.
+
+[공모전 제출 release](SUBMISSION_RELEASE_20261115.md)는 전용 인증서로 서명하고 디버깅을 비활성화했다. 한국어 오프라인 모델·고정 음성을 포함하며 모의 기능은 `-PlifelinkSubmission=true`로 명시적으로 활성화한다. [APK 다운로드](https://github.com/airwrap/LifeLink119/releases/tag/v0.18.1-contest-release).
+
+[가족·반려견 홈 이미지](FAMILY_DOG_VISUAL_20261115.md)를 원본 앱에 적용했다. 현대 SUV 옆을 네 가족과 골든 리트리버가 함께 걷는 장면이며, 홈 문구는 ‘나와 내 가족을 위한 안전 동행’이다. 기존 기능은 유지하고 빌드·단위 테스트 288개 및 네이티브 화면 진입 검증을 통과했다.
 
 상황별 설명자료를 [24장 PPTX/PDF](presentation/scenario-safety-20261115/README.md)로 개편했다. 기존 신고·상담·대기 흐름과 [폭염·가스·잔류 탑승자 센서 확장안](CABIN_SAFETY_EXTENSION_20261115.md)을 구분한다. 이 자료 개편으로 앱에 신규 환경 센서나 자동 신고 기능을 추가하지는 않았다.
 
@@ -32,9 +36,10 @@
 |---|---|---|---|
 | debug | 가능 | 가능 | 127.0.0.1 시연 |
 | demo | 가능 | 불가 | 127.0.0.1 시연 |
-| release | 불가 | 불가 | INTERNET 권한 없음 |
+| 일반 release | 불가 | 불가 | INTERNET 권한 없음 |
+| 제출 release (`lifelinkSubmission=true`) | 가능 | 불가 | 127.0.0.1 시연 |
 
-demo APK는 로컬 시연을 위해 debug 인증서로 서명한다. 실서비스 배포 서명으로 사용하지 않는다. `BuildConfig.DEMO_FEATURES`가 시연 기능을 제어한다.
+제출 APK는 `Build-Release.cmd`로 빌드하며 전용 비공개 release 키를 사용한다. demo APK는 로컬 시연을 위해 debug 인증서로 서명하며 실서비스 배포 서명으로 사용하지 않는다. `BuildConfig.DEMO_FEATURES`가 시연 기능을 제어한다.
 
 ## 데이터 삭제 검사
 

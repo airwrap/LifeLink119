@@ -181,7 +181,7 @@ internal class AssistanceUi(
                     setPadding(dp(if (compact) 20 else 32), dp(20), dp(16), dp(20))
                     if (!compact) append(label("가족을 위한 차량형 응급지원", 19f, style.accent), 0)
                     append(
-                        label("나와 내 가족을 위한\n구급차", if (compact) 30f else 44f, bold = true).apply {
+                        label("나와 내 가족을 위한\n안전 동행", if (compact) 30f else 44f, bold = true).apply {
                             isAccessibilityHeading = true
                         },
                         if (compact) 0 else 12,

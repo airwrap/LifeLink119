@@ -1,0 +1,96 @@
+{
+  "recordedAt": "2026-11-15T11:42:11.736513+00:00",
+  "versionName": "0.18.1",
+  "versionCode": 21,
+  "package": "com.lifelink119.app",
+  "releaseUrl": "https://github.com/airwrap/LifeLink119/releases/tag/v0.18.1-contest-release",
+  "apkFile": "LifeLink119-v0.18.1-contest-release.apk",
+  "apkSha256": "d013570c1224616a987c5f174cd29874181e282c765470ee707cf22fd6bcc095",
+  "apkBytes": 151935970,
+  "buildType": "release",
+  "debuggable": false,
+  "demoFeatures": true,
+  "signatureScheme": "v2",
+  "certificateSha256": "ed27ca8fb4c914ea83b3dcf6701bb4b0e6c3fb3ba52131b19ea83a95d3a5ab7e",
+  "unitTests": {
+    "debug": {
+      "tests": 288,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    },
+    "release": {
+      "tests": 288,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0
+    }
+  },
+  "lintRelease": [
+    {
+      "id": "GradleDependency",
+      "severity": "Warning",
+      "message": "A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0"
+    },
+    {
+      "id": "GradleDependency",
+      "severity": "Warning",
+      "message": "A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
+    }
+  ],
+  "pythonConsoleTests": 98,
+  "pythonScriptTests": 6,
+  "optimizedPythonGuardTests": 6,
+  "contractValidation": "PASS",
+  "device": {
+    "image": "Pleos Connect v2.1.0",
+    "api": 34,
+    "abi": "x86_64",
+    "emulator": "37.2.13",
+    "resolution": [
+      2560,
+      1440
+    ],
+    "densityDpi": 160,
+    "ramMb": 4096
+  },
+  "nativeSmoke": {
+    "status": "PASS",
+    "apkSha256": "d013570c1224616a987c5f174cd29874181e282c765470ee707cf22fd6bcc095",
+    "installedApkSha256": "d013570c1224616a987c5f174cd29874181e282c765470ee707cf22fd6bcc095",
+    "apkBytes": 151935970,
+    "serial": "emulator-5586",
+    "avd": "LifeLink119_Release_QA_API_34",
+    "voiceWavCount": 48,
+    "actualEmergencyCalls": 0,
+    "externalLlmUsed": false,
+    "userDataCleared": false,
+    "humanSpeechTested": false,
+    "checks": [
+      "Release launches with current family/dog home and visible simulation banner",
+      "119 entry opens mock emergency session without family enrollment",
+      "119 emergency consultation opens and exposes end control",
+      "109 consultation opens and exposes end control",
+      "Bundled synthetic voice demo starts without external AI or microphone input",
+      "Offline voice sequence completes and patient observations appear in simulated handover",
+      "Local-only onboarding choice survives restart without repeated consent prompt"
+    ],
+    "syntheticHandover": "03:39:12 · 의식 있음이라고 응답 [시뮬레이션]\n03:39:18 · 정상 호흡이라고 응답 [시뮬레이션]\n03:39:33 · 가슴 통증이라고 응답 [시뮬레이션]\n상태·증상 변화를 119에 다시 알릴 필요가 있습니다."
+  },
+  "ordinaryActivityLaunch": {
+    "status": "ok",
+    "launchState": "COLD",
+    "totalTimeMs": 982
+  },
+  "screenshotBackend": "native View.draw from separately signed QA instrumentation; not bundled in APK",
+  "sourceHashes": {
+    "app/build.gradle.kts": "4c14400c00b9b780a161ccf5c2394a08775c884ce41d9c5ee5fe1d2aba1719f7",
+    "app/src/main/res/drawable-nodpi/hyundai_family_hero.png": "1f94dfa11fd6a316f6fb7adc9f27f75ef856cf2b377dbac11ca579a7212e123e",
+    "scripts/build-release.ps1": "b56df0429a24362c7b255554ccb78fb63cd626c9fed53bea87e769266dbfc93a"
+  },
+  "limitations": [
+    "Human microphone input and vehicle cabin noise not tested in this submission run",
+    "No official emergency calling, dispatch, Safe Call database or new sensor integration",
+    "Medical expert review remains pending"
+  ]
+}

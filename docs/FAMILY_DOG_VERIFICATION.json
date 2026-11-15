@@ -1,0 +1,38 @@
+{
+  "date": "2026-11-15",
+  "scope": "User-authorized original app home artwork and slogan update; video recapture",
+  "appBaseCommit": "deeb1163b1462a988b268364bb9ff618c1987246",
+  "appApkSha256": "a458db41d3225acad0252e3822ebc560660a0a79d2c52b31639dacc4a1bdd4c1",
+  "imageSha256": "1f94dfa11fd6a316f6fb7adc9f27f75ef856cf2b377dbac11ca579a7212e123e",
+  "imageBytes": 2849776,
+  "unitTests": {
+    "tests": 288,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "assembleDebug": "PASS",
+  "nativeCapture": "PASS",
+  "capturedClips": [
+    "01-home",
+    "02-report",
+    "14-consult119",
+    "15-consult109",
+    "16-closing"
+  ],
+  "retainedClips": [
+    "03-open-packet",
+    "04-packet-details",
+    "05-family-explanation",
+    "06-callback",
+    "07-ai-start",
+    "08-conscious",
+    "09-breathing",
+    "10-symptoms",
+    "11-worsening",
+    "12-retry",
+    "13-handover"
+  ],
+  "narrationSha256": "e8cb8bb53ce744994784d5cf2ef5282a001197157c2652e3ee9e0a13390620f3",
+  "narrationUnchanged": true
+}

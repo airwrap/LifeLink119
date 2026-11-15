@@ -34,7 +34,8 @@ v0.17 최종 UI APK에서도 Console 입력과 도어·SoC SDK 값 변화, 원�
 
 - 공통: CAR_DOORS, CAR_ENERGY, CAR_SAFETY(문서화된 읽기만), FUSED_LOCATION, NAVI_ROUTE, SDK 바인딩 권한. RECORD_AUDIO는 사용자가 온디바이스 응답을 요청할 때만 허용을 묻습니다.
 - debug/demo: INTERNET, network security config의 127.0.0.1 평문 예외. 앱의 로컬 연결 주소는 고정이고 HTTP redirect는 따르지 않습니다.
-- release: INTERNET 없음, 로컬 공유 비활성화. 실제 기기 실행에서도 비활성 상태를 확인합니다.
+- 일반 release: INTERNET 없음, 로컬 공유 비활성화.
+- 제출 release (`-PlifelinkSubmission=true`): 별도 release 인증서, `debuggable=false`, 모의 기능과 ADB 루프백 프록시 활성화. 네트워크 정책은 debug/demo와 동일하고 실제 기관 신고 기능은 없습니다. [제출 검증](SUBMISSION_RELEASE_20261115.md).
 - 전화·SMS·카메라·ACCESS_FINE_LOCATION·CAR_DRIVE·VIN·차량 CONTROL 권한은 추가하지 않았습니다. 위치는 문서화된 Pleos FUSED_LOCATION 권한으로 읽습니다.
 - 새 차량 관측값은 메모리에서만 보관하고 별도 명시적 동의로 앱 내 상황실에 표시합니다. EmergencySession/saved state/PC payload에는 포함하지 않습니다. 백그라운드·세션/인물 변경·종료·철회·30초 만료 시 전달을 지웁니다.
 

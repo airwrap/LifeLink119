@@ -29,7 +29,7 @@ adb -s emulator-5584 reverse tcp:8781 tcp:8781
 
 **최초 앱 실행**에서 외부 AI 사용 여부를 한 번 선택한다. 저장된 동의·거절은 앱 재실행과 새 사건에서도 유지하며 **더보기 → 음성 AI 설정**에서 바꾼다. **119 연결 화면 → AI 음성 동행 시작**을 한 번 누르면 질문·듣기가 이어진다. 마이크 권한은 OS가 최초 1회 요청하며, 허용 후 시작 버튼을 다시 누를 필요가 없다. 자세한 동작은 [음성 동행 구현·사용법](VOICE_AI_IMPLEMENTATION.md)을 참고한다.
 
-앱에는 외부 키나 주소를 넣지 않는다. debug/demo 앱은 ADB 터널의 `http://127.0.0.1:8781/api/demo/emergency/phrase`와 `/interpret`만 호출한다. release에는 INTERNET 권한이 없으며 실제 배포용 원격 프록시·인증·기관 연동은 별도 개발 사항이다.
+앱에는 외부 키나 주소를 넣지 않는다. debug/demo 및 제출 release 앱은 ADB 터널의 `http://127.0.0.1:8781/api/demo/emergency/phrase`와 `/interpret`만 호출한다. 일반 release에는 INTERNET 권한이 없다. `Build-Release.cmd`로 만든 제출 release는 디버깅을 끈 상태에서 모의 기능과 127.0.0.1 프록시를 명시적으로 활성화한다. 실제 배포용 원격 프록시·인증·기관 연동은 별도 개발 사항이다.
 
 ## 보내는 정보
 

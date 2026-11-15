@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- Debug-only local mock console. No external endpoint is configurable. -->
+    <!-- Explicit mock tools, also used by the signed submission release. Loopback only. -->
     <uses-permission android:name="android.permission.INTERNET" />
     <application android:networkSecurityConfig="@xml/local_demo_network" />
 </manifest>

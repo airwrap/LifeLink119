@@ -3,6 +3,20 @@ plugins {
     id("org.jetbrains.kotlin.android")
 }
 
+// The submission uses the real release build type, with explicitly enabled mock tools.
+// Credentials are supplied only by the local build process, never by tracked files.
+val submissionRelease = providers.gradleProperty("lifelinkSubmission")
+    .map { it.toBooleanStrict() }.getOrElse(false)
+val releaseKeyStore = providers.environmentVariable("LIFELINK_RELEASE_KEYSTORE").orNull
+val releaseStorePassword = providers.environmentVariable("LIFELINK_RELEASE_STORE_PASSWORD").orNull
+val releaseKeyAlias = providers.environmentVariable("LIFELINK_RELEASE_KEY_ALIAS").orNull
+val releaseKeyPassword = providers.environmentVariable("LIFELINK_RELEASE_KEY_PASSWORD").orNull
+val releaseSigningReady = listOf(releaseKeyStore, releaseStorePassword, releaseKeyAlias, releaseKeyPassword)
+    .all { !it.isNullOrBlank() }
+if (submissionRelease && !releaseSigningReady) {
+    throw GradleException("Submission release requires private signing environment variables. Run Build-Release.cmd.")
+}
+
 android {
     namespace = "com.lifelink119.app"
     compileSdk = 34
@@ -12,8 +26,8 @@ android {
         applicationId = "com.lifelink119.app"
         minSdk = 28
         targetSdk = 34
-        versionCode = 20
-        versionName = "0.18.0-demo"
+        versionCode = 21
+        versionName = "0.18.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("boolean", "DEMO_FEATURES", "false")
     }
@@ -27,9 +41,30 @@ android {
     // Reproducible optional offline Korean model, prepared outside source control.
     sourceSets.getByName("main").assets.srcDir(rootProject.file("../.tools/speech/assets"))
     sourceSets.getByName("androidTest").assets.srcDir(rootProject.file("../.tools/speech/test-assets"))
+    if (submissionRelease) {
+        sourceSets.getByName("release") {
+            manifest.srcFile("src/demo/AndroidManifest.xml")
+            res.srcDir("src/demo/res")
+        }
+    }
+    if (releaseSigningReady) {
+        signingConfigs.create("submission") {
+            storeFile = file(requireNotNull(releaseKeyStore))
+            storePassword = releaseStorePassword
+            keyAlias = releaseKeyAlias
+            keyPassword = releaseKeyPassword
+            enableV1Signing = true
+            enableV2Signing = true
+        }
+    }
     buildTypes {
         debug { buildConfigField("boolean", "DEMO_FEATURES", "true") }
-        release { isMinifyEnabled = false }
+        release {
+            isDebuggable = false
+            isMinifyEnabled = false
+            buildConfigField("boolean", "DEMO_FEATURES", submissionRelease.toString())
+            if (releaseSigningReady) signingConfig = signingConfigs.getByName("submission")
+        }
         create("demo") {
             initWith(getByName("release"))
             isDebuggable = false
