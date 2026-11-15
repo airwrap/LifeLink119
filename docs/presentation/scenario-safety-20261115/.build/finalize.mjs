@@ -9,7 +9,7 @@ await fs.mkdir(path.join(BASE,'output'),{recursive:true});
 const result=await finalizePresentation({
   workspaceDir:BASE,
   candidatePath:path.join(BUILD,'candidate.pptx'),
-  finalPath:path.join(BASE,'output','LifeLink119_상황별안내와_탑승자안전.pptx'),
+  finalPath:path.join(BASE,'output','LifeLink119_Final_Guide.pptx'),
   pythonExecutable:process.env.LIFELINK_PYTHON || 'python',
   integrityValidatorPath:path.join(SKILL,'container_tools/inspect_presentation_package_integrity.py'),
   layoutValidatorPath:path.join(SKILL,'container_tools/inspect_presentation_layout_geometry.py'),
@@ -18,6 +18,6 @@ const result=await finalizePresentation({
   fontPolicy:{basis:'design',families:['Malgun Gothic']},
   // The host has no Artifact Tool runtime. This file records structural checks only.
   verifyArtifactToolImport:false,
-  receiptPath:path.join(BUILD,'finalization-receipt.json'),
+  receiptPath:path.join(BUILD,'final-guide-receipt.json'),
 });
 console.log(JSON.stringify(result));

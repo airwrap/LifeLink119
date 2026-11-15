@@ -9,8 +9,8 @@ import fitz
 
 B=Path(__file__).resolve().parent
 BASE=B.parent
-PPT=BASE/'output/LifeLink119_상황별안내와_탑승자안전.pptx'
-PDF=BASE/'output/LifeLink119_상황별안내와_탑승자안전.pdf'
+PPT=BASE/'output/LifeLink119_Final_Guide.pptx'
+PDF=BASE/'output/LifeLink119_Final_Guide.pdf'
 forbidden=[
     '현대차 사진 참조 · 가족 장면 AI 합성',
     '가족정보 등록이나 PIN 없이 긴급 연결을 시작합니다.',
@@ -32,11 +32,11 @@ doc=fitz.open(PDF)
 assert len(doc)==24
 text='\n'.join(page.get_text() for page in doc)
 assert not any(norm(f) in norm(text) for f in forbidden)
-for term in ['자살 위기','고독사','폭염','CO₂','일산화탄소','콜백','응급상담','안심콜','확장 화면안']:
+for term in ['자살 위기','고독사','폭염','CO₂','일산화탄소','응급상담','안심콜','확장 화면안','가족 나들이','본인 조회','안전 동행']:
     assert term in text, term
 doc[0].get_pixmap(matrix=fitz.Matrix(1,1)).save(B/'final-pdf-cover.png')
 result=dict(slides=24,pages=24,nativeEditableTables=[19,23],nativeVectorShapes=72,
-            removedRequestedPhrases=True,all24PageRendersReviewed=True,
+            removedRequestedPhrases=True,all24PageRendersReviewed=False,
             nativePowerPointExecuted=False,
             scope='Existing demo flows plus explicitly labelled cabin sensor and crisis-support proposals; app behavior was not changed.',
             outputs=[dict(path=str(p),bytes=p.stat().st_size,sha256=hashlib.sha256(p.read_bytes()).hexdigest()) for p in [PPT,PDF]])

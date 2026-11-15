@@ -2,7 +2,7 @@
   "width": 1600,
   "height": 900,
   "font": "Malgun Gothic",
-  "title": "LifeLink 119 상황별 사용·탑승자 안전",
+  "title": "LifeLink 119 최종 설명자료 · v0.18.1",
   "slides": [
     {
       "number": 1,
@@ -26,10 +26,10 @@
           "align": "left"
         },
         {
-          "text": "나와 내 가족을 위한\n차량 안전 동행",
+          "text": "나와 내 가족을 위한\n안전 동행",
           "lines": [
             "나와 내 가족을 위한",
-            "차량 안전 동행"
+            "안전 동행"
           ],
           "x": 70,
           "y": 228,
@@ -43,10 +43,10 @@
           "align": "left"
         },
         {
-          "text": "긴급신고 · 상담 · 구조 대기\n차 안의 위험을 살피는 다음 단계",
+          "text": "위급상황에서는 1분 1초가\n생명을 살릴 수 있습니다",
           "lines": [
-            "긴급신고 · 상담 · 구조 대기",
-            "차 안의 위험을 살피는 다음 단계"
+            "위급상황에서는 1분 1초가",
+            "생명을 살릴 수 있습니다"
           ],
           "x": 73,
           "y": 450,
@@ -60,9 +60,9 @@
           "align": "left"
         },
         {
-          "text": "상황별 사용 안내와 탑승자 안전 확장안",
+          "text": "긴급신고 · 상담 · 신고 후 대기 안내",
           "lines": [
-            "상황별 사용 안내와 탑승자 안전 확장안"
+            "긴급신고 · 상담 · 신고 후 대기 안내"
           ],
           "x": 73,
           "y": 704,
@@ -76,9 +76,9 @@
           "align": "left"
         },
         {
-          "text": "2026.11.15",
+          "text": "최종 설명자료 · 앱 v0.18.1 · 2026.11.15",
           "lines": [
-            "2026.11.15"
+            "최종 설명자료 · 앱 v0.18.1 · 2026.11.15"
           ],
           "x": 73,
           "y": 780,
@@ -111,7 +111,7 @@
       ],
       "tables": [],
       "shapes": [],
-      "notes": "LifeLink 119\n\n발표자 설명\n가족을 위한 차량형 응급지원이라는 서비스 방향을 소개한다. 기존의 실제 앱 화면을 이용한 사용 안내를 상황 중심으로 개편했다. 후반 온도·공기질·잔류 감지는 신규 제품 제안이며 현재 센서 연동 구현을 뜻하지 않는다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n이미지 입력: assets/hyundai-family-hero.png\n사용자가 제공한 현대차 사진과 이전 가족 이미지를 참조한 AI 합성. 실제 가족 또는 현대자동차 공식 광고가 아님. 원 프롬프트: assets/hyundai-family-hero.prompt.txt."
+      "notes": "LifeLink 119\n\n발표자 설명\n가족을 위한 차량형 응급지원이라는 서비스 방향을 소개한다. 기존의 실제 앱 화면을 이용한 사용 안내를 상황 중심으로 개편했다. 후반 온도·공기질·잔류 감지는 신규 제품 제안이며 현재 센서 연동 구현을 뜻하지 않는다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n이미지 입력: assets/hyundai-family-hero.png\n사용자가 제공한 현대 SUV와 동일한 골든 리트리버의 두 사진을 참고한 가족·반려견 AI 합성 이미지. 실제 가족 또는 현대자동차 공식 광고가 아님. 원 프롬프트: assets/hyundai-family-hero.prompt.txt."
     },
     {
       "number": 2,
@@ -251,16 +251,17 @@
           "align": "left"
         },
         {
-          "text": "콜백·출동 대기 중 상태 확인\n악화하면 다시 알릴 내용 준비\n구조대에게 전할 요약 유지",
+          "text": "119 연결이 늦어질 때 상태 확인\n악화하면 다시 알릴 내용 준비\n구조대에게 전할 요약 유지",
           "lines": [
-            "콜백·출동 대기 중 상태 확인",
+            "119 연결이 늦어질 때 상태",
+            "확인",
             "악화하면 다시 알릴 내용 준비",
             "구조대에게 전할 요약 유지"
           ],
           "x": 1105,
           "y": 407,
           "w": 430,
-          "h": 152,
+          "h": 201,
           "size": 30,
           "lh": 49,
           "color": "193139",
@@ -537,7 +538,7 @@
           "commands": []
         }
       ],
-      "notes": "도움이 필요한 순간은 세 가지입니다\n\n발표자 설명\n이 자료에서 연결은 현재 앱이 제공하는 기관 연결 화면·모의 흐름을 설명한다. 실제 기관 발신·접수·출동 수신은 현재 구현되지 않았다. 전문상담은 AI가 대신하지 않는다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\nHelpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader."
+      "notes": "도움이 필요한 순간은 세 가지입니다\n\n발표자 설명\n이 자료에서 연결은 현재 앱이 제공하는 기관 연결 화면·모의 흐름을 설명한다. 실제 기관 발신·접수·출동 수신은 현재 구현되지 않았다. 전문상담은 AI가 대신하지 않는다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\nHelpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader."
     },
     {
       "number": 3,
@@ -711,17 +712,17 @@
       ],
       "tables": [],
       "shapes": [],
-      "notes": "홈에서 지금 필요한 도움을 고릅니다\n\n발표자 설명\n현대차와 가족 이미지를 적용한 현재 앱 홈이다. 기관별 진입점과 가족정보 메뉴가 있으며 세부 조작을 반복하지 않도록 음성 대기 동행과 연결한다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n이미지 입력: assets/home.jpg"
+      "notes": "홈에서 지금 필요한 도움을 고릅니다\n\n발표자 설명\n현대차와 가족 이미지를 적용한 현재 앱 홈이다. 기관별 진입점과 가족정보 메뉴가 있으며 세부 조작을 반복하지 않도록 음성 대기 동행과 연결한다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n이미지 입력: assets/home.jpg"
     },
     {
       "number": 4,
-      "title": "사례 1 · 사고 후 동승자가 다쳤습니다",
+      "title": "사례 1 · 가족 나들이 중 어머니가 가슴 통증을 호소합니다",
       "background": "F5F6F1",
       "texts": [
         {
-          "text": "사례 1 · 사고 후 동승자가 다쳤습니다",
+          "text": "사례 1 · 가족 나들이 중 어머니가 가슴 통증을 호소합니다",
           "lines": [
-            "사례 1 · 사고 후 동승자가 다쳤습니다"
+            "사례 1 · 가족 나들이 중 어머니가 가슴 통증을 호소합니다"
           ],
           "x": 65,
           "y": 40,
@@ -735,9 +736,9 @@
           "align": "left"
         },
         {
-          "text": "먼저 긴급 연결을 열고, 위치와 환자 상태를 전달합니다",
+          "text": "충돌 신호가 없어도 필요한 도움을 한 번에 열고, 현재 상황을 정리합니다",
           "lines": [
-            "먼저 긴급 연결을 열고, 위치와 환자 상태를 전달합니다"
+            "충돌 신호가 없어도 필요한 도움을 한 번에 열고, 현재 상황을 정리합니다"
           ],
           "x": 68,
           "y": 120,
@@ -767,9 +768,9 @@
           "align": "right"
         },
         {
-          "text": "현재 앱 흐름",
+          "text": "현재 앱 모의 시연",
           "lines": [
-            "현재 앱 흐름"
+            "현재 앱 모의 시연"
           ],
           "x": 70,
           "y": 845,
@@ -783,9 +784,9 @@
           "align": "left"
         },
         {
-          "text": "01 · 119 긴급신고",
+          "text": "01 · 동승 가족이 신고",
           "lines": [
-            "01 · 119 긴급신고"
+            "01 · 동승 가족이 신고"
           ],
           "x": 1100,
           "y": 230,
@@ -799,10 +800,10 @@
           "align": "left"
         },
         {
-          "text": "홈의 긴급신고를 누르고 주변 안전과 환자 상태를 살핍니다.",
+          "text": "홈의 119 긴급신고를 한 번 누릅니다.",
           "lines": [
-            "홈의 긴급신고를 누르고 주변",
-            "안전과 환자 상태를 살핍니다."
+            "홈의 119 긴급신고를 한 번",
+            "누릅니다."
           ],
           "x": 1100,
           "y": 288,
@@ -832,10 +833,10 @@
           "align": "left"
         },
         {
-          "text": "위치·차량 상태와 사용자가 확인한 내용을 봅니다.",
+          "text": "확인한 위치·차량 상태와 환자가 말한 증상을 모읍니다.",
           "lines": [
-            "위치·차량 상태와 사용자가",
-            "확인한 내용을 봅니다."
+            "확인한 위치·차량 상태와 환자가",
+            "말한 증상을 모읍니다."
           ],
           "x": 1100,
           "y": 468,
@@ -865,10 +866,10 @@
           "align": "left"
         },
         {
-          "text": "상담원과 통화 중이 아닐 때 짧은 상태 확인을 시작합니다.",
+          "text": "연결이 늦어지면 한 질문씩 듣고 짧게 답합니다.",
           "lines": [
-            "상담원과 통화 중이 아닐 때 짧은",
-            "상태 확인을 시작합니다."
+            "연결이 늦어지면 한 질문씩 듣고",
+            "짧게 답합니다."
           ],
           "x": 1100,
           "y": 648,
@@ -885,15 +886,15 @@
       "images": [
         {
           "file": "call.jpg",
-          "x": 64.99999999999994,
-          "y": 285.21875,
-          "w": 980.0000000000001,
-          "h": 419.56250000000006,
+          "x": 65.00000000000006,
+          "y": 356.09034267912773,
+          "w": 979.9999999999999,
+          "h": 277.81931464174454,
           "crop": [
             40,
-            335,
-            1640,
-            1020
+            365,
+            1645,
+            820
           ],
           "sourceWidth": 1682,
           "sourceHeight": 1210
@@ -901,7 +902,7 @@
       ],
       "tables": [],
       "shapes": [],
-      "notes": "사례 1 · 사고 후 동승자가 다쳤습니다\n\n발표자 설명\n사고 신호만으로 부상 여부나 중증도를 진단하지 않는다. 에어백 미전개도 안전하다는 뜻이 아니다. 실제 통화 중에는 상담원 지시가 우선이고 앱 음성을 중단한다. 자동 신고 사실을 임의로 확정하지 않는다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n이미지 입력: assets/call.jpg"
+      "notes": "사례 1 · 가족 나들이 중 어머니가 가슴 통증을 호소합니다\n\n발표자 설명\n첫 사례는 충돌이 아닌 가족 나들이 중 갑작스러운 응급질환이다. 제조사의 기존 충돌 자동 통보와 다른 지원 상황을 설명한다. 환자가 가슴 통증을 말했다는 사용자 진술을 기록하며 원인이나 진단을 확정하지 않는다. 실제 통화 중에는 상담원 지시가 우선이고 앱 음성을 중단한다. 현재 연결은 모의 시연이다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n이미지 입력: assets/call.jpg"
     },
     {
       "number": 5,
@@ -1059,14 +1060,14 @@
         {
           "file": "question.jpg",
           "x": 70.00000000000006,
-          "y": 300.9125,
+          "y": 263.25,
           "w": 919.9999999999999,
-          "h": 258.17499999999995,
+          "h": 333.5,
           "crop": [
             40,
-            220,
+            225,
             1640,
-            669
+            805
           ],
           "sourceWidth": 1682,
           "sourceHeight": 1210
@@ -1165,7 +1166,7 @@
           "commands": []
         }
       ],
-      "notes": "질문을 듣고 말하면 다음 단계로 이어집니다\n\n발표자 설명\n현재 음성 동행은 TTS가 끝난 다음 STT로 듣는다. 외부 LLM이 선택한 의미 코드는 확인 질문을 거치며 자유 의료 문장을 출력하지 않는다. 화면 답변을 원하면 같은 질문에 세 응답만 표시한다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n이미지 입력: assets/question.jpg"
+      "notes": "질문을 듣고 말하면 다음 단계로 이어집니다\n\n발표자 설명\n현재 음성 동행은 TTS가 끝난 다음 STT로 듣는다. 외부 LLM이 선택한 의미 코드는 확인 질문을 거치며 자유 의료 문장을 출력하지 않는다. 화면 답변을 원하면 같은 질문에 세 응답만 표시한다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n이미지 입력: assets/question.jpg"
     },
     {
       "number": 6,
@@ -1358,17 +1359,17 @@
       ],
       "tables": [],
       "shapes": [],
-      "notes": "상담원에게 위치와 환자 상태를 짧게 전달합니다\n\n발표자 설명\n현재 패킷 예시의 좌표와 에어백 값은 합성 시나리오다. 위치 등 실제 값은 출처·측정 시각과 함께 표시하며 오래된 자료를 현재 값으로 대체하지 않는다. 공식 안심콜 DB를 자동 가져오는 기능은 없고 차량 저장본을 명시적으로 선택한다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n이미지 입력: assets/packet.jpg"
+      "notes": "상담원에게 위치와 환자 상태를 짧게 전달합니다\n\n발표자 설명\n현재 패킷 예시의 좌표와 에어백 값은 합성 시나리오다. 위치 등 실제 값은 출처·측정 시각과 함께 표시하며 오래된 자료를 현재 값으로 대체하지 않는다. 공식 안심콜 DB를 자동 가져오는 기능은 없고 차량 저장본을 명시적으로 선택한다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n이미지 입력: assets/packet.jpg"
     },
     {
       "number": 7,
-      "title": "사례 2 · 119에서 다시 전화하겠다고 합니다",
+      "title": "사례 2 · 119 연결이나 접수가 늦어집니다",
       "background": "F5F6F1",
       "texts": [
         {
-          "text": "사례 2 · 119에서 다시 전화하겠다고 합니다",
+          "text": "사례 2 · 119 연결이나 접수가 늦어집니다",
           "lines": [
-            "사례 2 · 119에서 다시 전화하겠다고 합니다"
+            "사례 2 · 119 연결이나 접수가 늦어집니다"
           ],
           "x": 65,
           "y": 40,
@@ -1382,9 +1383,9 @@
           "align": "left"
         },
         {
-          "text": "확인한 말을 알려주면 현재 상황을 유지하며 기다릴 수 있습니다",
+          "text": "확인한 연결 상태를 말하면 상황을 유지하며 음성 동행으로 이어집니다",
           "lines": [
-            "확인한 말을 알려주면 현재 상황을 유지하며 기다릴 수 있습니다"
+            "확인한 연결 상태를 말하면 상황을 유지하며 음성 동행으로 이어집니다"
           ],
           "x": 68,
           "y": 120,
@@ -1414,9 +1415,9 @@
           "align": "right"
         },
         {
-          "text": "현재 앱 흐름",
+          "text": "현재 앱 모의 시연",
           "lines": [
-            "현재 앱 흐름"
+            "현재 앱 모의 시연"
           ],
           "x": 70,
           "y": 845,
@@ -1430,9 +1431,9 @@
           "align": "left"
         },
         {
-          "text": "사용자: “다시 전화 준대요”  →  콜백 대기 진술을 기록하고 음성 동행으로 이어갑니다.",
+          "text": "“연결이 안 돼요” · “다시 전화 준대요”처럼 확인한 상태를 말하면 AI가 다음 질문을 이어갑니다.",
           "lines": [
-            "사용자: “다시 전화 준대요”  →  콜백 대기 진술을 기록하고 음성 동행으로 이어갑니다."
+            "“연결이 안 돼요” · “다시 전화 준대요”처럼 확인한 상태를 말하면 AI가 다음 질문을 이어갑니다."
           ],
           "x": 73,
           "y": 779,
@@ -1465,7 +1466,7 @@
       ],
       "tables": [],
       "shapes": [],
-      "notes": "사례 2 · 119에서 다시 전화하겠다고 합니다\n\n발표자 설명\n콜백 대기는 명시적인 사용자 진술로 기록한다. 앱이 콜백 예약을 확인하거나 통화 연결을 자동 판단하는 것이 아니다. 접수·출동 상태를 알 수 없는 경우 확인되지 않음으로 유지한다. 긴급 재연결은 언제나 접근할 수 있다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n이미지 입력: assets/callback.jpg"
+      "notes": "사례 2 · 119 연결이나 접수가 늦어집니다\n\n발표자 설명\n콜백 대기는 명시적인 사용자 진술로 기록한다. 앱이 콜백 예약을 확인하거나 통화 연결을 자동 판단하는 것이 아니다. 접수·출동 상태를 알 수 없는 경우 확인되지 않음으로 유지한다. 긴급 재연결은 언제나 접근할 수 있다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n이미지 입력: assets/callback.jpg"
     },
     {
       "number": 8,
@@ -1655,7 +1656,7 @@
       ],
       "tables": [],
       "shapes": [],
-      "notes": "사례 3 · 구급차를 기다리다 증상이 달라졌습니다\n\n발표자 설명\n출동 대기·상태 악화는 앱 시뮬레이션과 사용자 응답에 근거한다. AI는 구급차 도착 시간·위치 또는 출동 확정을 만들어내지 않는다. 호흡 이상 등 명확한 위험은 긴 증상 설문을 중지한다. 임상 콘텐츠는 의료전문가 검토 전이다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n이미지 입력: assets/worsening.jpg"
+      "notes": "사례 3 · 구급차를 기다리다 증상이 달라졌습니다\n\n발표자 설명\n출동 대기·상태 악화는 앱 시뮬레이션과 사용자 응답에 근거한다. AI는 구급차 도착 시간·위치 또는 출동 확정을 만들어내지 않는다. 호흡 이상 등 명확한 위험은 긴 증상 설문을 중지한다. 임상 콘텐츠는 의료전문가 검토 전이다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n이미지 입력: assets/worsening.jpg"
     },
     {
       "number": 9,
@@ -1829,15 +1830,15 @@
       "images": [
         {
           "file": "medical119.jpg",
-          "x": 64.99999999999994,
-          "y": 282.15625,
-          "w": 980.0000000000001,
-          "h": 425.68750000000006,
+          "x": 65.00000000000006,
+          "y": 322.50778816199374,
+          "w": 979.9999999999999,
+          "h": 344.98442367601245,
           "crop": [
             40,
-            335,
-            1640,
-            1030
+            395,
+            1645,
+            960
           ],
           "sourceWidth": 1682,
           "sourceHeight": 1210
@@ -1845,7 +1846,7 @@
       ],
       "tables": [],
       "shapes": [],
-      "notes": "사례 4 · 응급처치가 궁금해 상담이 필요합니다\n\n발표자 설명\n현재 앱은 응급상담 연결 화면과 응급 요약 경로를 제공한다. 전문 상담원과 실제 통화하는 기능은 기관·전화 플랫폼 연결 단계가 필요하다. AI가 진단이나 약물 복용 여부를 대신 결정하지 않는다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n이미지 입력: assets/medical119.jpg"
+      "notes": "사례 4 · 응급처치가 궁금해 상담이 필요합니다\n\n발표자 설명\n현재 앱은 응급상담 연결 화면과 응급 요약 경로를 제공한다. 전문 상담원과 실제 통화하는 기능은 기관·전화 플랫폼 연결 단계가 필요하다. AI가 진단이나 약물 복용 여부를 대신 결정하지 않는다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n이미지 입력: assets/medical119.jpg"
     },
     {
       "number": 10,
@@ -2019,7 +2020,7 @@
       ],
       "tables": [],
       "shapes": [],
-      "notes": "사례 5 · 차 안에서 자살 위기에 놓였습니다\n\n발표자 설명\n사용자가 요청한 차량 내 자살 예방이라는 제품 시나리오다. 현재 109 연결 화면은 있으나 정신건강 위험 평가·전용 AI 대화는 미구현이다. 센서·독차·위치·무응답만으로 자살 의도나 우울증을 추정하지 않는다. 전용 대화는 전문가 검토와 위기 개입 정책이 필요한 확장안이다. 자해 수단이나 방법에 대한 설명은 포함하지 않는다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\nHelpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader.\n이미지 입력: assets/counsel109.jpg"
+      "notes": "사례 5 · 차 안에서 자살 위기에 놓였습니다\n\n발표자 설명\n사용자가 요청한 차량 내 자살 예방이라는 제품 시나리오다. 현재 109 연결 화면은 있으나 정신건강 위험 평가·전용 AI 대화는 미구현이다. 센서·독차·위치·무응답만으로 자살 의도나 우울증을 추정하지 않는다. 전용 대화는 전문가 검토와 위기 개입 정책이 필요한 확장안이다. 자해 수단이나 방법에 대한 설명은 포함하지 않는다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\nHelpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader.\n이미지 입력: assets/counsel109.jpg"
     },
     {
       "number": 11,
@@ -2475,17 +2476,17 @@
           "commands": []
         }
       ],
-      "notes": "혼자 탑승한 사람의 무응답도 살필 수 있어야 합니다\n\n발표자 설명\n차량고독사라는 표현은 사망 원인을 의미하지 않는다. 신체 질환, 열·가스 노출, 고립, 심리 위기 등 지원 경로를 나누어 설명한다. 무응답 자동 감지·원격 알림·사망 판단 기능은 현재 구현되어 있지 않다. 사망이나 의도를 센서로 진단하지 않는다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\nHelpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader.\nNHTSA · Child Safety / Heatstroke: https://www.nhtsa.gov/road-safety/child-safety\nCDC · Carbon Monoxide Poisoning Basics: https://www.cdc.gov/carbon-monoxide/about/index.html"
+      "notes": "혼자 탑승한 사람의 무응답도 살필 수 있어야 합니다\n\n발표자 설명\n차량고독사라는 표현은 사망 원인을 의미하지 않는다. 신체 질환, 열·가스 노출, 고립, 심리 위기 등 지원 경로를 나누어 설명한다. 무응답 자동 감지·원격 알림·사망 판단 기능은 현재 구현되어 있지 않다. 사망이나 의도를 센서로 진단하지 않는다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\nHelpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader.\nNHTSA · Child Safety / Heatstroke: https://www.nhtsa.gov/road-safety/child-safety\nCDC · Carbon Monoxide Poisoning Basics: https://www.cdc.gov/carbon-monoxide/about/index.html"
     },
     {
       "number": 12,
-      "title": "안심콜 정보는 이번 환자에게 필요한 만큼 활용합니다",
+      "title": "안심콜 본인 정보를 차량의 응급 요약으로 연결합니다",
       "background": "F5F6F1",
       "texts": [
         {
-          "text": "안심콜 정보는 이번 환자에게 필요한 만큼 활용합니다",
+          "text": "안심콜 본인 정보를 차량의 응급 요약으로 연결합니다",
           "lines": [
-            "안심콜 정보는 이번 환자에게 필요한 만큼 활용합니다"
+            "안심콜 본인 정보를 차량의 응급 요약으로 연결합니다"
           ],
           "x": 65,
           "y": 40,
@@ -2499,9 +2500,9 @@
           "align": "left"
         },
         {
-          "text": "병력과 복약을 다시 설명하는 부담을 줄이고 의사소통을 돕습니다",
+          "text": "본인 조회와 차량 자동 연계를 통해 병력·복약을 다시 설명하는 부담을 줄이는 구상입니다",
           "lines": [
-            "병력과 복약을 다시 설명하는 부담을 줄이고 의사소통을 돕습니다"
+            "본인 조회와 차량 자동 연계를 통해 병력·복약을 다시 설명하는 부담을 줄이는 구상입니다"
           ],
           "x": 68,
           "y": 120,
@@ -2531,9 +2532,9 @@
           "align": "right"
         },
         {
-          "text": "현재 앱 · 차량에 직접 저장한 정보 활용",
+          "text": "현재: 차량 저장본 활용 / 확장: 공식 본인 조회·자동 연계",
           "lines": [
-            "현재 앱 · 차량에 직접 저장한 정보 활용"
+            "현재: 차량 저장본 활용 / 확장: 공식 본인 조회·자동 연계"
           ],
           "x": 70,
           "y": 845,
@@ -2547,9 +2548,9 @@
           "align": "left"
         },
         {
-          "text": "평소 · 저장해 두기",
+          "text": "본인 조회 · 연계 설계",
           "lines": [
-            "평소 · 저장해 두기"
+            "본인 조회 · 연계 설계"
           ],
           "x": 75,
           "y": 330,
@@ -2563,11 +2564,11 @@
           "align": "left"
         },
         {
-          "text": "본인과 가족의 병력\n알레르기·복용약\n거동·통화 어려움·보호자",
+          "text": "본인 인증과 공유 동의\n소방청 안심콜 정보 조회\n현대차 Pleos 차량으로 연계",
           "lines": [
-            "본인과 가족의 병력",
-            "알레르기·복용약",
-            "거동·통화 어려움·보호자"
+            "본인 인증과 공유 동의",
+            "소방청 안심콜 정보 조회",
+            "현대차 Pleos 차량으로 연계"
           ],
           "x": 75,
           "y": 407,
@@ -2581,9 +2582,9 @@
           "align": "left"
         },
         {
-          "text": "응급 요약 · 환자 확인",
+          "text": "차량 · 안전하게 보관",
           "lines": [
-            "응급 요약 · 환자 확인"
+            "차량 · 안전하게 보관"
           ],
           "x": 590,
           "y": 330,
@@ -2597,11 +2598,11 @@
           "align": "left"
         },
         {
-          "text": "인증 후 가족 한 명 선택\n“이 환자 정보로\n응급 요약 만들기”",
+          "text": "병력·복용약·알레르기\n거동·통화 어려움·보호자\n암호화 저장과 최신 정보 확인",
           "lines": [
-            "인증 후 가족 한 명 선택",
-            "“이 환자 정보로",
-            "응급 요약 만들기”"
+            "병력·복용약·알레르기",
+            "거동·통화 어려움·보호자",
+            "암호화 저장과 최신 정보 확인"
           ],
           "x": 590,
           "y": 407,
@@ -2615,9 +2616,9 @@
           "align": "left"
         },
         {
-          "text": "상담원에게 · 확인하며 전달",
+          "text": "응급상황 · 전달 준비",
           "lines": [
-            "상담원에게 · 확인하며 전달"
+            "응급상황 · 전달 준비"
           ],
           "x": 1105,
           "y": 330,
@@ -2631,17 +2632,16 @@
           "align": "left"
         },
         {
-          "text": "최신 정보인지 함께 확인\n중요한 내용을 읽어주기\n다른 환자 정보는 포함하지 않기",
+          "text": "이번 환자 한 명을 확인\n현재 증상과 대기 중 변화 결합\n상담원에게 전할 내용 요약",
           "lines": [
-            "최신 정보인지 함께 확인",
-            "중요한 내용을 읽어주기",
-            "다른 환자 정보는 포함하지",
-            "않기"
+            "이번 환자 한 명을 확인",
+            "현재 증상과 대기 중 변화 결합",
+            "상담원에게 전할 내용 요약"
           ],
           "x": 1105,
           "y": 407,
           "w": 430,
-          "h": 201,
+          "h": 152,
           "size": 30,
           "lh": 49,
           "color": "193139",
@@ -2650,9 +2650,9 @@
           "align": "left"
         },
         {
-          "text": "건강정보는 외부 AI로 보내지 않고, 치료나 투약 판단에 사용하지 않습니다.",
+          "text": "본인 조회·자동 연계에는 공식 연계 방식과 인증·권한 검증이 필요합니다.",
           "lines": [
-            "건강정보는 외부 AI로 보내지 않고, 치료나 투약 판단에 사용하지 않습니다."
+            "본인 조회·자동 연계에는 공식 연계 방식과 인증·권한 검증이 필요합니다."
           ],
           "x": 92,
           "y": 769,
@@ -2955,7 +2955,7 @@
           "commands": []
         }
       ],
-      "notes": "안심콜 정보는 이번 환자에게 필요한 만큼 활용합니다\n\n발표자 설명\n현재 기능은 로컬 암호화 저장 건강정보를 이번 incident에 명시적으로 포함하는 것. 공식 안심콜 로그인·문자 인증·DB 자동 조회는 미연동이다. 개인정보가 있는 보안 화면은 캡처하지 않고 절차로 설명한다. PIN 인증 만료 시 건강정보는 숨기고 진행 중인 전경 응급 대화는 유지한다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt."
+      "notes": "안심콜 본인 정보를 차량의 응급 요약으로 연결합니다\n\n발표자 설명\n공식 안심콜 사이트에서 본인이 인증하여 정보를 조회·관리하는 경로를 현대차 Pleos 앱의 정보 활용 흐름에 연결하는 설계다. 앱의 현재 기능은 직접 입력한 로컬 암호화 건강정보를 선택한 환자의 응급 요약에 포함하는 것과 공식 사이트 안내다. 공식 로그인 세션·문자 인증·DB 조회 API 자동 연계가 구현 또는 승인된 것으로 표시하지 않는다. 본인 자료는 본인 인증·동의, 가족은 당사자 동의나 적법한 대리 권한, 최신성·출처 확인, 철회·삭제가 필요하다. 건강정보는 외부 LLM에 보내지 않는다. 보안 화면은 캡처하지 않고 절차로 설명한다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n소방청 119안심콜 공식 사이트: https://u119.nfa.go.kr/ . 본인 인증·정보 관리 경로와 Pleos 차량 자동 연계 구상을 구분한다. 공식 조회 API·제조사/기관 연동이 승인·구현됐다는 의미가 아니다. 검토: docs/SAFE_CALL_WEB_INTEGRATION_REVIEW.md."
     },
     {
       "number": 13,
@@ -3476,7 +3476,7 @@
           "commands": []
         }
       ],
-      "notes": "신고 이전의 위험을 알려주는 기능으로 확장합니다\n\n발표자 설명\n예방 확장 아이디어를 소개한다. 현재 앱이 환경 센서를 측정하거나 차량 시동 종료 후 감시를 수행하지는 않는다. 연동 검증 전에 사망 예방 효과나 임상 정확도·안전 보장을 주장하지 않는다.\n\n근거·출처\nNHTSA · Child Safety / Heatstroke: https://www.nhtsa.gov/road-safety/child-safety\nCDC · Carbon Monoxide Poisoning Basics: https://www.cdc.gov/carbon-monoxide/about/index.html\nUK HSE · Using CO2 monitors: https://www.hse.gov.uk/ventilation/using-co2-monitors.htm . Building ventilation guidance is not a validated vehicle alarm threshold.\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt."
+      "notes": "신고 이전의 위험을 알려주는 기능으로 확장합니다\n\n발표자 설명\n예방 확장 아이디어를 소개한다. 현재 앱이 환경 센서를 측정하거나 차량 시동 종료 후 감시를 수행하지는 않는다. 연동 검증 전에 사망 예방 효과나 임상 정확도·안전 보장을 주장하지 않는다.\n\n근거·출처\nNHTSA · Child Safety / Heatstroke: https://www.nhtsa.gov/road-safety/child-safety\nCDC · Carbon Monoxide Poisoning Basics: https://www.cdc.gov/carbon-monoxide/about/index.html\nUK HSE · Using CO2 monitors: https://www.hse.gov.uk/ventilation/using-co2-monitors.htm . Building ventilation guidance is not a validated vehicle alarm threshold.\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md."
     },
     {
       "number": 14,
@@ -4844,19 +4844,19 @@
       ],
       "images": [
         {
-          "file": "hyundai-reference.jpg",
-          "x": 395.46875,
-          "y": 220.0,
-          "w": 789.0625,
-          "h": 505.0,
+          "file": "hyundai-suv-reference.png",
+          "x": 395.0,
+          "y": 250.3125,
+          "w": 790.0,
+          "h": 444.375,
           "crop": [
             0,
             0,
-            700,
-            448
+            960,
+            540
           ],
-          "sourceWidth": 700,
-          "sourceHeight": 448
+          "sourceWidth": 960,
+          "sourceHeight": 540
         }
       ],
       "tables": [],
@@ -5187,7 +5187,7 @@
           ]
         }
       ],
-      "notes": "센서는 실내 환경과 탑승자의 존재를 나누어 봅니다\n\n발표자 설명\n사용자가 제공한 현대차 사진을 그대로 배치했다. 도식은 특정 차종의 실제 장착 위치나 탑재 기능을 확인한 그림이 아니다. 레이더는 촬영 영상 없이 탑승자 존재를 살필 수 있는 후보 기술이며 수면·반응·의식을 단독 확정하지 않는다. 좌석 하중은 짐과 구분하는 검증이 필요하다.\n\n근거·출처\nPleos Vehicle SDK introduction: https://document.pleos.ai/en/docs/pleos-only/connect-sdk-pleos/Vehicle/intro ; API compatibility: https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability . HVAC methods exist in the documentation; actual cabin measurement meaning, area, permission and target vehicle support are not yet verified in this app.\nTI · Child-presence and occupant-detection reference design: https://www.ti.com/tool/TIDEP-01023 . Capabilities require vehicle-specific validation; no accuracy figures are transferred to this app.\nSensirion SCD30 NDIR CO2 sensor datasheet: https://sensirion.com/en/media/documents/4EAF6AF8/61652C3C/Sensirion_CO2_Sensors_SCD30_Datasheet.pdf . Technology example, not a certified automotive component selection.\n이미지 입력: assets/hyundai-reference.jpg"
+      "notes": "센서는 실내 환경과 탑승자의 존재를 나누어 봅니다\n\n발표자 설명\n사용자가 제공한 현대차 사진을 그대로 배치했다. 도식은 특정 차종의 실제 장착 위치나 탑재 기능을 확인한 그림이 아니다. 레이더는 촬영 영상 없이 탑승자 존재를 살필 수 있는 후보 기술이며 수면·반응·의식을 단독 확정하지 않는다. 좌석 하중은 짐과 구분하는 검증이 필요하다.\n\n근거·출처\nPleos Vehicle SDK introduction: https://document.pleos.ai/en/docs/pleos-only/connect-sdk-pleos/Vehicle/intro ; API compatibility: https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability . HVAC methods exist in the documentation; actual cabin measurement meaning, area, permission and target vehicle support are not yet verified in this app.\nTI · Child-presence and occupant-detection reference design: https://www.ti.com/tool/TIDEP-01023 . Capabilities require vehicle-specific validation; no accuracy figures are transferred to this app.\nSensirion SCD30 NDIR CO2 sensor datasheet: https://sensirion.com/en/media/documents/4EAF6AF8/61652C3C/Sensirion_CO2_Sensors_SCD30_Datasheet.pdf . Technology example, not a certified automotive component selection.\n이미지 입력: assets/hyundai-suv-reference.png"
     },
     {
       "number": 19,
@@ -6165,7 +6165,7 @@
           "commands": []
         }
       ],
-      "notes": "AI는 질문과 정리를 돕고, 지침은 통제합니다\n\n발표자 설명\n기존 LLM은 허용된 문장 ID·의미 코드만 반환한다. 앱과 서버 양쪽 검사를 거치며 자유 진단·치료 문장은 읽지 않는다. 외부 모델이 실패해도 기존 고정 안내는 유지된다. 검증된 절차라는 개발상 표현을 임상적으로 무오류임을 뜻하는 것으로 사용하지 않는다. 신규 열·가스·심리 위기 콘텐츠는 제품 제안이며 추가 임상·안전 검증이 필요하다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\n질병관리청 국가건강정보포털 · 온열질환 예방과 응급조치: https://health.kdca.go.kr/healthinfo/biz/health/ntcnInfo/healthSourc/thtimtCntnts/thtimtCntntsView.do?thtimt_cntnts_sn=122\nHelpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader."
+      "notes": "AI는 질문과 정리를 돕고, 지침은 통제합니다\n\n발표자 설명\n기존 LLM은 허용된 문장 ID·의미 코드만 반환한다. 앱과 서버 양쪽 검사를 거치며 자유 진단·치료 문장은 읽지 않는다. 외부 모델이 실패해도 기존 고정 안내는 유지된다. 검증된 절차라는 개발상 표현을 임상적으로 무오류임을 뜻하는 것으로 사용하지 않는다. 신규 열·가스·심리 위기 콘텐츠는 제품 제안이며 추가 임상·안전 검증이 필요하다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\n질병관리청 국가건강정보포털 · 온열질환 예방과 응급조치: https://health.kdca.go.kr/healthinfo/biz/health/ntcnInfo/healthSourc/thtimtCntnts/thtimtCntntsView.do?thtimt_cntnts_sn=122\nHelpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader."
     },
     {
       "number": 22,
@@ -6496,7 +6496,7 @@
           "commands": []
         }
       ],
-      "notes": "기존 차량 경고 뒤에 지원 경험을 이어 붙입니다\n\n발표자 설명\nHyundai Advanced ROA는 일부 차종에서 후석 움직임 감지·차량 경고·Bluelink 알림 등을 제공한다. 지역·연식·옵션·서비스 요건이 다르므로 모든 현대차에 있다고 설명하지 않는다. LifeLink119가 이미 그 상태를 받거나 알림·차량 제어를 연동한 것은 아니다. 기존 OEM 보호 기능을 대체하지 않는 협력 제안이다.\n\n근거·출처\nHyundai SmartSense · Advanced Rear Occupant Alert, selected vehicles: https://www.hyundaiusa.com/us/en/safety . OEM function, not an integration delivered by LifeLink119.\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt."
+      "notes": "기존 차량 경고 뒤에 지원 경험을 이어 붙입니다\n\n발표자 설명\nHyundai Advanced ROA는 일부 차종에서 후석 움직임 감지·차량 경고·Bluelink 알림 등을 제공한다. 지역·연식·옵션·서비스 요건이 다르므로 모든 현대차에 있다고 설명하지 않는다. LifeLink119가 이미 그 상태를 받거나 알림·차량 제어를 연동한 것은 아니다. 기존 OEM 보호 기능을 대체하지 않는 협력 제안이다.\n\n근거·출처\nHyundai SmartSense · Advanced Rear Occupant Alert, selected vehicles: https://www.hyundaiusa.com/us/en/safety . OEM function, not an integration delivered by LifeLink119.\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md."
     },
     {
       "number": 23,
@@ -6608,8 +6608,8 @@
               "제조사·센서 협력 필요"
             ],
             [
-              "공식 기관 연계",
-              "안심콜 조회·신고·접수·출동 상태",
+              "안심콜·기관 연계",
+              "본인 조회·차량 자동 연계·공식 상태 수신",
               "기관 협력·승인 필요"
             ]
           ],
@@ -6622,7 +6622,7 @@
         }
       ],
       "shapes": [],
-      "notes": "현재 체험할 기능과 다음 개발 범위를 구분합니다\n\n발표자 설명\n반복되는 일괄 하단 문구 대신 기능별 구현 범위를 이 페이지와 각 제안 화면에 명확히 표시한다. 현재 앱은 실제 번호 발신, 기관 접수·출동 상태 수신, 공식 안심콜 DB 자동 조회를 수행하지 않는다. 환경 경고 및 심리 위기 전용 AI는 이번 자료에서 제안한 범위다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.\nPleos Vehicle SDK introduction: https://document.pleos.ai/en/docs/pleos-only/connect-sdk-pleos/Vehicle/intro ; API compatibility: https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability . HVAC methods exist in the documentation; actual cabin measurement meaning, area, permission and target vehicle support are not yet verified in this app."
+      "notes": "현재 체험할 기능과 다음 개발 범위를 구분합니다\n\n발표자 설명\n반복되는 일괄 하단 문구 대신 기능별 구현 범위를 이 페이지와 각 제안 화면에 명확히 표시한다. 현재 앱은 실제 번호 발신, 기관 접수·출동 상태 수신, 공식 안심콜 DB 자동 조회를 수행하지 않는다. 환경 경고 및 심리 위기 전용 AI는 이번 자료에서 제안한 범위다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.\nPleos Vehicle SDK introduction: https://document.pleos.ai/en/docs/pleos-only/connect-sdk-pleos/Vehicle/intro ; API compatibility: https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability . HVAC methods exist in the documentation; actual cabin measurement meaning, area, permission and target vehicle support are not yet verified in this app."
     },
     {
       "number": 24,
@@ -6806,9 +6806,9 @@
           "align": "left"
         },
         {
-          "text": "앱 실행: Start-Voice-Demo.cmd   |   더보기 → 음성 동행 자동 시연",
+          "text": "제출 APK 실행 후: 더보기에서 “음성 동행 자동 시연”을 선택합니다",
           "lines": [
-            "앱 실행: Start-Voice-Demo.cmd   |   더보기 → 음성 동행 자동 시연"
+            "제출 APK 실행 후: 더보기에서 “음성 동행 자동 시연”을 선택합니다"
           ],
           "x": 75,
           "y": 788,
@@ -6825,7 +6825,7 @@
       "images": [],
       "tables": [],
       "shapes": [],
-      "notes": "발표에서는 네 가지 상황을 차례로 보여줍니다\n\n발표자 설명\n현재 앱 자동 시연은 합성 응답으로 진행된다. 최초 설정은 발표 전 준비한다. 신규 센서 기능을 시연 앱에서 실행한 것처럼 설명하지 않고 이 자료의 화면안과 센서 도식으로 설명한다. 원본 현대차 사진 기반 가족 이미지와 기존 UI의 색상 체계를 유지한다.\n\n근거·출처\nLifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt."
+      "notes": "발표에서는 네 가지 상황을 차례로 보여줍니다\n\n발표자 설명\n현재 앱 자동 시연은 합성 응답으로 진행된다. 최초 설정은 발표 전 준비한다. 신규 센서 기능을 시연 앱에서 실행한 것처럼 설명하지 않고 이 자료의 화면안과 센서 도식으로 설명한다. 원본 현대차 사진 기반 가족 이미지와 기존 UI의 색상 체계를 유지한다.\n\n근거·출처\nLifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md."
     }
   ]
 }

@@ -1,11 +1,24 @@
-Mode: built-in image_gen editing/compositing. No CLI or external-key path used.
+# 현대 SUV · 가족 · 반려견 산책 이미지
 
-Use case: compositing
-Asset type: premium 3:2 landscape hero artwork for the LifeLink 119 family safety app and presentation cover.
-Primary request: Recreate the warm family-protection feeling of input image 1, but replace its generic crossover completely with the REAL white Hyundai sedan shown in input image 2. The finished picture must clearly communicate a family and their Hyundai car, together and at ease.
-Input images: Image 1 is the edit target and a reference for the Korean family, soft cinematic realism, deep teal mountains, warm sunset, and reassuring mood. Image 2 is the authoritative vehicle identity reference; use this car's actual body proportions, front three-quarter perspective, Hyundai oval H emblem, continuous slim light strip, distinctive broad black grille, mirrors, wheels and silver-white paint. Do not reuse the generic SUV design from image 1.
-Scene: The Hyundai sedan is parked safely on a quiet scenic overlook, engine off, with softly layered teal mountains and gentle golden evening light. No moving traffic.
-People: A natural, warmly connected Korean family of three, two parents and a school-age child, standing close together beside the parked car; one parent lightly resting a hand on the child's shoulder. Modest relaxed everyday clothing in muted cream and sage. Warm quiet smiles, no exaggerated commercial grins.
-Composition: Single coherent photorealistic composite, landscape approximately 1536 x 1024, not a collage. Car mostly occupies the left and middle; family together in the right third. Keep the entire Hyundai's front grille, light bar and badge visible and recognizable. Family must not obscure the front design or badge. All heads, hands and feet inside the frame with comfortable edge padding; subtle mountains and sky behind. Main subjects clear even at a small app-header size. The image is placed to the RIGHT of separate app title text, so no large empty text area is necessary.
-Light and finish: Match the car and family to the same warm natural sunset illumination and grounded shadows. Realistic car geometry and proportions; softly polished premium lifestyle photography, calm deep teal background. No dramatic emergency scene.
-Constraints: Exact Hyundai identity from image 2; no invented or generic car, no SUV, no other brand. No ambulances, medical crosses, shields, floating UI, labels, headline, added text or watermark. Avoid fake safety-certification or official endorsement graphics. Do not mirror or misspell the Hyundai emblem. Keep the image usable as a clean artwork asset.
+생성일: 2026-11-15
+
+도구: built-in image_gen, compositing edit.
+
+결과: `editor/public/assets/hyundai-family-dog-2026.png`
+
+기존 `hyundai-family-2026.png`의 차량과 네 가족 구성원을 유지하고, 사용자가 제공한 두 사진에 등장하는 같은 골든 리트리버 한 마리를 추가했다. 야외 산책 장면에 맞춰 모자는 제외하고 분홍색 리드줄을 반영했다. 사용자의 후속 요청에 따라 원본 앱 홈과 새 최종 영상에 적용했다. 이전 이미지는 함께 보존하고, 교체 전 영상은 제작 작업 폴더의 `revisions/before-dog-20261115/`에 보관한다.
+
+참조: 기존 현대 SUV 가족 이미지, `KakaoTalk_20261115_170553980.jpg`, `KakaoTalk_20261115_170933406.jpg`.
+
+## 최종 프롬프트
+
+Use case: compositing.
+Asset type: photorealistic LifeLink 119 Hyundai SUV and family hero photograph.
+Edit target: Image 1, the existing landscape photo of a beige Hyundai Santa Fe and four Korean family members walking in a riverside park.
+Supporting identity references: Images 2 and 3 are TWO PHOTOS OF THE SAME GOLDEN RETRIEVER. Add exactly ONE dog, faithfully matching this individual dog's face, cream-golden coat, slightly darker floppy ears, dark expressive eyes, black nose, light fluffy chest, long feathery tail and friendly open-mouth expression.
+
+Primary request: Include this dog walking naturally together with the family beside their Hyundai SUV. Show the dog's entire body and paws in a believable mid-stride walking pose in the foreground beside the family, with an adult family member naturally holding a loose magenta/pink leash like the outdoor reference. The leash must connect correctly to the dog's collar or walking harness and the adult's hand. No hat for this outdoor walk. Keep the dog's realistic golden-retriever size relative to the people, not oversized and not a small puppy.
+
+Preserve: the exact Hyundai SUV from the edit target, the front-three-quarter view, Hyundai hood emblem, production vehicle design, body color, wheels and proportions. Preserve all FOUR family members, their faces, contemporary outfits, age relationships and warm natural interactions: grandmother, mother, father, child. Keep the autumn riverside park, soft natural daylight, photographic perspective and overall composition. Make only minor hand/arm/spacing adjustments required for a natural family-and-dog walk. Keep the full vehicle clearly readable and the dog comfortably within the frame.
+Match fur detail, perspective, color temperature, contact shadows and ground plane seamlessly. The resulting image should feel like one contemporary candid family outing photograph.
+Landscape 3:2 framing, high-resolution photographic detail. No captions, banners, watermarks or added text. No extra people, no second dog, no duplicated limbs, no collaged cutout edges, no invented vehicle branding.

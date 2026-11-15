@@ -4,6 +4,18 @@
 
 > 공모전 제출본의 119·112·109 연결과 PC 상황실은 **모의 시연**입니다. 실제 전화·문자를 발신하거나 기관 접수·출동을 요청하지 않습니다.
 
+## 최종 설명자료와 시연영상
+
+**2026-11-15 최종본 · 앱 v0.18.1 · 24장**입니다. 최신 현대 SUV·가족·반려견 이미지와 실제 앱 화면으로 사용 순서를 설명합니다.
+
+| 자료 | 바로 보기 / 다운로드 |
+|---|---|
+| 설명자료 PDF | [LifeLink119_Final_Guide.pdf](docs/presentation/scenario-safety-20261115/output/LifeLink119_Final_Guide.pdf) |
+| 편집 가능한 PowerPoint | [LifeLink119_Final_Guide.pptx](docs/presentation/scenario-safety-20261115/output/LifeLink119_Final_Guide.pptx) |
+| 최종 시연영상 MP4 | [LifeLink119_demo_final.mp4](https://github.com/airwrap/LifeLink119-video/blob/main/contest-demo-20261115/output/LifeLink119_demo_final.mp4) |
+
+가족 나들이 중 응급질환 → 119 긴급신고 → 응급 요약 → 연결 지연 시 AI 음성 동행 → 상태 변화·재연결·인계 요약을 중심으로, 응급상담·마음상담과 안심콜 활용을 설명합니다. 안심콜 본인 정보 자동 연계와 폭염·CO₂·CO·잔류 탑승자 감지는 공식 협력이나 센서 연동이 필요한 확장안으로 구분했습니다. [페이지 구성·발표자 노트·제작 소스 안내](docs/presentation/scenario-safety-20261115/README.md).
+
 ## 제출 APK
 
 - **제출 저장소:** <https://github.com/airwrap/LifeLink119>
@@ -100,4 +112,4 @@ python scripts/prepare-offline-speech.py
 - AI는 의사나 119 상담원을 대체하지 않습니다. 위험 신호에는 고정 안내를 우선하며, 실제 접수·콜백 예약·출동을 임의로 확정하지 않습니다. 의료전문가 검토와 실차 검증은 후속 과제입니다.
 - 실내 폭염, CO₂/CO 전용 센서, 잔류 탑승자 감지는 센서·제조사 연동이 필요한 제안 기능입니다.
 
-[최신 시연영상·제작 소스](https://github.com/airwrap/LifeLink119-video/tree/main/contest-demo-20261115) · [상황별 PPTX/PDF](docs/presentation/scenario-safety-20261115/README.md) · [현재 기능 상태](docs/CURRENT_STATUS.md) · [음성 사용법](docs/VOICE_AI_IMPLEMENTATION.md) · [안심콜 연계 검토](docs/SAFE_CALL_WEB_INTEGRATION_REVIEW.md) · [개발 이력](HISTORY.md)
+[최신 시연영상·제작 소스](https://github.com/airwrap/LifeLink119-video/tree/main/contest-demo-20261115) · [최종 설명자료 안내](docs/presentation/scenario-safety-20261115/README.md) · [현재 기능 상태](docs/CURRENT_STATUS.md) · [음성 사용법](docs/VOICE_AI_IMPLEMENTATION.md) · [안심콜 연계 검토](docs/SAFE_CALL_WEB_INTEGRATION_REVIEW.md) · [개발 이력](HISTORY.md)

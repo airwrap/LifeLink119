@@ -1,5 +1,6 @@
 {
-  "app": "LifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.",
+  "app": "LifeLink119 release v0.18.1: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt. APK: apk/LifeLink119_LifeLink119_release.apk. Release UI verification: docs/SUBMISSION_RELEASE_20261115.md.",
+  "safecall": "소방청 119안심콜 공식 사이트: https://u119.nfa.go.kr/ . 본인 인증·정보 관리 경로와 Pleos 차량 자동 연계 구상을 구분한다. 공식 조회 API·제조사/기관 연동이 승인·구현됐다는 의미가 아니다. 검토: docs/SAFE_CALL_WEB_INTEGRATION_REVIEW.md.",
   "kdca": "질병관리청 국가건강정보포털 · 온열질환 예방과 응급조치: https://health.kdca.go.kr/healthinfo/biz/health/ntcnInfo/healthSourc/thtimtCntnts/thtimtCntntsView.do?thtimt_cntnts_sn=122",
   "nhtsa": "NHTSA · Child Safety / Heatstroke: https://www.nhtsa.gov/road-safety/child-safety",
   "co": "CDC · Carbon Monoxide Poisoning Basics: https://www.cdc.gov/carbon-monoxide/about/index.html",

@@ -6,9 +6,9 @@
 
 [가족·반려견 홈 이미지](FAMILY_DOG_VISUAL_20261115.md)를 원본 앱에 적용했다. 현대 SUV 옆을 네 가족과 골든 리트리버가 함께 걷는 장면이며, 홈 문구는 ‘나와 내 가족을 위한 안전 동행’이다. 기존 기능은 유지하고 빌드·단위 테스트 288개 및 네이티브 화면 진입 검증을 통과했다.
 
-상황별 설명자료를 [24장 PPTX/PDF](presentation/scenario-safety-20261115/README.md)로 개편했다. 기존 신고·상담·대기 흐름과 [폭염·가스·잔류 탑승자 센서 확장안](CABIN_SAFETY_EXTENSION_20261115.md)을 구분한다. 이 자료 개편으로 앱에 신규 환경 센서나 자동 신고 기능을 추가하지는 않았다.
+최종 설명자료는 [24장 PPTX/PDF](presentation/scenario-safety-20261115/README.md)다. 앱 v0.18.1의 제출 release 화면과 최신 현대 SUV·가족·반려견 이미지를 반영했다. 가족 나들이 중 응급질환, 119 연결 지연과 음성 동행, 상태 변화·인계 요약, 안심콜 정보 활용을 설명하고 [폭염·가스·잔류 탑승자 센서 확장안](CABIN_SAFETY_EXTENSION_20261115.md)을 구분한다. 본인 정보 자동 연계는 공식 인증·권한 검증과 기관 협력이 필요한 설계다. 이 자료 개편으로 앱이나 제출 APK를 변경하지는 않았다.
 
-최신 안내는 [현대차 가족 이미지 적용 16장 PPTX/PDF](presentation/voice-family-20261115/README.md), [음성 중심 UX 개선](UX_REFINEMENT_20261115.md), [최신 이미지 적용 기록](FAMILY_HYUNDAI_VISUAL_20261115.md)이다. 증상·연결 상태 목록을 한 질문 중심으로 줄였고, 인증 만료 시 가족정보는 숨기되 현재 전경 응급 대화는 이어진다. 안심콜 정보는 환자를 확인한 후 로컬 요약에 활용하며 외부 LLM에는 보내지 않는다.
+이전 [현대차 가족 이미지 적용 16장 PPTX/PDF](presentation/voice-family-20261115/README.md)는 이력으로 보존한다. [음성 중심 UX 개선](UX_REFINEMENT_20261115.md)과 [당시 이미지 적용 기록](FAMILY_HYUNDAI_VISUAL_20261115.md)도 참고할 수 있다. 증상·연결 상태 목록을 한 질문 중심으로 줄였고, 인증 만료 시 가족정보는 숨기되 현재 전경 응급 대화는 이어진다. 안심콜 정보는 환자를 확인한 후 로컬 요약에 활용하며 외부 LLM에는 보내지 않는다.
 
 최신 검사: Kotlin 288개, Python 콘솔 98개, 네이티브 Android 3개 및 화면·통합 34개 통과. [기능 검사 당시 APK 기록](UX_REFINEMENT_VERIFICATION.json)과 [그 이후 가족 이미지 변경 APK 기록](FAMILY_HYUNDAI_VERIFICATION.json)을 구분한다. 일반 무음 런처 대신 프로젝트 루트 `Start-Voice-Demo.cmd`를 사용한다. 마이크가 없는 PC에서도 더보기의 합성 응답 자동 시연은 실행할 수 있다. [음성 자산 준비와 재현 절차](presentation/voice-family-20261115/README.md).
 

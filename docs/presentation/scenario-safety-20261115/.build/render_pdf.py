@@ -17,7 +17,7 @@ pdfmetrics.registerFont(TTFont('Malgun','C:/Windows/Fonts/malgun.ttf'))
 pdfmetrics.registerFont(TTFont('MalgunBold','C:/Windows/Fonts/malgunbd.ttf'))
 target=B/'candidate.pdf'
 p=canvas.Canvas(str(target),pagesize=(W*S,H*S),pageCompression=1)
-p.setTitle('LifeLink 119 상황별 사용·탑승자 안전')
+p.setTitle('LifeLink 119 최종 설명자료 · v0.18.1')
 p.setAuthor('LifeLink 119')
 p.setSubject('긴급신고, 상담, 신고 후 대기, 폭염·고립·공기질 안전과 센서 확장안')
 issues=[]
