@@ -53,3 +53,10 @@ node_modules/
 /docs/presentation/voice-family-20261115/.build/*-check.json
 /docs/presentation/voice-family-20261115/.build/*receipt*.json
 /docs/presentation/voice-family-20261115/.build/pdf-text-metrics.json
+/docs/presentation/scenario-safety-20261115/.build/candidate.*
+/docs/presentation/scenario-safety-20261115/.build/rendered/
+/docs/presentation/scenario-safety-20261115/.build/*.png
+/docs/presentation/scenario-safety-20261115/.build/contact-sheet.jpg
+/docs/presentation/scenario-safety-20261115/.build/*-check.json
+/docs/presentation/scenario-safety-20261115/.build/*receipt*.json
+/docs/presentation/scenario-safety-20261115/.build/pdf-text-metrics.json

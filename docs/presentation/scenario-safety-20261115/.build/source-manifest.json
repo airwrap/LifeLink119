@@ -1,0 +1,12 @@
+{
+  "app": "LifeLink119 source v0.18.0-demo: ui/AssistanceUi.kt, ui/EmergencySupportUi.kt, core/emergency, data/EmergencyHealthSummary.kt.",
+  "kdca": "질병관리청 국가건강정보포털 · 온열질환 예방과 응급조치: https://health.kdca.go.kr/healthinfo/biz/health/ntcnInfo/healthSourc/thtimtCntnts/thtimtCntntsView.do?thtimt_cntnts_sn=122",
+  "nhtsa": "NHTSA · Child Safety / Heatstroke: https://www.nhtsa.gov/road-safety/child-safety",
+  "co": "CDC · Carbon Monoxide Poisoning Basics: https://www.cdc.gov/carbon-monoxide/about/index.html",
+  "co2": "UK HSE · Using CO2 monitors: https://www.hse.gov.uk/ventilation/using-co2-monitors.htm . Building ventilation guidance is not a validated vehicle alarm threshold.",
+  "ndir": "Sensirion SCD30 NDIR CO2 sensor datasheet: https://sensirion.com/en/media/documents/4EAF6AF8/61652C3C/Sensirion_CO2_Sensors_SCD30_Datasheet.pdf . Technology example, not a certified automotive component selection.",
+  "radar": "TI · Child-presence and occupant-detection reference design: https://www.ti.com/tool/TIDEP-01023 . Capabilities require vehicle-specific validation; no accuracy figures are transferred to this app.",
+  "hyundai": "Hyundai SmartSense · Advanced Rear Occupant Alert, selected vehicles: https://www.hyundaiusa.com/us/en/safety . OEM function, not an integration delivered by LifeLink119.",
+  "pleos": "Pleos Vehicle SDK introduction: https://document.pleos.ai/en/docs/pleos-only/connect-sdk-pleos/Vehicle/intro ; API compatibility: https://document.pleos.ai/docs/pleos-only/vehicle-app-planning-guide/api-compatibility-availability . HVAC methods exist in the documentation; actual cabin measurement meaning, area, permission and target vehicle support are not yet verified in this app.",
+  "hotline": "Helpline tool verified 2026-11-15, South Korea: 자살예방상담전화 [109](tel:+82109?oai_link_source=model_response_hotline), [https://www.129.go.kr/109](https://www.129.go.kr/109?oai_link_source=model_response_hotline). This deck discusses product support, not the personal mental state of its reader."
+}

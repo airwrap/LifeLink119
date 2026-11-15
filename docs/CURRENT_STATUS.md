@@ -2,6 +2,8 @@
 
 기준일: 2026-11-15. 앱 버전: 0.18.0-demo. 과거 버전별 기록은 README 아래에 보존한다.
 
+상황별 설명자료를 [24장 PPTX/PDF](presentation/scenario-safety-20261115/README.md)로 개편했다. 기존 신고·상담·대기 흐름과 [폭염·가스·잔류 탑승자 센서 확장안](CABIN_SAFETY_EXTENSION_20261115.md)을 구분한다. 이 자료 개편으로 앱에 신규 환경 센서나 자동 신고 기능을 추가하지는 않았다.
+
 최신 안내는 [현대차 가족 이미지 적용 16장 PPTX/PDF](presentation/voice-family-20261115/README.md), [음성 중심 UX 개선](UX_REFINEMENT_20261115.md), [최신 이미지 적용 기록](FAMILY_HYUNDAI_VISUAL_20261115.md)이다. 증상·연결 상태 목록을 한 질문 중심으로 줄였고, 인증 만료 시 가족정보는 숨기되 현재 전경 응급 대화는 이어진다. 안심콜 정보는 환자를 확인한 후 로컬 요약에 활용하며 외부 LLM에는 보내지 않는다.
 
 최신 검사: Kotlin 288개, Python 콘솔 98개, 네이티브 Android 3개 및 화면·통합 34개 통과. [기능 검사 당시 APK 기록](UX_REFINEMENT_VERIFICATION.json)과 [그 이후 가족 이미지 변경 APK 기록](FAMILY_HYUNDAI_VERIFICATION.json)을 구분한다. 일반 무음 런처 대신 프로젝트 루트 `Start-Voice-Demo.cmd`를 사용한다. 마이크가 없는 PC에서도 더보기의 합성 응답 자동 시연은 실행할 수 있다. [음성 자산 준비와 재현 절차](presentation/voice-family-20261115/README.md).
