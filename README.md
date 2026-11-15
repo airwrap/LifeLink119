@@ -6,22 +6,25 @@
 
 ## 제출 APK
 
-- **[v0.18.1 제출용 Release 및 APK 다운로드](https://github.com/airwrap/LifeLink119/releases/tag/v0.18.1-contest-release)**
-- 파일: `LifeLink119-v0.18.1-contest-release.apk` — 약 152 MB, 독립 실행 가능한 서명된 **release APK**
+- **제출 저장소:** <https://github.com/airwrap/LifeLink119>
+- **제출 APK 경로:** [`apk/LifeLink119_LifeLink119_release.apk`](apk/LifeLink119_LifeLink119_release.apk)
+- 팀명 / 앱명: **LifeLink 119 / LifeLink 119**. 파일명은 공백 없이 `팀명_앱이름_release.apk` 형식을 사용합니다.
+- 파일: `LifeLink119_LifeLink119_release.apk` — 약 152 MB, 독립 실행 가능한 서명된 **release APK**
 - 패키지: `com.lifelink119.app` · versionCode `21` · versionName `0.18.1`
 - `BuildConfig.DEBUG=false`, Android 디버깅 비활성화, 전용 release 인증서 서명입니다. 심사용 모의 기능은 별도의 빌드 설정으로 활성화했습니다.
 - 한국어 오프라인 음성인식 모델과 고정 음성 안내를 포함합니다. 기본 시연에 PC 서버·LLM API 키가 필요하지 않습니다.
-- APK는 Git 파일 크기 한도를 초과하므로 **GitHub Releases의 Assets**에 배포합니다. 같은 위치에 SHA-256과 서명·검증 기록을 제공합니다. Release 태그는 심사 대상 소스 커밋을 가리킵니다.
+- APK는 GitHub 일반 Git 파일 크기 한도를 초과하므로 **Git LFS**로 `apk/` 폴더에 업로드했습니다. 파일 페이지의 **Download raw file**로 내려받거나 Git LFS가 설치된 환경에서 `git lfs pull`을 실행하세요. 소스 ZIP에는 APK 대신 LFS 포인터가 들어갈 수 있습니다. [다운로드·검증 방법](apk/README.md).
+- [원본 APK Release](https://github.com/airwrap/LifeLink119/releases/tag/v0.18.1-contest-release)도 보조 다운로드로 유지합니다. 이번 제출 경로의 APK는 원본과 **바이트·서명·SHA-256이 동일**하며 파일명만 규정에 맞췄습니다. 제출 페이지에는 위 저장소 주소와 `apk/` 경로를 입력하고, 커밋 번호가 필요하면 최신 제출 커밋을 사용합니다.
 
 ## 실행 방법
 
 1. 공식 Pleos Connect 에뮬레이터를 실행합니다. 아래 검증 환경을 권장합니다.
-2. Release의 Assets에서 APK를 내려받아 설치하고 앱을 실행합니다.
+2. [`apk/LifeLink119_LifeLink119_release.apk`](apk/LifeLink119_LifeLink119_release.apk)의 파일 페이지에서 **Download raw file**을 눌러 내려받고 설치합니다.
 
 ```powershell
 adb devices
 # 아래 serial은 adb devices에 표시된 본인의 에뮬레이터 값으로 바꿉니다.
-adb -s emulator-5586 install --no-streaming -r .\LifeLink119-v0.18.1-contest-release.apk
+adb -s emulator-5586 install --no-streaming -r .\LifeLink119_LifeLink119_release.apk
 adb -s emulator-5586 shell am start -n com.lifelink119.app/.MainActivity
 ```
 
@@ -84,7 +87,7 @@ python scripts/prepare-offline-speech.py
 .\Build-Release.cmd
 ```
 
-빌드 결과는 `artifacts/submission/LifeLink119-v0.18.1-contest-release.apk`입니다. APK·모델·서명키는 Git에 포함하지 않습니다. 음성 모델과 라이브러리 고지는 APK의 `assets/licenses/`에 포함합니다.
+빌드 결과는 `artifacts/submission/LifeLink119-v0.18.1-contest-release.apk`이며, 같은 파일을 제출 경로 `apk/LifeLink119_LifeLink119_release.apk`에도 복사하고 체크섬을 생성합니다. **`apk/`의 제출 APK만 Git LFS로 추적**하며, 생성 중간 APK·원본 모델 캐시·서명키는 Git에 포함하지 않습니다. 음성 모델과 라이브러리 고지는 APK의 `assets/licenses/`에 포함합니다.
 
 `Build-Release.cmd`는 포매터 검사, debug/release 빌드·단위 테스트, release lint, 인증서와 `debuggable=false` 검사를 수행합니다. 서명키는 기본적으로 저장소 옆 `.tools/release-signing/`에 두고 비밀번호는 현재 Windows 계정의 DPAPI로 보호합니다. **이 폴더를 비공개로 백업**해야 동일 인증서 업데이트가 가능합니다. 다른 개발자가 생성한 새 키는 배포 APK와 서명이 다릅니다.
 

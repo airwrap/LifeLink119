@@ -1,12 +1,13 @@
 # 공모전 제출 release · 2026-11-15
 
-[APK와 체크섬 다운로드](https://github.com/airwrap/LifeLink119/releases/tag/v0.18.1-contest-release) · [실행 방법](../README.md) · [기계 판독용 검증 기록](SUBMISSION_RELEASE_VERIFICATION.json)
+[제출 APK와 체크섬](../apk/README.md) · [원본 Release](https://github.com/airwrap/LifeLink119/releases/tag/v0.18.1-contest-release) · [실행 방법](../README.md) · [기계 판독용 검증 기록](SUBMISSION_RELEASE_VERIFICATION.json)
 
 ## 제출물
 
 | 항목 | 결과 |
 |---|---|
-| 파일 | `LifeLink119-v0.18.1-contest-release.apk` |
+| 제출 경로 | `apk/LifeLink119_LifeLink119_release.apk` (Git LFS) |
+| 원본 Release 파일 | `LifeLink119-v0.18.1-contest-release.apk` — 제출 APK와 바이트 동일 |
 | 버전 / 패키지 | `0.18.1` (21) / `com.lifelink119.app` |
 | 크기 | 151,935,970 bytes (약 152 MB) |
 | 빌드 | `release`, `BuildConfig.DEBUG=false`, Android `debuggable=false` |
@@ -15,7 +16,7 @@
 | APK SHA-256 | `d013570c1224616a987c5f174cd29874181e282c765470ee707cf22fd6bcc095` |
 | 오프라인 자산 | Vosk 한국어 모델, 고정 안내·합성 응답 WAV 48개, 음성 구성요소 라이선스 고지 |
 
-태그가 가리키는 커밋이 제출 소스 기준이다. Release 설명에도 최종 커밋 번호를 기록한다. 저장소 밖의 비공개 서명키와 `.env`는 배포하지 않는다.
+원본 Release 태그는 APK를 빌드·검증한 소스 커밋 `0a73a0ddb8c6142383e06367d2d80904551d9f09`를 가리킨다. 이후 제출 안내에 따라 동일 APK를 `apk/` 폴더에 규정 파일명으로 추가했다. 제출 페이지에는 최신 제출 커밋과 이 경로를 사용한다. 앱 동작 코드는 이 배치 변경에서 바꾸지 않았다. 저장소 밖의 비공개 서명키와 `.env`는 배포하지 않는다.
 
 ## 이번 변경
 

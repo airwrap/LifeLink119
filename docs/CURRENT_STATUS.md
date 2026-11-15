@@ -2,7 +2,7 @@
 
 기준일: 2026-11-15. 앱 버전: **0.18.1**. 과거 버전별 기록은 [개발 이력](../HISTORY.md)에 보존한다.
 
-[공모전 제출 release](SUBMISSION_RELEASE_20261115.md)는 전용 인증서로 서명하고 디버깅을 비활성화했다. 한국어 오프라인 모델·고정 음성을 포함하며 모의 기능은 `-PlifelinkSubmission=true`로 명시적으로 활성화한다. [APK 다운로드](https://github.com/airwrap/LifeLink119/releases/tag/v0.18.1-contest-release).
+[공모전 제출 release](SUBMISSION_RELEASE_20261115.md)는 전용 인증서로 서명하고 디버깅을 비활성화했다. 한국어 오프라인 모델·고정 음성을 포함하며 모의 기능은 `-PlifelinkSubmission=true`로 명시적으로 활성화한다. 제출 안내에 맞춰 **[`apk/LifeLink119_LifeLink119_release.apk`](../apk/LifeLink119_LifeLink119_release.apk)**에 Git LFS로 배치한다. 원본 Release와 동일한 APK다.
 
 [가족·반려견 홈 이미지](FAMILY_DOG_VISUAL_20261115.md)를 원본 앱에 적용했다. 현대 SUV 옆을 네 가족과 골든 리트리버가 함께 걷는 장면이며, 홈 문구는 ‘나와 내 가족을 위한 안전 동행’이다. 기존 기능은 유지하고 빌드·단위 테스트 288개 및 네이티브 화면 진입 검증을 통과했다.
 

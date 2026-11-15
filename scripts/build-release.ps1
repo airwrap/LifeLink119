@@ -87,7 +87,13 @@ try {
     [System.IO.File]::WriteAllText(($target + '.sha256'), ($digest + '  ' + [System.IO.Path]::GetFileName($target) + "`n"), [System.Text.Encoding]::ASCII)
     $sign | Set-Content -LiteralPath (Join-Path $artifactDir 'release-signature.txt') -Encoding UTF8
     $badging | Set-Content -LiteralPath (Join-Path $artifactDir 'release-metadata.txt') -Encoding UTF8
+    $submissionDir = Join-Path $projectRoot 'apk'
+    New-Item -ItemType Directory -Path $submissionDir -Force | Out-Null
+    $submissionApk = Join-Path $submissionDir 'LifeLink119_LifeLink119_release.apk'
+    Copy-Item -LiteralPath $target -Destination $submissionApk
+    [System.IO.File]::WriteAllText(($submissionApk + '.sha256'), ($digest + '  ' + [System.IO.Path]::GetFileName($submissionApk) + "`n"), [System.Text.Encoding]::ASCII)
     Write-Host "Signed non-debuggable release APK: $target"
+    Write-Host "Contest repository path (Git LFS): $submissionApk"
     Write-Host "SHA-256: $digest"
 } finally {
     foreach ($name in $envNames) { [Environment]::SetEnvironmentVariable($name, $previous[$name], 'Process') }
