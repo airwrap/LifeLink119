@@ -8,9 +8,11 @@ import time
 import urllib.request
 import xml.etree.ElementTree as ET
 from ui_snapshot_client import SnapshotClient
+from qa_avd_guard import QaAvdGuard, android_sdk
 
 root=Path(__file__).resolve().parents[1];out=root/'verification/v05'
-adb=[str(Path(os.environ['LOCALAPPDATA'])/'Android/Sdk/platform-tools/adb.exe'),'-s','emulator-5580']
+adb=[str(android_sdk()/'platform-tools/adb.exe'),'-s','emulator-5580']
+qa_guard=QaAvdGuard(adb).acquire_clean()
 c=SnapshotClient(adb);checks=[];resize=None
 def shell(*args):return subprocess.check_output(adb+['shell',*args],timeout=30).decode(errors='replace')
 def node(k):return ET.fromstring(c.node(k)).find('.//node')
@@ -41,7 +43,7 @@ try:
     c.start()
     if node('x_home') is not None:tap('x_home')
     tap('x_family');tap('x_profile_add');confirm();wait('x_profile_alias','')
-    snap('11-profile-editor');tap('x_profile_save');tap('x_profile_reset');confirm();mark('Synthetic profile add/save and confirmed default restore')
+    snap('11-profile-editor');tap('x_profile_save');qa_guard.before_cleanup();tap('x_profile_reset');confirm();mark('Synthetic profile add/save and confirmed default restore')
     tap('x_home');tap('x_emergency');tap('x_119');wait('x_session_status','가상 상담원 응답');tap('x_primary_2');tap('x_share_location');tap('x_back');tap('x_support');tap('x_center');tap('x_pc_consent');tap('x_pc_publish');wait('x_pc_status','게시됨')
     data=snapshots();assert len(data)==1 and data[0]['sharedFields']==['LOCATION'],data
     assert set(data[0])=={'schemaVersion','syntheticOnly','id','revision','target','scenarioId','status','sharedFields','video','videoSource','police','navigation','sign'}

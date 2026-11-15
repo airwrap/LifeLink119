@@ -2,14 +2,18 @@ from pathlib import Path
 import subprocess,socket,time,json,struct
 class WindowClient:
     def __init__(self,adb):self.adb=adb;self.port=None;self.process=None
-    def start(self):
+    def start(self, choose_setup=True):
         self.port=int(subprocess.check_output(self.adb+['forward','tcp:0','localabstract:lifelink-native-verify'],timeout=20))
         user=subprocess.check_output(self.adb+['shell','am','get-current-user'],timeout=15).decode().strip()
         self.process=subprocess.Popen(self.adb+['shell','am','instrument','-w','--user',user,'com.lifelink119.nativeverify/.WindowInstrumentation'],stdout=subprocess.PIPE,stderr=subprocess.STDOUT)
         for _ in range(180):
             try:
                 r=self.request('PING')
-                if r.get('ready'):return self
+                if r.get('ready'):
+                    # Existing non-voice regression flows decline external AI on first run only.
+                    # Tests for onboarding pass False and make their own visible choice.
+                    if choose_setup: self.click('x_ai_setup_local')
+                    return self
             except (OSError,ValueError):pass
             if self.process.poll() is not None:raise RuntimeError(self.process.communicate()[0].decode(errors='replace'))
             time.sleep(.25)

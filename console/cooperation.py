@@ -37,6 +37,12 @@ class CooperationStore:
 
     def _event(self,r,label):
         r['timeline'].append({'label':label,'at':stamp(),'elapsedSeconds':round(self.clock()-r['_born'],2)})
+        del r['timeline'][:-40]
+
+    def reset(self):
+        with self.lock:
+            self.items.clear()
+            self.keys.clear()
 
     def _off(self,r,state='OFF'):
         r['beacon'].update(state=state,previewEnabled=False,remainingSeconds=0)
@@ -137,6 +143,10 @@ class CooperationStore:
             if state in TERMINAL:
                 if (action=='CANCEL' and state=='CANCELLED') or (action=='REVOKE' and state=='REVOKED') or (action=='HANDOVER' and state=='HANDED_OVER'):return self.get(ident)
                 fail('POC_TERMINAL','종료·철회·만료된 실험입니다. 새 요청을 만드세요.')
+            if action=='WITHDRAW' and state not in {'ACCEPTED','AUTHORIZED','ON_SCENE'}:
+                fail('POC_ORDER','참여 수락 후 임무에서 철회할 수 있습니다.')
+            if action=='STOP_BEACON' and state not in {'AUTHORIZED','ON_SCENE'}:
+                fail('POC_MISSION_REQUIRED','표시 중단에는 유효한 협력 임무가 필요합니다.')
             label=action
             if action in {'CANCEL','REVOKE','WITHDRAW'}:
                 self._finish(r,{'CANCEL':'CANCELLED','REVOKE':'REVOKED','WITHDRAW':'WITHDRAWN'}[action],'응급협력 중단 · '+action)

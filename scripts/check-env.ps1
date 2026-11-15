@@ -20,8 +20,10 @@ sys.exit(0 if sys.version_info >= (3, 10) else 1)
 if (!$WebOnly) {
     $javaRoot = $env:JAVA_HOME
     if (!$javaRoot) {
-        $legacyJdk = Join-Path $projectRoot '..\.tools\java\jdk-17.0.20.1+1'
-        if (Test-Path -LiteralPath (Join-Path $legacyJdk 'bin\javac.exe')) { $javaRoot = $legacyJdk }
+        $localJava = Join-Path $projectRoot '..\.tools\java'
+        if (Test-Path -LiteralPath $localJava) {
+            $javaRoot = (Get-ChildItem -LiteralPath $localJava -Directory | Where-Object { $_.Name -like 'jdk-17*' -and (Test-Path -LiteralPath (Join-Path $_.FullName 'bin\javac.exe')) } | Sort-Object Name -Descending | Select-Object -First 1).FullName
+        }
     }
     if (!$javaRoot) { Write-Host 'FAIL JAVA_HOME: set it to JDK 17'; $problems += 'JAVA_HOME' }
     else {

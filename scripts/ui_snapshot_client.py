@@ -10,12 +10,20 @@ import xml.etree.ElementTree as ET
 
 def verify_installed_apk(adb,apk,sdk,version):
     """Use identical APK bytes when the busy package dumpsys omits metadata."""
-    remote=subprocess.check_output(adb+['shell','pm','path','com.lifelink119.app'],timeout=30).decode().strip().split('package:',1)[1].splitlines()[0]
+    user=subprocess.check_output(adb+['shell','am','get-current-user'],timeout=15).decode().strip()
+    if not user.isdigit():
+        raise RuntimeError('Could not identify the current Android user')
+    paths=subprocess.check_output(adb+['shell','pm','path','--user',user,'com.lifelink119.app'],timeout=30).decode().strip()
+    if not paths.startswith('package:'):
+        raise RuntimeError('The APK is not installed for the current Android user')
+    remote=paths.split('package:',1)[1].splitlines()[0]
     installed=subprocess.check_output(adb+['shell','sha256sum',remote],timeout=30).decode().split()[0]
     expected=hashlib.sha256(apk.read_bytes()).hexdigest()
-    assert installed==expected, 'Installed APK bytes differ from the APK under test'
+    if installed != expected:
+        raise RuntimeError('Installed APK bytes differ from the APK under test')
     metadata=subprocess.check_output([str(sdk/'build-tools/35.0.0/aapt.exe'),'dump','badging',str(apk)],timeout=20).decode()
-    assert "versionName='"+version+"'" in metadata, 'Unexpected APK version'
+    if "versionName='"+version+"'" not in metadata:
+        raise RuntimeError('Unexpected APK version')
     return installed
 
 class SnapshotClient:
@@ -46,7 +54,7 @@ class SnapshotClient:
                 time.sleep(.15)
             raise RuntimeError('Test medical authentication did not complete; credential content is redacted')
         finally:self._auth_busy=False
-    def start(self):
+    def start(self, choose_setup=True):
         self.port=int(subprocess.check_output(self.adb+['forward','tcp:0','localabstract:lifelink-ui-verify'],timeout=20))
         user=subprocess.check_output(self.adb+['shell','am','get-current-user'],timeout=20).decode().strip()
         assert user.isdigit(), 'No current Android user'
@@ -55,7 +63,11 @@ class SnapshotClient:
         while time.monotonic()<end:
             try:
                 value=self.request('PING')
-                if value.get('ready') is True:return self
+                if value.get('ready') is True:
+                    if choose_setup:
+                        chosen=self.request('CLICK com.lifelink119.app:id/x_ai_setup_local')
+                        if chosen.get('clicked')=='true':time.sleep(.35)
+                    return self
                 last=value
             except (OSError,ValueError) as error:last=str(error)
             time.sleep(.25)

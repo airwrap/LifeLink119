@@ -1,0 +1,67 @@
+{
+  "verifiedAt": "2026-11-15T00:06:25.464003+00:00",
+  "apkSha256": "ff802098c37223056e08dc419ce73aa70b010794d7f6a22d61c896ce00783b33",
+  "unit": {
+    "tests": 288,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "pythonTests": 98,
+  "androidInstrumentationTests": 3,
+  "nativeSpeechSyntheticUtterances": 13,
+  "nativeSpeechInputFormats": 2,
+  "nativeSpeechAudioRuns": 26,
+  "uiReports": {
+    "refined-ux/results.json": {
+      "status": "PASS",
+      "checks": 6
+    },
+    "refined-ux/health-results.json": {
+      "status": "PASS",
+      "checks": 5,
+      "syntheticDataCleanup": "PASS"
+    },
+    "emergency-support/recovery-results.json": {
+      "status": "PASS",
+      "checks": 5,
+      "syntheticDataCleanup": "PASS"
+    },
+    "emergency-support/results.json": {
+      "status": "PASS",
+      "checks": 12
+    },
+    "minimal-voice/results.json": {
+      "status": "PASS",
+      "checks": 6
+    }
+  },
+  "lint": {
+    "debug": {
+      "Warning": 2
+    },
+    "demo": {
+      "Warning": 2
+    }
+  },
+  "build": "spotlessCheck + assembleDebug + testDebugUnitTest + lintDebug + assembleRelease + assembleDemo + lintDemo PASS",
+  "actualEmergencyCalls": 0,
+  "realPatientRecordsUsed": false,
+  "qaDevice": "emulator-5584 / LifeLink119_QA_API_34",
+  "realCarVoiceAndMedicalExpertReview": "not performed; required before clinical use",
+  "officialSafeCallLoginAndAgencyTransmission": "not integrated",
+  "artifacts": [
+    {
+      "path": "D:\\ORCA\\LifeLink119_Development_Migration_20261112_230045\\deliverables\\LifeLink119_VoiceGuide_Refined_20261115\\output\\LifeLink119_음성중심_사용안내_개선본.pptx",
+      "bytes": 1225374,
+      "sha256": "e236a91d0b829cc85d6beebb38436fb42568f1812337b6b4c01cfa56990aad37"
+    },
+    {
+      "path": "D:\\ORCA\\LifeLink119_Development_Migration_20261112_230045\\deliverables\\LifeLink119_VoiceGuide_Refined_20261115\\output\\LifeLink119_음성중심_사용안내_개선본.pdf",
+      "bytes": 1974087,
+      "sha256": "b2b34701c3a509d3e4644bed0a6866aa866781b09c8f4748b87ff61ea49282dc"
+    }
+  ],
+  "artifactReview": "All 16 shared-layout PDF renders visually reviewed; PPTX package/layout checks passed; native PowerPoint not executed",
+  "suppliedHyundaiPhotoSha256": "55783717bf3d357bfcf8c063ee5aeefff31675b779b0f5274db7948dc3921e09"
+}

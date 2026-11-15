@@ -90,3 +90,8 @@ class ExperienceStore:
         with self.lock:
             self._prune()
             return [copy.deepcopy(v[1]) for v in reversed(list(self.items.values()))]
+
+    def reset(self):
+        with self.lock:
+            self.items.clear()
+            self.revoked.clear()

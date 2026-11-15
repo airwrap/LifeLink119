@@ -4,6 +4,8 @@ $projectRoot=Split-Path -Parent $PSScriptRoot
 $stateFolder=Join-Path $projectRoot 'verification'
 $pidFile=Join-Path $stateFolder 'local-console-process.json'
 $serverFile=Join-Path $projectRoot 'console\server.py'
+$expectedVersion=[regex]::Match((Get-Content -LiteralPath (Join-Path $projectRoot 'app\build.gradle.kts') -Raw),'versionName\s*=\s*"([^"]+)"').Groups[1].Value
+if(!$expectedVersion){throw 'Could not read application version.'}
 $address='http://127.0.0.1:8781'
 function Get-DemoHealth([int]$Seconds) {
     $request=[System.Net.HttpWebRequest]::Create("$address/api/demo/health")
@@ -28,7 +30,7 @@ if($Action -eq 'stop') {
     exit 0
 }
 try {$health=Get-DemoHealth 2} catch {$health=$null}
-if($health -and $health.mode -eq 'DEMO' -and $health.version -eq '0.6.0-demo') {
+if($health -and $health.mode -eq 'DEMO' -and $health.version -eq $expectedVersion) {
     Write-Host "LifeLink119 demo is already running: $address"
 } else {
     $listener=Get-NetTCPConnection -LocalPort 8781 -State Listen -ErrorAction SilentlyContinue
@@ -42,7 +44,7 @@ if($health -and $health.mode -eq 'DEMO' -and $health.version -eq '0.6.0-demo') {
     $ready=$false
     for($attempt=0;$attempt -lt 20;$attempt++) {
         Start-Sleep -Milliseconds 400
-        try {$health=Get-DemoHealth 1;if($health.mode -eq 'DEMO' -and $health.version -eq '0.6.0-demo'){$ready=$true;break}} catch {}
+        try {$health=Get-DemoHealth 1;if($health.mode -eq 'DEMO' -and $health.version -eq $expectedVersion){$ready=$true;break}} catch {}
         if($process.HasExited){break}
     }
     if(!$ready){throw 'Local server did not become ready. See verification/local-console-error.log.'}

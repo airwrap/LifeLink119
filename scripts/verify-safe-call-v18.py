@@ -5,20 +5,19 @@ No protected screenshots, real phone numbers, external submissions or agency cal
 from pathlib import Path
 import argparse, json, os, re, secrets, subprocess, time, xml.etree.ElementTree as ET
 from ui_snapshot_client import SnapshotClient, verify_installed_apk
+from qa_avd_guard import QaAvdGuard, android_sdk
 
 ROOT=Path(__file__).resolve().parents[1]
 
 def main():
     p=argparse.ArgumentParser();p.add_argument('--serial',default='emulator-5580');args=p.parse_args()
-    sdk=Path(os.environ['LOCALAPPDATA'])/'Android/Sdk';adb=[str(sdk/'platform-tools/adb.exe'),'-s',args.serial]
+    sdk=android_sdk();adb=[str(sdk/'platform-tools/adb.exe'),'-s',args.serial]
     def run(*a):return subprocess.check_output(adb+list(a),timeout=40)
-    assert run('emu','avd','name').decode().splitlines()[0] in ('LifeLink119_Android34_UI_20261107','LifeLink119_SafeCall_20261108')
-    user=run('shell','am','get-current-user').decode().strip();assert user.isdigit()
+    qa_guard=QaAvdGuard(adb).acquire_clean()
+    user=qa_guard.verify_target()
     def prefs(name):
         value=subprocess.run(adb+['shell','run-as','com.lifelink119.app','--user',user,'cat','shared_prefs/'+name+'.xml'],capture_output=True,timeout=20)
         return value.stdout.decode() if value.returncode==0 else '<map/>'
-    for name,keys in [('lifelink_medical_lock_v1',{'pin_salt','pin_verifier'}),('lifelink_personal_health_v1',{'record_cipher','records_cipher'}),('lifelink_synthetic_profiles_v05',{'profiles','profiles_cipher'})]:
-        assert not any(n.get('name') in keys for n in ET.fromstring(prefs(name))), 'Existing private/profile data preserved; use a clean QA AVD'
     out=ROOT/'verification/v18';out.mkdir(parents=True,exist_ok=True)
     pin=''.join(str(secrets.randbelow(10)) for _ in range(8));os.environ['LIFELINK_TEST_PIN']=pin
     c=SnapshotClient(adb,auto_auth=True);checks=[];result={'status':'FAIL'};qa_started=False;cleaned=False
@@ -58,7 +57,7 @@ def main():
                 if not c.scroll(direction):break
         return '\n'.join(values)
     def set_qa(k,value):
-        tap(k);assert c.request('SET_TEXT com.lifelink119.app:id/'+k+' '+value).get('changed')=='true'
+        tap(k);assert c.request('SET_TEXT com.lifelink119.app:id/'+k+' '+value).get('changed')=='true', 'Could not set synthetic QA field: '+k
     def select(k,label):
         tap(k);time.sleep(.2)
         tree=ET.fromstring(c.dump());matches=[n for n in tree.iter('node') if n.get('text')==label]
@@ -83,6 +82,7 @@ def main():
         if consent.get('checked')!='true':tap('x_safe_consent')
         tap('x_safe_lookup');wait('x_safe_status',expected)
     def cleanup():
+        qa_guard.before_cleanup()
         home();tap('x_more');tap('x_tools');tap('privacy_settings');tap('privacy_reset')
         assert c.request('CLICK android:id/button1').get('clicked')=='true';wait('x_emergency')
         for name,keys in [('lifelink_medical_lock_v1',{'pin_salt','pin_verifier'}),('lifelink_personal_health_v1',{'record_cipher','records_cipher'})]:
@@ -104,6 +104,10 @@ def main():
             assert 'https://u119.nfa.go.kr/' in c.dump(), 'Neither official navigation nor no-browser guidance was observed'
             assert c.request('CLICK android:id/button1').get('clicked')=='true'
             mark('No-browser device provides the exact official URL as a safe fallback')
+        home();tap('x_more');tap('x_manual');wait('manual_first');home()
+        qa_started=True
+        tap('x_family');wait('x_my_health_edit')
+        mark('Legacy manual -> home -> medical PIN authentication opens protected information')
         home();tap('x_emergency');wait('x_session_status','가상 상담원 응답');assert node('privacy_pin') is None
         mark('Emergency request starts while unregistered and medically locked')
         qa_started=True;safe_page();lookup('도움 대상자');mark('Unselected beneficiary is distinct from unregistered')
@@ -122,6 +126,24 @@ def main():
         tap('x_safe_revoke');wait('x_safe_status','확인 전');mark('Proxy attestation and per-request consent/revoke work')
         home();tap('x_family');wait('x_my_health_edit');tap('x_my_health_edit')
         set_qa('x_my_health_name','QAV18SELF');set_qa('x_my_health_medications','QAV18SELFMED')
+        set_qa('x_health_phone','000');tap('x_my_health_save');wait('x_my_health_status','전화번호')
+        assert wait('x_my_health_name').get('text')=='QAV18SELF'
+        assert wait('x_my_health_medications').get('text')=='QAV18SELFMED'
+        mark('Validation failure keeps the unsaved editor fields')
+        run('shell','cmd','uimode','night','yes');time.sleep(.5)
+        assert wait('x_my_health_name').get('text')=='QAV18SELF'
+        run('shell','cmd','uimode','night','no');time.sleep(.5)
+        assert wait('x_my_health_medications').get('text')=='QAV18SELFMED'
+        mark('Day/night configuration changes preserve the editor draft')
+        deadline=time.monotonic()+62
+        while time.monotonic()<deadline:
+            print('Waiting for the medical authentication expiry regression check',flush=True)
+            time.sleep(min(20,max(0,deadline-time.monotonic())))
+        assert node('privacy_unlock') is not None, 'Medical view did not relock after expiry'
+        tap('privacy_unlock')
+        assert wait('x_my_health_name').get('text')=='QAV18SELF'
+        assert wait('x_my_health_medications').get('text')=='QAV18SELFMED'
+        mark('60-second relock and reauthentication preserve the memory-only draft')
         set_qa('x_health_phone','00000000000');tap('x_health_registered');tap('x_my_health_save');wait('x_my_health_edit','수정')
         assert 'QAV18SELFMED' in all_text();mark('Local self record stores registration reference and direct medical history')
         tap('x_my_health_add');set_qa('x_my_health_name','QAV18FAMILY');set_qa('x_my_health_medications','QAV18FAMILYMED')

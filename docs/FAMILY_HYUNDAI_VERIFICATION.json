@@ -1,0 +1,30 @@
+{
+  "status": "PASS",
+  "apkSha256": "470fe02691f1ce8195ce4fdd4705c92d73995bb163158b9c193c5517636c0bbc",
+  "build": "Debug/Release/Demo, unit tests, lint and Spotless PASS",
+  "unitTests": 288,
+  "generationMode": "built-in image_gen; image references, not CLI",
+  "artworkSha256": "37842f3097902115856f1330f5f9ac8046a22599670f9a01eba08656b643f649",
+  "capturedScreen": "public home only",
+  "changedSlides": [
+    1,
+    2
+  ],
+  "remainingSlides": "render hashes identical to previously reviewed deck",
+  "clinicalOrVoiceBehaviorChanged": false,
+  "nativePowerPointExecuted": false,
+  "outputs": [
+    {
+      "path": "D:\\ORCA\\LifeLink119_Development_Migration_20261112_230045\\deliverables\\LifeLink119_VoiceGuide_FamilyHyundai_20261115\\assets\\hyundai-family-hero.png",
+      "sha256": "37842f3097902115856f1330f5f9ac8046a22599670f9a01eba08656b643f649"
+    },
+    {
+      "path": "D:\\ORCA\\LifeLink119_Development_Migration_20261112_230045\\deliverables\\LifeLink119_VoiceGuide_FamilyHyundai_20261115\\output\\LifeLink119_음성중심_사용안내_현대차가족.pptx",
+      "sha256": "b34530001ccdbb010f0fe0e0a7fe065150200f0534bb00ad53c3b08ecc3631a7"
+    },
+    {
+      "path": "D:\\ORCA\\LifeLink119_Development_Migration_20261112_230045\\deliverables\\LifeLink119_VoiceGuide_FamilyHyundai_20261115\\output\\LifeLink119_음성중심_사용안내_현대차가족.pdf",
+      "sha256": "2c4d45675d7fa0de60ece13d7c7b9f91e3e02fd1ccab4fd2298a34e2fdef5b39"
+    }
+  ]
+}

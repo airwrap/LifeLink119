@@ -9,6 +9,10 @@ class HealthLinkExample {
         require(checked)
         consented = true
     }
-    fun revoke() { consented = false }
+
+    fun revoke() {
+        consented = false
+    }
+
     fun canShowExample() = consented
 }

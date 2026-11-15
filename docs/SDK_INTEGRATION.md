@@ -1,4 +1,6 @@
-# Pleos SDK 연동 가이드 · v0.17
+# Pleos SDK 연동 가이드 · v0.18 응급 대기 확장
+
+2026-11-14: Vehicle 2.3.2를 재사용하면서 FusedLocation 1.1.3, NaviHelper 3.0.5의 읽기 Provider를 추가했다. [최신 지원/권한/검증 표](EMERGENCY_SUPPORT_IMPLEMENTATION.md#4-실제-sdk와-mock-구분)를 우선 참고한다. 현재 SDK heading의 단위와 confidence의 미터 정확도 의미를 확인하지 못해 해당 값은 실제 방향/정확도로 표시하지 않는다. 내비 주소에는 측정 시각이 없어 현재 위치로 확정하지 않는다.
 
 v0.17 최종 UI APK에서도 Console 입력과 도어·SoC SDK 값 변화, 원복 및 에어백 미지원 응답을 재확인했습니다. [동일 APK 검증 요약](manual/v17/sdk-verification.json). 기본 자동 검사 출력은 `verification/pleos-sdk-current/results.json`이며, v0.16.1 아래 기록은 당시 증거로 보존합니다.
 
@@ -24,23 +26,23 @@ v0.17 최종 UI APK에서도 Console 입력과 도어·SoC SDK 값 변화, 원�
 - READ/READ_WRITE 확인. 도어는 운전석 지원 영역과 반환 범위를 확인한 뒤 조회.
 - null과 정상 값 0 구분. 잘못된 범위와 범위 밖 값은 성공 처리하지 않음.
 - 15초 제한, 중복 요청 방지, 오래된 세대의 콜백·실패 무시, 화면 종료 시 SDK release.
-- SDK 내부의 멈춘 호출 자체를 강제 취소한다고 보장하지 않습니다. 이전 작업이 실제로 남아 있으면 BUSY로 알립니다.
+- SDK 내부의 멈춘 호출 자체를 강제 취소한다고 보장하지 않습니다. Vehicle 작업 플래그와 타임아웃을 분리해 이후 요청을 영구 BUSY로 남기지 않고 STALLED/시간 초과로 알립니다. 새 위치·내비 어댑터도 5초 후 미확인 결과를 반환하고 이전 초기화가 멈췄을 때 작업을 계속 쌓지 않습니다.
 - 공식 문서의 VehicleException/ErrorCode와 실제 2.3.2 공개 클래스 이름에 차이가 있습니다. 축약/비공개 클래스나 리플렉션으로 오류 코드를 추정하지 않습니다.
 - 표준 SecurityException/UnsupportedOperationException 및 정확히 일치하는 공식 SDK 오류 메시지 코드를 구분합니다. 미지원·권한 거절·값 없음·서비스 연결 실패를 분리하고, 다른 예외는 단계와 원문 메시지로 표시합니다. 같은 연결에서 확인한 에어백 미지원 결과는 캐시하고 SDK 해제/재연결 시 초기화합니다. TIMEOUT/null은 미지원으로 캐시하지 않습니다.
 
 ## 권한 분리
 
-- 공통: CAR_DOORS, CAR_ENERGY, CAR_SAFETY(문서화된 읽기만), SDK 바인딩 권한.
-- debug만: INTERNET, network security config의 127.0.0.1 평문 예외. 앱의 로컬 연결 주소는 고정이고 HTTP redirect는 따르지 않습니다.
+- 공통: CAR_DOORS, CAR_ENERGY, CAR_SAFETY(문서화된 읽기만), FUSED_LOCATION, NAVI_ROUTE, SDK 바인딩 권한. RECORD_AUDIO는 사용자가 온디바이스 응답을 요청할 때만 허용을 묻습니다.
+- debug/demo: INTERNET, network security config의 127.0.0.1 평문 예외. 앱의 로컬 연결 주소는 고정이고 HTTP redirect는 따르지 않습니다.
 - release: INTERNET 없음, 로컬 공유 비활성화. 실제 기기 실행에서도 비활성 상태를 확인합니다.
-- 전화·SMS·카메라·마이크·GPS·CAR_DRIVE·VIN·차량 CONTROL 권한을 추가하지 않았습니다.
+- 전화·SMS·카메라·ACCESS_FINE_LOCATION·CAR_DRIVE·VIN·차량 CONTROL 권한은 추가하지 않았습니다. 위치는 문서화된 Pleos FUSED_LOCATION 권한으로 읽습니다.
 - 새 차량 관측값은 메모리에서만 보관하고 별도 명시적 동의로 앱 내 상황실에 표시합니다. EmergencySession/saved state/PC payload에는 포함하지 않습니다. 백그라운드·세션/인물 변경·종료·철회·30초 만료 시 전달을 지웁니다.
 
 ## 구현을 보류한 항목
 
 - 빌트인 캠: 공개 접근 계약을 확인하지 못해 UnavailableCameraGateway 유지. 합성 영상 예시는 실제 카메라 연동과 별개입니다.
 - 실제 주행 상태 감지: 이번에 확인한 공식 문서와 SDK 공개 계약만으로 충분히 검증하지 못했습니다. v0.4.1의 UNKNOWN/PARKED/DRIVING은 수동 시나리오 선택이며 어떤 상태에서도 응급지원 접근을 잠그지 않습니다.
-- NaviHelper: 실제 목적지 설정을 호출하지 않습니다. 앱과 웹의 경로는 DEMO_GRID 고정 그림입니다.
+- NaviHelper: 현재 주소 후보 조회만 추가했으며 목적지 설정·병원 경로·경로 제어는 호출하지 않습니다. 기존 경로 그림은 DEMO_GRID입니다.
 - Safety 에어백 읽기는 v0.16에서 추가했습니다. 사고·부상·자동 신고 판단은 하지 않습니다. VIN·경고등·탑승자 판정·차량 제어는 추가하지 않았습니다.
 
 ## 공식 근거

@@ -47,3 +47,9 @@ node_modules/
 /docs/presentation/**/.build/screens-montage.jpg
 /docs/presentation/**/.build/validation.json
 /docs/presentation/**/.build/screens/capture-report.json
+/docs/presentation/voice-family-20261115/.build/candidate.*
+/docs/presentation/voice-family-20261115/.build/rendered/
+/docs/presentation/voice-family-20261115/.build/contact-sheet.jpg
+/docs/presentation/voice-family-20261115/.build/*-check.json
+/docs/presentation/voice-family-20261115/.build/*receipt*.json
+/docs/presentation/voice-family-20261115/.build/pdf-text-metrics.json

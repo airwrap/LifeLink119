@@ -2,6 +2,16 @@
 
 **시연 모드 | 실제 신고·상담 연결 아님**
 
+2026-11-15 최신본: **AI가 한 질문씩 읽고 사용자가 음성으로 답하는 흐름**, 환자 확인 후 안심콜 건강정보를 응급 요약에 포함하는 기능, 고정 위험 안내·오프라인 인식 보강과 현대차 가족 합성 이미지를 반영했습니다. [최신 PPTX·PDF와 제작 소스](docs/presentation/voice-family-20261115/README.md) · [UX 개선·검증](docs/UX_REFINEMENT_20261115.md). 빌드 후 `Start-Voice-Demo.cmd`로 음성 시연을 실행합니다. 외부 LLM은 `.env.example`을 참고해 로컬 `.env`에 설정합니다.
+
+2026-11-15 음성 동행: `.env`의 실제 LLM 연결을 적용했습니다. 최초 1회 동의 후 한 번 시작하면 **AI 질문(TTS) → 음성 답변 → 다음 질문**으로 이어집니다. 더보기의 **음성 동행 자동 시연**은 예시 응답부터 인계 요약까지 자동 진행합니다. [사용법·음성 실행·검증](docs/VOICE_AI_IMPLEMENTATION.md).
+
+2026-11-14 고도화: 기존 119 화면에 차량·위치 응급 요약, 연결 지연·콜백 대기, **AI 응급 대기 동행**을 추가했습니다. [구현 결과·SDK/Mock 구분·검증·시연 순서](docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md) · [외부 LLM 설정](docs/LLM_PROXY_SETUP.md).
+
+현재 실행·빌드·검증 기준은 [현재 상태](docs/CURRENT_STATUS.md), 이번 결함 수정은 [2026-11-13 수정 기록](docs/REVIEW_FIXES_20261113.md)을 참고하세요. **소방청 로그인 → 차량 정보 가져오기 → 신고 전달**의 가능 범위와 선행 조건은 [안심콜 연계 검토](docs/SAFE_CALL_WEB_INTEGRATION_REVIEW.md)에 정리했습니다.
+
+제공된 안심콜 입력 화면 5개를 반영한 상세 항목·복수 보호자 저장과 마이크 오류 해결은 [공식 양식 대조·보완](docs/SAFE_CALL_FORM_AUDIT_20261113.md)에 정리했습니다. 공식 사이트의 본인전송요구 절차도 확인했으며, 현재 앱의 자동 가져오기·실제 신고 전달은 미연결입니다.
+
 비공개 개발 저장소: <https://github.com/airwrap/LifeLink119> · [새 PC 실행 가이드](docs/OTHER_PC_GUIDE.md) · [협업 규칙](CONTRIBUTING.md) · [20개 개선 검토 항목](docs/reviews/20261030/README.md)
 
 최신 가족정보·안심콜 기능은 [v0.18 구현 범위](docs/SAFE_CALL_IMPLEMENTATION_V18.md), 전체 화면과 이용 흐름은 [v0.17 기준 전체 매뉴얼](docs/manual/v17/output/LifeLink119_Manual_v0.17.html)을 참고하세요.

@@ -1,0 +1,75 @@
+{
+  "date": "2026-11-14",
+  "version": "0.18.0-demo",
+  "debugApkSha256": "30621852bc93d718b8e81e702148494aa4323cada2df9e97c05e8c77711bedc2",
+  "builds": [
+    "debug",
+    "demo",
+    "release"
+  ],
+  "spotlessCheck": "PASS",
+  "kotlin": {
+    "tests": 252,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "consolePython": {
+    "tests": 89,
+    "status": "PASS"
+  },
+  "qaGuard": {
+    "tests": 6,
+    "normal": "PASS",
+    "optimizedPython": "PASS"
+  },
+  "contractSchemas": 2,
+  "lintIssues": {
+    "debug": 0,
+    "demo": 0
+  },
+  "ui": {
+    "emergency": {
+      "checks": 12,
+      "status": "PASS"
+    },
+    "recovery": {
+      "checks": 5,
+      "status": "PASS"
+    },
+    "home": {
+      "checks": 7,
+      "status": "PASS"
+    },
+    "family": {
+      "checks": 17,
+      "status": "PASS"
+    },
+    "unsupportedSdk": {
+      "checks": 3,
+      "status": "PASS",
+      "profile": "LifeLink119_Std_QA_API_34 / Android 34 / 1280x720"
+    }
+  },
+  "sdk": {
+    "locationPermissionGranted": true,
+    "운전석 도어": "시뮬레이션",
+    "EV 배터리": "시뮬레이션",
+    "에어백": "지원되지 않음",
+    "위치": "시뮬레이션",
+    "도로·지점": "시뮬레이션"
+  },
+  "browser": {
+    "panel": "PASS",
+    "consoleErrors": 0,
+    "data": "synthetic only",
+    "horizontalOverflow": false
+  },
+  "actualAgencyCalls": 0,
+  "liveExternalLlmTested": false,
+  "actualVehicleTested": false,
+  "audibleSpeechTested": false,
+  "privateScreensCaptured": false,
+  "uiTotal": 44,
+  "qaTemporaryPrivateDataRemoved": true
+}

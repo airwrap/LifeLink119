@@ -1,0 +1,201 @@
+{
+  "verifiedAt": "2026-11-15T00:53:52+09:00",
+  "version": "0.18.0-demo",
+  "apkSha256": "7a26339b5a72a519930dd3add6099289f3e716a234fc1ea51969d99d399a6ecb",
+  "apkBytes": 158771383,
+  "device": {
+    "avd": "LifeLink119_QA_API_34",
+    "serial": "emulator-5584",
+    "pleosConnect": "2.1.0",
+    "androidApi": 34
+  },
+  "builds": {
+    "debug": "PASS",
+    "demo": "PASS",
+    "release": "PASS",
+    "debugAndroidTest": "PASS",
+    "spotlessCheck": "PASS",
+    "Build-And-Test.cmd": "PASS"
+  },
+  "kotlin": {
+    "tests": 269,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "python": {
+    "tests": 95,
+    "failures": 0
+  },
+  "contract": {
+    "schemas": 2,
+    "positiveResponses": 3,
+    "positiveRequests": 3,
+    "rejectedCases": 11,
+    "status": "PASS"
+  },
+  "lint": {
+    "debug": {
+      "errors": 0,
+      "warnings": [
+        "A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0",
+        "A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
+      ]
+    },
+    "demo": {
+      "errors": 0,
+      "warnings": [
+        "A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0",
+        "A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
+      ]
+    }
+  },
+  "voiceUi": {
+    "status": "PASS",
+    "apkSha256": "7a26339b5a72a519930dd3add6099289f3e716a234fc1ea51969d99d399a6ecb",
+    "checks": [
+      "One start begins spoken question; answer controls are collapsed by default",
+      "TTS completion automatically starts on-device microphone recognition",
+      "Real configured LLM chooses approved question through app and loopback proxy",
+      "Two unanswered turns pause; no invented patient observation",
+      "Visible stop cancels playback and recognition immediately",
+      "Confirmed operator call blocks voice start; emergency retry remains available"
+    ],
+    "actualCalls": 0,
+    "humanVoiceRecorded": false
+  },
+  "existingEmergencyUi": {
+    "status": "PASS",
+    "apkSha256": "7a26339b5a72a519930dd3add6099289f3e716a234fc1ea51969d99d399a6ecb",
+    "checks": [
+      "Default collection and external sharing are off; emergency retry remains accessible",
+      "Scenario 1: synthetic airbag and location automatically populate packet",
+      "Synthetic PC roundtrip and revocation; real data cannot enter PC payload",
+      "Scenario 2: no airbag does not imply no accident or no injury",
+      "Scenario 3: minimal moving UI, details only after synthetic stop plus platform permission",
+      "Scenario 4: delay/callback confirmation and retry retain the incident summary",
+      "Scenario 5: dispatch-wait report, one-question flow, worsening escalation and handover summary",
+      "Loopback LLM proxy accepts consented step codes and returns only an approved phrase",
+      "Scenario 6: failed LLM keeps offline guidance and emergency retry available",
+      "Operator-confirmed call blocks automatic TTS/microphone without changing call status",
+      "SDK/location unavailable scenario contains no invented values",
+      "Summary export is gated by separate explicit consent"
+    ],
+    "actualCalls": 0,
+    "privateDataCreated": false
+  },
+  "nativeSyntheticSpeech": {
+    "status": "PASS",
+    "fixtures": 7,
+    "recognizedSupportedUtterances": 4,
+    "unclearLongUtterancesRejected": 2,
+    "unrelatedUtterancesRejected": 1,
+    "results": [
+      {
+        "expected": "CONSCIOUS_YES",
+        "actual": "CONSCIOUS_YES",
+        "confidence": 1
+      },
+      {
+        "expected": "CONSCIOUS_NO",
+        "actual": "CONSCIOUS_NO",
+        "confidence": 0.693368
+      },
+      {
+        "expected": "CONSCIOUS_NO",
+        "actual": "UNRECOGNIZED",
+        "confidence": 0.506173
+      },
+      {
+        "expected": "BREATHING_NO",
+        "actual": "BREATHING_NO",
+        "confidence": 1
+      },
+      {
+        "expected": "CHEST_PAIN",
+        "actual": "UNRECOGNIZED",
+        "confidence": 0.576767
+      },
+      {
+        "expected": "STOP",
+        "actual": "STOP",
+        "confidence": 1
+      },
+      {
+        "expected": "UNRECOGNIZED",
+        "actual": "UNRECOGNIZED",
+        "confidence": 0.870151
+      }
+    ],
+    "humanMicrophoneTested": false
+  },
+  "actualExternalLlm": {
+    "model": "gpt-oss-120b",
+    "appToProxyToModel": "PASS",
+    "syntheticMeaningCases": [
+      {
+        "step": "CONSCIOUSNESS",
+        "expectedCode": "CONSCIOUS_NO",
+        "actualCode": "CONSCIOUS_NO",
+        "fallback": false,
+        "seconds": 0.44
+      },
+      {
+        "step": "BREATHING",
+        "expectedCode": "BREATHING_YES",
+        "actualCode": "BREATHING_YES",
+        "fallback": false,
+        "seconds": 0.39
+      },
+      {
+        "step": "SYMPTOMS",
+        "expectedCode": "CHEST_PAIN",
+        "actualCode": "CHEST_PAIN",
+        "fallback": false,
+        "seconds": 0.42
+      }
+    ],
+    "afterLauncherRestart": {
+      "status": "PASS",
+      "phraseId": "CONSCIOUSNESS",
+      "fallback": false,
+      "syntheticOnly": true
+    }
+  },
+  "secrets": {
+    "configuredKeyPresent": true,
+    "apks": [
+      {
+        "variant": "debug",
+        "dotenvPackaged": false,
+        "configuredSecretsFound": false
+      },
+      {
+        "variant": "demo",
+        "dotenvPackaged": false,
+        "configuredSecretsFound": false
+      },
+      {
+        "variant": "release",
+        "dotenvPackaged": false,
+        "configuredSecretsFound": false
+      }
+    ],
+    "checkedLogsContainConfiguredSecrets": false
+  },
+  "launcher": {
+    "fullRestartInstallAndStart": "PASS",
+    "dataErased": false,
+    "hostMicrophoneAvailable": false,
+    "repeatedDirectSoundCaptureErrors": false,
+    "appAndServerLeftRunning": true
+  },
+  "limits": [
+    "Actual emergency calls, agency reception/dispatch, and manufacturer call integration are not implemented.",
+    "No active Windows microphone: human speech, vehicle noise, and physical call interruption need separate testing.",
+    "Vosk long-utterance recognition is limited; the voice flow uses one yes/no question at a time and rejects unclear input.",
+    "Authored medical guidance still requires clinical expert review.",
+    "Current external proxy is for debug/demo over ADB loopback; release has no INTERNET permission.",
+    "Lint has zero errors; warnings concern newer AndroidX test library versions."
+  ]
+}

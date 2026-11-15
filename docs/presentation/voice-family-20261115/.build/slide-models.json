@@ -1,0 +1,3252 @@
+{
+  "width": 1600,
+  "height": 900,
+  "font": "Malgun Gothic",
+  "slides": [
+    {
+      "number": 1,
+      "title": "LifeLink 119\n음성 동행 사용 안내",
+      "background": "102830",
+      "texts": [
+        {
+          "text": "현대차 사진 참조 · 가족 장면 AI 합성",
+          "lines": [
+            "현대차 사진 참조 · 가족 장면 AI 합성"
+          ],
+          "x": 790,
+          "y": 747,
+          "w": 720,
+          "h": 35,
+          "size": 21,
+          "lh": 30,
+          "color": "B8DDD2",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "LifeLink 119",
+          "lines": [
+            "LifeLink 119"
+          ],
+          "x": 70,
+          "y": 96,
+          "w": 670,
+          "h": 93,
+          "size": 66,
+          "lh": 88,
+          "color": "F6F7F2",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "음성 동행\n사용 안내",
+          "lines": [
+            "음성 동행",
+            "사용 안내"
+          ],
+          "x": 70,
+          "y": 206,
+          "w": 680,
+          "h": 189,
+          "size": 68,
+          "lh": 92,
+          "color": "F6F7F2",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "질문을 듣고, 짧게 답하는\n차량 응급지원",
+          "lines": [
+            "질문을 듣고, 짧게 답하는",
+            "차량 응급지원"
+          ],
+          "x": 73,
+          "y": 448,
+          "w": 650,
+          "h": 105,
+          "size": 34,
+          "lh": 50,
+          "color": "B8DDD2",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "나와 내 가족을 위한 구급차",
+          "lines": [
+            "나와 내 가족을 위한 구급차"
+          ],
+          "x": 73,
+          "y": 647,
+          "w": 650,
+          "h": 44,
+          "size": 28,
+          "lh": 39,
+          "color": "F6F7F2",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "실제 앱 화면으로 보는 사용법과 자동 시연\n2026.11.15 · v0.18.0-demo",
+          "lines": [
+            "실제 앱 화면으로 보는 사용법과 자동 시연",
+            "2026.11.15 · v0.18.0-demo"
+          ],
+          "x": 73,
+          "y": 712,
+          "w": 650,
+          "h": 75,
+          "size": 23,
+          "lh": 35,
+          "color": "B8DDD2",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 신고·상담 연결 아님",
+          "lines": [
+            "시연 앱 · 실제 신고·상담 연결 아님"
+          ],
+          "x": 73,
+          "y": 843,
+          "w": 690,
+          "h": 35,
+          "size": 21,
+          "lh": 30,
+          "color": "E8C598",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "hyundai-family-hero.png",
+          "x": 760.0,
+          "y": 193.33333333333331,
+          "w": 800.0,
+          "h": 533.3333333333334,
+          "crop": [
+            0,
+            0,
+            1536,
+            1024
+          ],
+          "sourceWidth": 1536,
+          "sourceHeight": 1024
+        }
+      ],
+      "tables": [],
+      "notes": "LifeLink 119\n음성 동행 사용 안내\n\n발표자 설명\n기존 사용 안내를 최신 음성 중심 흐름으로 정리한 16장 개정 설명 자료입니다. 사용자가 제공한 현대자동차 사진을 차량 디자인 참조로 삼아 가족과 함께 있는 장면을 AI로 합성했습니다. 이전 가족 이미지의 따뜻한 분위기를 유지하며 일반 SUV를 현대차로 교체했습니다. 실제 가족의 사진이나 현대자동차 공식 광고가 아닙니다. 실제 구조 서비스 또는 실차 인증을 의미하지 않습니다. 생성 프롬프트는 assets/hyundai-family-hero.prompt.txt에 보관했습니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/hyundai-family-hero.png\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 2,
+      "title": "홈에서 필요한 도움을 선택합니다",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "홈에서 필요한 도움을 선택합니다",
+          "lines": [
+            "홈에서 필요한 도움을 선택합니다"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "긴급 연결, 상담, 가족정보의 진입점을 한 화면에 모았습니다",
+          "lines": [
+            "긴급 연결, 상담, 가족정보의 진입점을 한 화면에 모았습니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "02",
+          "lines": [
+            "02"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "긴급신고",
+          "lines": [
+            "긴급신고"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "119 긴급신고와 112 경찰 신고를 바로 선택합니다.",
+          "lines": [
+            "119 긴급신고와 112 경찰 신고를",
+            "바로 선택합니다."
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "상담과 가족정보",
+          "lines": [
+            "상담과 가족정보"
+          ],
+          "x": 1110,
+          "y": 379,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "119 응급상담, 109 마음상담, 가족 안심콜을 제공합니다.",
+          "lines": [
+            "119 응급상담, 109 마음상담,",
+            "가족 안심콜을 제공합니다."
+          ],
+          "x": 1110,
+          "y": 435,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "이번 안내의 중심",
+          "lines": [
+            "이번 안내의 중심"
+          ],
+          "x": 1110,
+          "y": 547,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "119 연결 화면에서 시작하는 AI 음성 동행입니다.",
+          "lines": [
+            "119 연결 화면에서 시작하는 AI",
+            "음성 동행입니다."
+          ],
+          "x": 1110,
+          "y": 603,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "가족정보 등록이나 PIN 없이 긴급 연결을 시작합니다.",
+          "lines": [
+            "가족정보 등록이나 PIN 없이 긴급",
+            "연결을 시작합니다."
+          ],
+          "x": 1110,
+          "y": 718,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "home.jpg",
+          "x": 65.00000000000006,
+          "y": 265.2398753894081,
+          "w": 999.9999999999999,
+          "h": 473.52024922118375,
+          "crop": [
+            40,
+            300,
+            1645,
+            1060
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "홈에서 필요한 도움을 선택합니다\n\n발표자 설명\n기존 홈 구조와 아이콘을 유지하고 사용자가 제공한 현대차 사진을 기반으로 합성한 가족 이미지를 적용했습니다. 차량은 현대차 디자인 참조를 사용했고 가족은 합성 인물입니다. 109와 112는 별도 기관 연결 시연 경로이며 AI 음성 동행과 동일한 기능이 아닙니다. 모든 발신·상담 연결은 시연입니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/home.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 3,
+      "title": "외부 AI 선택은 처음 한 번만",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "외부 AI 선택은 처음 한 번만",
+          "lines": [
+            "외부 AI 선택은 처음 한 번만"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "동의와 거절 모두 저장하며, 다시 실행해도 반복해서 묻지 않습니다",
+          "lines": [
+            "동의와 거절 모두 저장하며, 다시 실행해도 반복해서 묻지 않습니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "03",
+          "lines": [
+            "03"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "외부 AI 사용",
+          "lines": [
+            "외부 AI 사용"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "동의하고 시작을 누르면 필요한 증상 의미 코드만 전송합니다.",
+          "lines": [
+            "동의하고 시작을 누르면 필요한",
+            "증상 의미 코드만 전송합니다."
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "기본 안내 선택",
+          "lines": [
+            "기본 안내 선택"
+          ],
+          "x": 1110,
+          "y": 379,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "외부 AI를 사용하지 않아도 기본 음성 안내를 이용합니다.",
+          "lines": [
+            "외부 AI를 사용하지 않아도 기본",
+            "음성 안내를 이용합니다."
+          ],
+          "x": 1110,
+          "y": 435,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "마이크 권한",
+          "lines": [
+            "마이크 권한"
+          ],
+          "x": 1110,
+          "y": 547,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "Android가 처음 요청하면 마이크 사용을 허용합니다.",
+          "lines": [
+            "Android가 처음 요청하면 마이크",
+            "사용을 허용합니다."
+          ],
+          "x": 1110,
+          "y": 603,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "선택은 더보기의 음성 AI 설정에서 바꿀 수 있습니다.",
+          "lines": [
+            "선택은 더보기의 음성 AI 설정에서 바꿀",
+            "수 있습니다."
+          ],
+          "x": 1110,
+          "y": 718,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "first-run.jpg",
+          "x": 64.99999999999994,
+          "y": 337.423197492163,
+          "w": 1000.0000000000001,
+          "h": 329.15360501567403,
+          "crop": [
+            45,
+            185,
+            1640,
+            710
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "외부 AI 선택은 처음 한 번만\n\n발표자 설명\n외부 AI 동의는 앱의 선택이며 Android 마이크 권한과 별개입니다. 최초 1회는 현재 설치된 차량 앱 기준입니다. 앱 데이터 삭제·재설치 후까지 유지한다고 보장하지 않습니다. 질문 단계와 한정 의미 코드도 건강 맥락이므로 사용자가 선택합니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/first-run.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 4,
+      "title": "119 화면에서 한 번 눌러 시작",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "119 화면에서 한 번 눌러 시작",
+          "lines": [
+            "119 화면에서 한 번 눌러 시작"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "홈의 긴급신고를 누른 뒤 AI 음성 동행 시작을 선택합니다",
+          "lines": [
+            "홈의 긴급신고를 누른 뒤 AI 음성 동행 시작을 선택합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "04",
+          "lines": [
+            "04"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "AI 음성 동행 시작",
+          "lines": [
+            "AI 음성 동행 시작"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "추가 시작 화면이나 동의 체크 없이 질문이 이어집니다.",
+          "lines": [
+            "추가 시작 화면이나 동의 체크",
+            "없이 질문이 이어집니다."
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "응급 요약·대기 지원",
+          "lines": [
+            "응급 요약·대기 지원"
+          ],
+          "x": 1110,
+          "y": 379,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "상황 요약과 연결 지연 상태를 확인할 수 있습니다.",
+          "lines": [
+            "상황 요약과 연결 지연 상태를",
+            "확인할 수 있습니다."
+          ],
+          "x": 1110,
+          "y": 435,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "실제 통화 중에는 음성 동행을 시작하지 않습니다.",
+          "lines": [
+            "실제 통화 중에는 음성 동행을 시작하지",
+            "않습니다."
+          ],
+          "x": 1110,
+          "y": 718,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "call.jpg",
+          "x": 65.0,
+          "y": 284.8125,
+          "w": 1000.0,
+          "h": 434.375,
+          "crop": [
+            40,
+            330,
+            1640,
+            1025
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "119 화면에서 한 번 눌러 시작\n\n발표자 설명\n한 번 시작한다는 의미는 119 연결 화면에서 AI 음성 동행 시작 버튼을 한 번 누르는 것입니다. 홈에서의 전체 조작이 한 번이라는 뜻은 아닙니다. 새 사건마다 외부 AI 동의를 다시 받지 않습니다. 이 화면의 가상 상담원 응답은 실제 통화 상태가 아닙니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/call.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 5,
+      "title": "AI가 질문을 한 가지씩 읽습니다",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "AI가 질문을 한 가지씩 읽습니다",
+          "lines": [
+            "AI가 질문을 한 가지씩 읽습니다"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "질문이 끝난 뒤 말하면 다음 질문과 필요한 안내가 이어집니다",
+          "lines": [
+            "질문이 끝난 뒤 말하면 다음 질문과 필요한 안내가 이어집니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "05",
+          "lines": [
+            "05"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "첫 질문",
+          "lines": [
+            "첫 질문"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "“환자는 의식이 있나요?”",
+          "lines": [
+            "“환자는 의식이 있나요?”"
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 45,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "질문을 듣는 동안",
+          "lines": [
+            "질문을 듣는 동안"
+          ],
+          "x": 1110,
+          "y": 339,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "질문을 읽고 있습니다라는 상태를 보여줍니다.",
+          "lines": [
+            "질문을 읽고 있습니다라는",
+            "상태를 보여줍니다."
+          ],
+          "x": 1110,
+          "y": 395,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "답할 차례",
+          "lines": [
+            "답할 차례"
+          ],
+          "x": 1110,
+          "y": 507,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "질문이 끝나면 자동으로 음성 입력을 기다립니다.",
+          "lines": [
+            "질문이 끝나면 자동으로 음성",
+            "입력을 기다립니다."
+          ],
+          "x": 1110,
+          "y": 563,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "긴 설명이나 여러 선택지를 한꺼번에 요구하지 않습니다.",
+          "lines": [
+            "긴 설명이나 여러 선택지를 한꺼번에",
+            "요구하지 않습니다."
+          ],
+          "x": 1110,
+          "y": 718,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "question.jpg",
+          "x": 65.0,
+          "y": 306.6875,
+          "w": 1000.0,
+          "h": 390.625,
+          "crop": [
+            40,
+            165,
+            1640,
+            790
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "AI가 질문을 한 가지씩 읽습니다\n\n발표자 설명\n음성 출력(TTS)이 끝난 후에만 기기 내 음성인식(STT)을 시작합니다. 마이크를 계속 켜두지 않습니다. 외부 모델이 만드는 임의의 의료 조언을 읽는 구조가 아닙니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/question.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 6,
+      "title": "답변은 짧게 말하면 됩니다",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "답변은 짧게 말하면 됩니다",
+          "lines": [
+            "답변은 짧게 말하면 됩니다"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "“예”, “아니요”, “잘 모르겠어요”로 현재 질문에 답합니다",
+          "lines": [
+            "“예”, “아니요”, “잘 모르겠어요”로 현재 질문에 답합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "06",
+          "lines": [
+            "06"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "듣고 있습니다",
+          "lines": [
+            "듣고 있습니다"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "이 문구를 확인한 뒤 짧게 답합니다.",
+          "lines": [
+            "이 문구를 확인한 뒤 짧게",
+            "답합니다."
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "뜻이 불확실할 때",
+          "lines": [
+            "뜻이 불확실할 때"
+          ],
+          "x": 1110,
+          "y": 379,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "AI가 짧게 다시 확인하면 예 또는 아니요로 답합니다.",
+          "lines": [
+            "AI가 짧게 다시 확인하면 예 또는",
+            "아니요로 답합니다."
+          ],
+          "x": 1110,
+          "y": 435,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "응답이 없을 때",
+          "lines": [
+            "응답이 없을 때"
+          ],
+          "x": 1110,
+          "y": 547,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "한 번 재질문한 뒤 듣기를 쉬며, 임의로 답을 채우지 않습니다.",
+          "lines": [
+            "한 번 재질문한 뒤 듣기를 쉬며,",
+            "임의로 답을 채우지 않습니다."
+          ],
+          "x": 1110,
+          "y": 603,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "긴 자유 대화보다 짧고 분명한 답변을 사용합니다.",
+          "lines": [
+            "긴 자유 대화보다 짧고 분명한 답변을",
+            "사용합니다."
+          ],
+          "x": 1110,
+          "y": 718,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "listening.jpg",
+          "x": 65.0,
+          "y": 306.6875,
+          "w": 1000.0,
+          "h": 390.625,
+          "crop": [
+            40,
+            165,
+            1640,
+            790
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "답변은 짧게 말하면 됩니다\n\n발표자 설명\n음성인식이 실패하거나 무응답이어도 환자가 정상이라고 기록하지 않습니다. 외부 모델 해석이 불명확하면 고정 확인 질문을 거칩니다. 실제 차량 소음과 사람의 억양에 대한 실차 검증은 남아 있습니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/listening.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 7,
+      "title": "화면 답변도 현재 질문 하나만",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "화면 답변도 현재 질문 하나만",
+          "lines": [
+            "화면 답변도 현재 질문 하나만"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "기본은 음성 대화 · 화면으로 전환해도 방금 들은 질문을 유지합니다",
+          "lines": [
+            "기본은 음성 대화 · 화면으로 전환해도 방금 들은 질문을 유지합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "07",
+          "lines": [
+            "07"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "답변은 예 · 아니요 · 잘 모르겠어요. 증상 목록을 고르지 않고 다음 질문으로 이어집니다.",
+          "lines": [
+            "답변은 예 · 아니요 · 잘 모르겠어요. 증상 목록을 고르지 않고 다음 질문으로 이어집니다."
+          ],
+          "x": 73,
+          "y": 758,
+          "w": 1450,
+          "h": 47,
+          "size": 29,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "앱 실제 화면 확대 · 상세 화면 조작은 정차 중에 이용합니다.",
+          "lines": [
+            "앱 실제 화면 확대 · 상세 화면 조작은 정차 중에 이용합니다."
+          ],
+          "x": 73,
+          "y": 807,
+          "w": 1450,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "manual.jpg",
+          "x": 70.0,
+          "y": 201.61821086261978,
+          "w": 1460.0,
+          "h": 517.7635782747604,
+          "crop": [
+            60,
+            225,
+            1625,
+            780
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "화면 답변도 현재 질문 하나만\n\n발표자 설명\n음성 중심 흐름에서 화면으로 답하기를 선택한 모습입니다. 질문 위치와 모델 해석 확인 대기를 유지합니다. 예와 아니요는 같은 색으로 표시하며 특정 답을 권하지 않습니다. 응답 세 가지 외의 음성 재개와 119 재연결은 보조 동작입니다. 개인정보 없는 합성 시나리오입니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/manual.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 8,
+      "title": "연결 대기도 음성으로 이어갑니다",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "연결 대기도 음성으로 이어갑니다",
+          "lines": [
+            "연결 대기도 음성으로 이어갑니다"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "상태 선택 목록을 줄이고 AI 음성 동행을 중심에 두었습니다",
+          "lines": [
+            "상태 선택 목록을 줄이고 AI 음성 동행을 중심에 두었습니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "08",
+          "lines": [
+            "08"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "“다시 전화 준대요”처럼 확인한 내용을 말합니다. 화면 확인도 한 질문씩 진행합니다.",
+          "lines": [
+            "“다시 전화 준대요”처럼 확인한 내용을 말합니다. 화면 확인도 한 질문씩 진행합니다."
+          ],
+          "x": 73,
+          "y": 758,
+          "w": 1450,
+          "h": 47,
+          "size": 29,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "앱 실제 화면 확대 · 콜백 예약·출동은 보장하지 않으며 재연결을 막지 않습니다.",
+          "lines": [
+            "앱 실제 화면 확대 · 콜백 예약·출동은 보장하지 않으며 재연결을 막지 않습니다."
+          ],
+          "x": 73,
+          "y": 807,
+          "w": 1450,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "callback.jpg",
+          "x": 70.0,
+          "y": 193.14331210191085,
+          "w": 1460.0,
+          "h": 534.7133757961783,
+          "crop": [
+            55,
+            190,
+            1625,
+            765
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "연결 대기도 음성으로 이어갑니다\n\n발표자 설명\n119 연결 화면에서 시작하는 음성 동행에 필요한 연결 상태도 명시적 발화로 알릴 수 있습니다. 기관에서 상태를 자동 수신한 것이 아니며 사용자가 확인한 진술로 표시합니다. 긴 발화가 불명확하면 다시 묻거나 화면의 순차 확인을 이용합니다. 통화 중이에요 또는 전화 왔어요라는 말, 오디오 포커스 변경, 앱 전환은 음성을 중지합니다. 실제 전화 발신은 시연입니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/callback.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 9,
+      "title": "상담원에게 전할 내용을 모아 보여줍니다",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "상담원에게 전할 내용을 모아 보여줍니다",
+          "lines": [
+            "상담원에게 전할 내용을 모아 보여줍니다"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "응급 요약·대기 지원에서 상황, 위치, 차량, 환자 응답을 확인합니다",
+          "lines": [
+            "응급 요약·대기 지원에서 상황, 위치, 차량, 환자 응답을 확인합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "09",
+          "lines": [
+            "09"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "확인한 정보 중심",
+          "lines": [
+            "확인한 정보 중심"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "위치의 시각·정확도와 차량 상태의 출처를 함께 봅니다.",
+          "lines": [
+            "위치의 시각·정확도와 차량",
+            "상태의 출처를 함께 봅니다."
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "환자 상태 구분",
+          "lines": [
+            "환자 상태 구분"
+          ],
+          "x": 1110,
+          "y": 379,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "사용자가 답한 상태를 차량 신호와 구분해 정리합니다.",
+          "lines": [
+            "사용자가 답한 상태를 차량",
+            "신호와 구분해 정리합니다."
+          ],
+          "x": 1110,
+          "y": 435,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "읽어주기·복사",
+          "lines": [
+            "읽어주기·복사"
+          ],
+          "x": 1110,
+          "y": 547,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "상담원에게 전할 내용을 화면에서 확인합니다.",
+          "lines": [
+            "상담원에게 전할 내용을",
+            "화면에서 확인합니다."
+          ],
+          "x": 1110,
+          "y": 603,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "사진의 좌표·에어백은 합성 시나리오 값입니다.",
+          "lines": [
+            "사진의 좌표·에어백은 합성 시나리오",
+            "값입니다."
+          ],
+          "x": 1110,
+          "y": 718,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "packet.jpg",
+          "x": 65.0,
+          "y": 403.25,
+          "w": 1000.0,
+          "h": 197.5,
+          "crop": [
+            40,
+            474,
+            1640,
+            790
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "상담원에게 전할 내용을 모아 보여줍니다\n\n발표자 설명\n이 화면은 에어백 전개 시뮬레이션의 짧은 읽기 요약입니다. 실제 에어백 신호를 확인한 증거가 아닙니다. 미지원·오래된 위치·확인 불가를 현재 사실처럼 표시하지 않습니다. 복사 등 상세 동작은 주행 제한에 따릅니다. 실제 기관 자동 전송은 없습니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/packet.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 10,
+      "title": "저장한 안심콜 정보를 응급 요약에 포함",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "저장한 안심콜 정보를 응급 요약에 포함",
+          "lines": [
+            "저장한 안심콜 정보를 응급 요약에 포함"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "한 번 저장한 가족정보를 다시 입력하지 않고 이번 환자에게 연결합니다",
+          "lines": [
+            "한 번 저장한 가족정보를 다시 입력하지 않고 이번 환자에게 연결합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "10",
+          "lines": [
+            "10"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "01",
+          "lines": [
+            "01"
+          ],
+          "x": 75,
+          "y": 224,
+          "w": 400,
+          "h": 75,
+          "size": 52,
+          "lh": 70,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "정차 후 인증",
+          "lines": [
+            "정차 후 인증"
+          ],
+          "x": 75,
+          "y": 321,
+          "w": 420,
+          "h": 51,
+          "size": 33,
+          "lh": 46,
+          "color": "1A3037",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "응급 요약에서\n가족 안심콜 정보 포함을\n누르고 PIN으로 확인합니다.",
+          "lines": [
+            "응급 요약에서",
+            "가족 안심콜 정보 포함을",
+            "누르고 PIN으로 확인합니다."
+          ],
+          "x": 75,
+          "y": 394,
+          "w": 420,
+          "h": 149,
+          "size": 29,
+          "lh": 48,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "02",
+          "lines": [
+            "02"
+          ],
+          "x": 590,
+          "y": 224,
+          "w": 400,
+          "h": 75,
+          "size": 52,
+          "lh": 70,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "이번 환자 확인",
+          "lines": [
+            "이번 환자 확인"
+          ],
+          "x": 590,
+          "y": 321,
+          "w": 420,
+          "h": 51,
+          "size": 33,
+          "lh": 46,
+          "color": "1A3037",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "저장된 가족 중 환자를 고르고\n이 환자 정보로 응급 요약\n만들기를 누릅니다.",
+          "lines": [
+            "저장된 가족 중 환자를 고르고",
+            "이 환자 정보로 응급 요약",
+            "만들기를 누릅니다."
+          ],
+          "x": 590,
+          "y": 394,
+          "w": 420,
+          "h": 149,
+          "size": 29,
+          "lh": 48,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "03",
+          "lines": [
+            "03"
+          ],
+          "x": 1105,
+          "y": 224,
+          "w": 400,
+          "h": 75,
+          "size": 52,
+          "lh": 70,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "전달 내용 확인",
+          "lines": [
+            "전달 내용 확인"
+          ],
+          "x": 1105,
+          "y": 321,
+          "w": 420,
+          "h": 51,
+          "size": 33,
+          "lh": 46,
+          "color": "1A3037",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "병력·알레르기·복용약과\n의사소통·보호자 정보를\n상담원에게 알려줍니다.",
+          "lines": [
+            "병력·알레르기·복용약과",
+            "의사소통·보호자 정보를",
+            "상담원에게 알려줍니다."
+          ],
+          "x": 1105,
+          "y": 394,
+          "w": 420,
+          "h": 149,
+          "size": 29,
+          "lh": 48,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "건강정보는 외부 AI로 보내지 않으며, 치료법을 결정하는 데 사용하지 않습니다.",
+          "lines": [
+            "건강정보는 외부 AI로 보내지 않으며, 치료법을 결정하는 데 사용하지 않습니다."
+          ],
+          "x": 75,
+          "y": 629,
+          "w": 1450,
+          "h": 47,
+          "size": 29,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "차량에 직접 저장한 정보입니다. 공식 안심콜 사이트의 로그인·자동 조회는 연동하지 않았습니다.\n환자 선택은 이번 상황에만 적용되고, 잠금·앱 전환 시 표시가 해제됩니다.",
+          "lines": [
+            "차량에 직접 저장한 정보입니다. 공식 안심콜 사이트의 로그인·자동 조회는 연동하지 않았습니다.",
+            "환자 선택은 이번 상황에만 적용되고, 잠금·앱 전환 시 표시가 해제됩니다."
+          ],
+          "x": 75,
+          "y": 714,
+          "w": 1450,
+          "h": 79,
+          "size": 25,
+          "lh": 37,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        }
+      ],
+      "images": [],
+      "tables": [],
+      "notes": "저장한 안심콜 정보를 응급 요약에 포함\n\n발표자 설명\n실제 구현 경로는 응급 요약, 가족 안심콜 정보 포함, 인증, 환자 한 명 확인, 응급 요약 만들기입니다. 기존 AES-GCM 암호화 저장을 재사용합니다. 환자를 임의로 가족 중 한 명으로 가정하지 않습니다. 저장된 정보는 선택 후 표시되며 잠금이 만료되거나 앱이 백그라운드로 가면 해제됩니다. 보호자에게 자동 연락하지 않습니다. 제공된 건강정보 양식의 거동, 통화 가능 여부, 요청사항, 과거 수술력도 요약에 활용합니다. 보안 화면의 실제 개인정보는 슬라이드에 수록하지 않습니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 11,
+      "title": "자동 시연은 한 번 누르면 진행됩니다",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "자동 시연은 한 번 누르면 진행됩니다",
+          "lines": [
+            "자동 시연은 한 번 누르면 진행됩니다"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "더보기에서 음성 동행 자동 시연을 선택합니다",
+          "lines": [
+            "더보기에서 음성 동행 자동 시연을 선택합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "11",
+          "lines": [
+            "11"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "약 1분 자동 진행",
+          "lines": [
+            "약 1분 자동 진행"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "AI 질문과 예시 답변이 번갈아 재생됩니다.",
+          "lines": [
+            "AI 질문과 예시 답변이 번갈아",
+            "재생됩니다."
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "추가 조작 최소화",
+          "lines": [
+            "추가 조작 최소화"
+          ],
+          "x": 1110,
+          "y": 379,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "답변 버튼을 누르지 않아도 마지막 요약까지 이어집니다.",
+          "lines": [
+            "답변 버튼을 누르지 않아도",
+            "마지막 요약까지 이어집니다."
+          ],
+          "x": 1110,
+          "y": 435,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "명확한 시연 표시",
+          "lines": [
+            "명확한 시연 표시"
+          ],
+          "x": 1110,
+          "y": 547,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "화면에 합성 응답 시연임을 표시합니다.",
+          "lines": [
+            "화면에 합성 응답 시연임을",
+            "표시합니다."
+          ],
+          "x": 1110,
+          "y": 603,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "자동 시연의 답변은 실제 마이크 인식 결과가 아닙니다.",
+          "lines": [
+            "자동 시연의 답변은 실제 마이크 인식",
+            "결과가 아닙니다."
+          ],
+          "x": 1110,
+          "y": 718,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "more.jpg",
+          "x": 65.0,
+          "y": 402.0,
+          "w": 1000.0,
+          "h": 200.0,
+          "crop": [
+            40,
+            160,
+            1640,
+            480
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "자동 시연은 한 번 누르면 진행됩니다\n\n발표자 설명\n자동 시연은 마이크가 있는 실제 사용 흐름을 고정된 합성 응답으로 재현합니다. 사용자에게 말하도록 요구하지 않습니다. 실제 입력 체험은 앞서 설명한 119 화면의 AI 음성 동행 시작을 이용합니다. 저장된 외부 AI 동의가 이 시연에도 적용됩니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/more.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 12,
+      "title": "자동 시연에서 이어지는 여섯 질문",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "자동 시연에서 이어지는 여섯 질문",
+          "lines": [
+            "자동 시연에서 이어지는 여섯 질문"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "질문과 합성 응답을 재생하며 같은 상태 관리·요약 흐름을 사용합니다",
+          "lines": [
+            "질문과 합성 응답을 재생하며 같은 상태 관리·요약 흐름을 사용합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "12",
+          "lines": [
+            "12"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "흉통 답변 후에는 준비된 고정 안내를 읽고, 마지막에 인계 요약을 표시합니다.",
+          "lines": [
+            "흉통 답변 후에는 준비된 고정 안내를 읽고, 마지막에 인계 요약을 표시합니다."
+          ],
+          "x": 73,
+          "y": 770,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        }
+      ],
+      "images": [],
+      "tables": [
+        {
+          "x": 70,
+          "y": 200,
+          "w": 1460,
+          "h": 540,
+          "columns": [
+            100,
+            1070,
+            290
+          ],
+          "rowHeight": 77,
+          "rows": [
+            [
+              "순서",
+              "AI 질문",
+              "예시 답변"
+            ],
+            [
+              "1",
+              "환자는 의식이 있나요?",
+              "네"
+            ],
+            [
+              "2",
+              "정상적으로 숨을 쉬나요?",
+              "네"
+            ],
+            [
+              "3",
+              "불·연기·차량 갇힘이 있나요?",
+              "아니요"
+            ],
+            [
+              "4",
+              "피가 많이 나나요?",
+              "아니요"
+            ],
+            [
+              "5",
+              "가슴에 통증이 있나요?",
+              "네"
+            ],
+            [
+              "6",
+              "아까보다 상태가 나빠졌나요?",
+              "아니요"
+            ]
+          ],
+          "fontSize": 29,
+          "headerFill": "276D61",
+          "headerColor": "FFFFFF",
+          "bodyColor": "1A3037",
+          "bodyFill": "EDF1EB",
+          "lineColor": "CEDAD3"
+        }
+      ],
+      "notes": "자동 시연에서 이어지는 여섯 질문\n\n발표자 설명\n문장들은 사용 안내서의 자동 시연 시나리오입니다. 시연 속도는 음성 재생과 네트워크 환경에 따라 달라집니다. 아니요라는 답변이 이전 흉통을 해소하거나 환자가 정상이라는 판정을 의미하지 않습니다. 이 슬라이드의 답변은 모두 합성 응답입니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 13,
+      "title": "상태가 나빠지면 다시 알리도록 안내합니다",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "상태가 나빠지면 다시 알리도록 안내합니다",
+          "lines": [
+            "상태가 나빠지면 다시 알리도록 안내합니다"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "증상 변화와 확인 시각을 요약에 남기고 재연결을 우선 안내합니다",
+          "lines": [
+            "증상 변화와 확인 시각을 요약에 남기고 재연결을 우선 안내합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "13",
+          "lines": [
+            "13"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "추가 질문 중단",
+          "lines": [
+            "추가 질문 중단"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "호흡 이상·화재·급격한 악화에는 안전 안내와 재연결을 우선합니다.",
+          "lines": [
+            "호흡 이상·화재·급격한 악화에는",
+            "안전 안내와 재연결을",
+            "우선합니다."
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 125,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "고정 안내 사용",
+          "lines": [
+            "고정 안내 사용"
+          ],
+          "x": 1110,
+          "y": 419,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "외부 AI가 임의의 치료법을 추가하지 않습니다.",
+          "lines": [
+            "외부 AI가 임의의 치료법을",
+            "추가하지 않습니다."
+          ],
+          "x": 1110,
+          "y": 475,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "통신이 끊겨도",
+          "lines": [
+            "통신이 끊겨도"
+          ],
+          "x": 1110,
+          "y": 587,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "준비된 기본 응급 안내는 계속 사용할 수 있습니다.",
+          "lines": [
+            "준비된 기본 응급 안내는 계속",
+            "사용할 수 있습니다."
+          ],
+          "x": 1110,
+          "y": 643,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "실제 상황에서는 119 상담원·의료진의 지시를 우선합니다.",
+          "lines": [
+            "실제 상황에서는 119 상담원·의료진의",
+            "지시를 우선합니다."
+          ],
+          "x": 1110,
+          "y": 755,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "worsening.jpg",
+          "x": 65.0,
+          "y": 345.75,
+          "w": 1000.0,
+          "h": 312.5,
+          "crop": [
+            40,
+            190,
+            1640,
+            690
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "상태가 나빠지면 다시 알리도록 안내합니다\n\n발표자 설명\n화면은 현재 질문에 답해 상태 악화를 확인한 별도 시나리오입니다. 앞 슬라이드의 자동 시연 마지막 답변인 아니요를 악화라고 해석한 결과가 아닙니다. 안내 콘텐츠는 공식 자료를 바탕으로 구현했으며 의료전문가 검토 전 시연 콘텐츠입니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/worsening.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 14,
+      "title": "시연이 끝나면 인계 요약을 확인합니다",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "시연이 끝나면 인계 요약을 확인합니다",
+          "lines": [
+            "시연이 끝나면 인계 요약을 확인합니다"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "응답한 상태와 확인 시각을 짧게 모아 보여줍니다",
+          "lines": [
+            "응답한 상태와 확인 시각을 짧게 모아 보여줍니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "14",
+          "lines": [
+            "14"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "앱 실제 화면 · 주요 영역 확대",
+          "lines": [
+            "앱 실제 화면 · 주요 영역 확대"
+          ],
+          "x": 68,
+          "y": 808,
+          "w": 1000,
+          "h": 34,
+          "size": 21,
+          "lh": 29,
+          "color": "52656D",
+          "bold": false,
+          "name": "caption",
+          "align": "left"
+        },
+        {
+          "text": "응답과 시각",
+          "lines": [
+            "응답과 시각"
+          ],
+          "x": 1110,
+          "y": 211,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "의식·호흡·가슴 통증에 대한 예시 답변을 확인합니다.",
+          "lines": [
+            "의식·호흡·가슴 통증에 대한 예시",
+            "답변을 확인합니다."
+          ],
+          "x": 1110,
+          "y": 267,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "다음 전달 준비",
+          "lines": [
+            "다음 전달 준비"
+          ],
+          "x": 1110,
+          "y": 379,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "상태 변화를 다시 알릴 때 참고할 내용을 확인합니다.",
+          "lines": [
+            "상태 변화를 다시 알릴 때 참고할",
+            "내용을 확인합니다."
+          ],
+          "x": 1110,
+          "y": 435,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "반복 시연",
+          "lines": [
+            "반복 시연"
+          ],
+          "x": 1110,
+          "y": 547,
+          "w": 425,
+          "h": 47,
+          "size": 30,
+          "lh": 42,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "음성 시연 다시 보기로 처음부터 재생합니다.",
+          "lines": [
+            "음성 시연 다시 보기로 처음부터",
+            "재생합니다."
+          ],
+          "x": 1110,
+          "y": 603,
+          "w": 425,
+          "h": 85,
+          "size": 28,
+          "lh": 40,
+          "color": "1A3037",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "요약 표시는 기관 전송이나 신고 접수 완료를 뜻하지 않습니다.",
+          "lines": [
+            "요약 표시는 기관 전송이나 신고 접수",
+            "완료를 뜻하지 않습니다."
+          ],
+          "x": 1110,
+          "y": 718,
+          "w": 425,
+          "h": 69,
+          "size": 23,
+          "lh": 32,
+          "color": "835427",
+          "bold": false,
+          "name": "note",
+          "align": "left"
+        }
+      ],
+      "images": [
+        {
+          "file": "handover.jpg",
+          "x": 65.0,
+          "y": 320.75,
+          "w": 1000.0,
+          "h": 362.5,
+          "crop": [
+            40,
+            180,
+            1640,
+            760
+          ],
+          "sourceWidth": 1682,
+          "sourceHeight": 1210
+        }
+      ],
+      "tables": [],
+      "notes": "시연이 끝나면 인계 요약을 확인합니다\n\n발표자 설명\n자동 시연을 완료하면 인계 요약이 자동 표시됩니다. 표시된 시각은 캡처한 시연 시각입니다. 환자 진단이 아닌 응답 기록입니다. 실제 기관으로 전송되지 않는다는 문구가 화면에 남아 있습니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n화면/이미지: docs/presentation/voice-family-20261115/assets/handover.jpg\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 15,
+      "title": "발표자가 따라 하는 약 3분 시연",
+      "background": "F5F6F1",
+      "texts": [
+        {
+          "text": "발표자가 따라 하는 약 3분 시연",
+          "lines": [
+            "발표자가 따라 하는 약 3분 시연"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "1A3037",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "준비 후에는 홈 소개, 자동 대화, 인계 요약 순서로 보여줍니다",
+          "lines": [
+            "준비 후에는 홈 소개, 자동 대화, 인계 요약 순서로 보여줍니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "52656D",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "52656D",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "15",
+          "lines": [
+            "15"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "276D61",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "준비",
+          "lines": [
+            "준비"
+          ],
+          "x": 75,
+          "y": 206,
+          "w": 170,
+          "h": 48,
+          "size": 32,
+          "lh": 43,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "음성 시연 런처 실행",
+          "lines": [
+            "음성 시연 런처 실행"
+          ],
+          "x": 280,
+          "y": 206,
+          "w": 520,
+          "h": 48,
+          "size": 31,
+          "lh": 43,
+          "color": "1A3037",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "최초 동의와 스피커 음량을 확인합니다.",
+          "lines": [
+            "최초 동의와 스피커 음량을 확인합니다."
+          ],
+          "x": 850,
+          "y": 207,
+          "w": 675,
+          "h": 45,
+          "size": 28,
+          "lh": 40,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "0:00",
+          "lines": [
+            "0:00"
+          ],
+          "x": 75,
+          "y": 314,
+          "w": 170,
+          "h": 48,
+          "size": 32,
+          "lh": 43,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "홈과 사용 흐름 소개",
+          "lines": [
+            "홈과 사용 흐름 소개"
+          ],
+          "x": 280,
+          "y": 314,
+          "w": 520,
+          "h": 48,
+          "size": 31,
+          "lh": 43,
+          "color": "1A3037",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "119 연결 화면의 AI 시작 버튼을 설명합니다.",
+          "lines": [
+            "119 연결 화면의 AI 시작 버튼을 설명합니다."
+          ],
+          "x": 850,
+          "y": 315,
+          "w": 675,
+          "h": 45,
+          "size": 28,
+          "lh": 40,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "0:40",
+          "lines": [
+            "0:40"
+          ],
+          "x": 75,
+          "y": 422,
+          "w": 170,
+          "h": 48,
+          "size": 32,
+          "lh": 43,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "자동 시연 시작",
+          "lines": [
+            "자동 시연 시작"
+          ],
+          "x": 280,
+          "y": 422,
+          "w": 520,
+          "h": 48,
+          "size": 31,
+          "lh": 43,
+          "color": "1A3037",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "더보기에서 음성 동행 자동 시연을 누릅니다.",
+          "lines": [
+            "더보기에서 음성 동행 자동 시연을 누릅니다."
+          ],
+          "x": 850,
+          "y": 423,
+          "w": 675,
+          "h": 45,
+          "size": 28,
+          "lh": 40,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "약 1분",
+          "lines": [
+            "약 1분"
+          ],
+          "x": 75,
+          "y": 530,
+          "w": 170,
+          "h": 48,
+          "size": 32,
+          "lh": 43,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "질문과 합성 응답 재생",
+          "lines": [
+            "질문과 합성 응답 재생"
+          ],
+          "x": 280,
+          "y": 530,
+          "w": 520,
+          "h": 48,
+          "size": 31,
+          "lh": 43,
+          "color": "1A3037",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "답변 조작 없이 여섯 질문이 이어집니다.",
+          "lines": [
+            "답변 조작 없이 여섯 질문이 이어집니다."
+          ],
+          "x": 850,
+          "y": 531,
+          "w": 675,
+          "h": 45,
+          "size": 28,
+          "lh": 40,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "마무리",
+          "lines": [
+            "마무리"
+          ],
+          "x": 75,
+          "y": 638,
+          "w": 170,
+          "h": 48,
+          "size": 32,
+          "lh": 43,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "요약과 다시 보기",
+          "lines": [
+            "요약과 다시 보기"
+          ],
+          "x": 280,
+          "y": 638,
+          "w": 520,
+          "h": 48,
+          "size": 31,
+          "lh": 43,
+          "color": "1A3037",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "응답 시각, 흉통 기록, 시뮬레이션 표시를 봅니다.",
+          "lines": [
+            "응답 시각, 흉통 기록, 시뮬레이션 표시를 봅니다."
+          ],
+          "x": 850,
+          "y": 639,
+          "w": 675,
+          "h": 45,
+          "size": 28,
+          "lh": 40,
+          "color": "52656D",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "실행 파일: .tools/Start-LifeLink-Voice-Demo.cmd",
+          "lines": [
+            "실행 파일: .tools/Start-LifeLink-Voice-Demo.cmd"
+          ],
+          "x": 75,
+          "y": 784,
+          "w": 1450,
+          "h": 41,
+          "size": 26,
+          "lh": 36,
+          "color": "276D61",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        }
+      ],
+      "images": [],
+      "tables": [],
+      "notes": "발표자가 따라 하는 약 3분 시연\n\n발표자 설명\n발표 전 패키지 폴더의 .tools/Start-LifeLink-Voice-Demo.cmd를 더블클릭합니다. 이 런처는 QA 에뮬레이터와 서버·ADB 연결·앱 실행을 준비합니다. 일반 무음 런처 대신 음성 런처를 사용합니다. 시스템 부팅과 최초 설정 시간은 약 3분 발표에 포함하지 않습니다. 자동 시연 자체는 약 1분이며 환경에 따라 달라집니다. 키나 서버 주소를 화면에 띄우지 않습니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    },
+    {
+      "number": 16,
+      "title": "지금 시연할 수 있는 범위",
+      "background": "102830",
+      "texts": [
+        {
+          "text": "지금 시연할 수 있는 범위",
+          "lines": [
+            "지금 시연할 수 있는 범위"
+          ],
+          "x": 65,
+          "y": 40,
+          "w": 1460,
+          "h": 70,
+          "size": 49,
+          "lh": 65,
+          "color": "F6F7F2",
+          "bold": true,
+          "name": "title",
+          "align": "left"
+        },
+        {
+          "text": "음성 대기 지원을 확인하되, 실제 기관 연동과 구분합니다",
+          "lines": [
+            "음성 대기 지원을 확인하되, 실제 기관 연동과 구분합니다"
+          ],
+          "x": 68,
+          "y": 119,
+          "w": 1450,
+          "h": 43,
+          "size": 27,
+          "lh": 38,
+          "color": "B8DDD2",
+          "bold": false,
+          "name": "subtitle",
+          "align": "left"
+        },
+        {
+          "text": "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음",
+          "lines": [
+            "시연 앱 · 실제 전화 발신, 기관 접수·출동 연동 없음"
+          ],
+          "x": 68,
+          "y": 853,
+          "w": 1400,
+          "h": 32,
+          "size": 19,
+          "lh": 27,
+          "color": "B8DDD2",
+          "bold": false,
+          "name": "footer",
+          "align": "left"
+        },
+        {
+          "text": "16",
+          "lines": [
+            "16"
+          ],
+          "x": 1467,
+          "y": 849,
+          "w": 65,
+          "h": 38,
+          "size": 25,
+          "lh": 33,
+          "color": "B8DDD2",
+          "bold": true,
+          "name": "folio",
+          "align": "right"
+        },
+        {
+          "text": "현재 앱에서 체험",
+          "lines": [
+            "현재 앱에서 체험"
+          ],
+          "x": 76,
+          "y": 223,
+          "w": 640,
+          "h": 54,
+          "size": 36,
+          "lh": 49,
+          "color": "B8DDD2",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "최초 동의와 설정 변경\n한 번 시작하는 음성 질문·답변\n고정 응급 안내와 상태 변화 기록\n응급 요약·인계 요약\n합성 응답으로 진행하는 자동 시연",
+          "lines": [
+            "최초 동의와 설정 변경",
+            "한 번 시작하는 음성 질문·답변",
+            "고정 응급 안내와 상태 변화 기록",
+            "응급 요약·인계 요약",
+            "합성 응답으로 진행하는 자동 시연"
+          ],
+          "x": 76,
+          "y": 310,
+          "w": 660,
+          "h": 335,
+          "size": 31,
+          "lh": 66,
+          "color": "F6F7F2",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "협력·검증이 필요한 범위",
+          "lines": [
+            "협력·검증이 필요한 범위"
+          ],
+          "x": 860,
+          "y": 223,
+          "w": 650,
+          "h": 54,
+          "size": 36,
+          "lh": 49,
+          "color": "B8DDD2",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "실제 119·112·109 발신과 접수\n콜백 예약·출동·도착 상태 수신\n공식 안심콜 정보 자동 가져오기\n제조사 승인 충돌·에어백 신호\n의료전문가 검토와 실차 음성 검증",
+          "lines": [
+            "실제 119·112·109 발신과 접수",
+            "콜백 예약·출동·도착 상태 수신",
+            "공식 안심콜 정보 자동 가져오기",
+            "제조사 승인 충돌·에어백 신호",
+            "의료전문가 검토와 실차 음성 검증"
+          ],
+          "x": 860,
+          "y": 310,
+          "w": 650,
+          "h": 335,
+          "size": 31,
+          "lh": 66,
+          "color": "F6F7F2",
+          "bold": false,
+          "name": "body",
+          "align": "left"
+        },
+        {
+          "text": "현재 앱은 신고를 돕고 대기 중 정보를 정리하는 시연용 응급지원 앱입니다.",
+          "lines": [
+            "현재 앱은 신고를 돕고 대기 중 정보를 정리하는 시연용 응급지원 앱입니다."
+          ],
+          "x": 76,
+          "y": 747,
+          "w": 1440,
+          "h": 46,
+          "size": 29,
+          "lh": 41,
+          "color": "B8DDD2",
+          "bold": true,
+          "name": "body",
+          "align": "left"
+        }
+      ],
+      "images": [],
+      "tables": [],
+      "notes": "지금 시연할 수 있는 범위\n\n발표자 설명\n현재 모든 기관 연결과 출동 상태 표시는 시뮬레이션입니다. 공식 안심콜 DB 자동 동기화는 연결하지 않았습니다. 실제 조회 가능한 차량 정보와 미지원 항목을 구분합니다. 이 기능을 공인 의료 서비스, 구조대 파견 또는 상용화 완료 기능으로 설명하지 않습니다. 사용자는 실제 위급 상황에서 공식 긴급 연락 수단을 이용해야 합니다.\n\n내용 근거\nLifeLink119/docs/UX_REFINEMENT_20261115.md\nLifeLink119/docs/VOICE_AI_IMPLEMENTATION.md (2026-11-15)\nLifeLink119/docs/EMERGENCY_SUPPORT_IMPLEMENTATION.md\n\n공개 화면 및 합성 시나리오만 사용. 보안 화면 또는 실제 개인정보는 수록하지 않음."
+    }
+  ]
+}

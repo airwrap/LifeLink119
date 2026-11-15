@@ -65,4 +65,43 @@
     <item name="return_session" type="id" />
     <item name="route_preview" type="id" />
     <item name="content_scroll" type="id" />
+    <item name="x_health_application_type" type="id" />
+    <item name="x_health_application_detail" type="id" />
+    <item name="x_health_mobility" type="id" />
+    <item name="x_health_blood" type="id" />
+    <item name="x_health_rhesus" type="id" />
+    <item name="x_health_elevator" type="id" />
+    <item name="x_health_can_call" type="id" />
+    <item name="x_health_call_reason" type="id" />
+    <item name="x_health_past_history" type="id" />
+    <item name="x_health_condition_first" type="id" />
+    <item name="x_health_condition_add" type="id" />
+    <item name="x_health_condition_remove" type="id" />
+    <item name="x_health_infection_first" type="id" />
+    <item name="x_health_infection_add" type="id" />
+    <item name="x_health_infection_remove" type="id" />
+    <item name="x_health_facility" type="id" />
+    <item name="x_health_specialty" type="id" />
+    <item name="x_health_day_phone" type="id" />
+    <item name="x_health_night_phone" type="id" />
+    <item name="x_health_disability_first" type="id" />
+    <item name="x_health_disability_add" type="id" />
+    <item name="x_health_disability_remove" type="id" />
+    <item name="x_health_discomfort" type="id" />
+    <item name="x_health_constitution" type="id" />
+    <item name="x_health_responder_requests" type="id" />
+    <item name="x_health_frequent_place" type="id" />
+    <item name="x_health_guardian_name" type="id" />
+    <item name="x_health_guardian_category" type="id" />
+    <item name="x_health_guardian_relation" type="id" />
+    <item name="x_health_guardian_mobile" type="id" />
+    <item name="x_health_guardian_remove" type="id" />
+    <item name="x_health_guardian_add" type="id" />
+    <item name="x_health_guardian_add_bottom" type="id" />
+    <item name="x_health_guardian_phone" type="id" />
+    <item name="x_health_guardian_email" type="id" />
+    <item name="x_health_guardian_living" type="id" />
+    <item name="x_health_guardian_sms" type="id" />
+    <item name="x_health_guardian_call_confirm" type="id" />
+    <item name="x_health_guardians_reset" type="id" />
 </resources>

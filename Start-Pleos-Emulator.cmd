@@ -9,5 +9,5 @@ if not exist "%ANDROID_HOME%\emulator\emulator.exe" (
 )
 set "LIFELINK_AVD=Pleos_Connect_API_34"
 if not "%~1"=="" set "LIFELINK_AVD=%~1"
-"%ANDROID_HOME%\emulator\emulator.exe" -avd "%LIFELINK_AVD%" -no-snapshot -gpu host -feature -Vulkan
+"%ANDROID_HOME%\emulator\emulator.exe" -avd "%LIFELINK_AVD%" -no-snapshot -no-audio -gpu host -feature -Vulkan
 exit /b %ERRORLEVEL%

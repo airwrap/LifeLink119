@@ -1,4 +1,4 @@
-param(
+﻿param(
     [string]$SdkRoot=$env:ANDROID_HOME,
     [string]$JavaHome=$env:JAVA_HOME,
     [int]$Port=5582,
@@ -42,7 +42,7 @@ if(!(Test-Path -LiteralPath $registry)){
     Checked (Join-Path $SdkRoot 'cmdline-tools\latest\bin\avdmanager.bat') @('create','avd','--name',$avd,'--path',$newPath,'--package','system-images;android-34;pleos_car_emulator;x86_64','--device','Pleos_Connect_v2_0')
     $config=Join-Path $newPath 'config.ini';$lines=Get-Content -LiteralPath $config -Encoding UTF8
     Copy-Item -LiteralPath $config -Destination (Join-Path $newPath 'config.original.ini')
-    $updates=@{'hw.lcd.width'='1280';'hw.lcd.height'='720';'hw.lcd.density'='160';'hw.lcd.vsync'='30';'hw.ramSize'='4096';'hw.gpu.enabled'='yes';'hw.gpu.mode'='swiftshader';'hw.audioInput'='yes';'hw.audioOutput'='yes';'fastboot.forceColdBoot'='yes';'fastboot.forceFastBoot'='no';'firstboot.bootFromDownloadableSnapshot'='no';'firstboot.bootFromLocalSnapshot'='no';'firstboot.saveToLocalSnapshot'='no'}
+    $updates=@{'hw.lcd.width'='1280';'hw.lcd.height'='720';'hw.lcd.density'='160';'hw.lcd.vsync'='30';'hw.ramSize'='4096';'hw.gpu.enabled'='yes';'hw.gpu.mode'='swiftshader';'hw.audioInput'='no';'hw.audioOutput'='yes';'fastboot.forceColdBoot'='yes';'fastboot.forceFastBoot'='no';'firstboot.bootFromDownloadableSnapshot'='no';'firstboot.bootFromLocalSnapshot'='no';'firstboot.saveToLocalSnapshot'='no'}
     $seen=@{};$updated=foreach($line in $lines){$key=($line -split '=',2)[0];$seen[$key]=$true;if($updates.ContainsKey($key)){"$key=$($updates[$key])"}else{$line}}
     foreach($key in $updates.Keys){if(!$seen.ContainsKey($key)){$updated+="$key=$($updates[$key])"}}
     [IO.File]::WriteAllLines($config,[string[]]$updated,[Text.UTF8Encoding]::new($false))
@@ -54,7 +54,7 @@ if($devices -match "(?m)^$serial\s"){
 }else{
     $logDir=Join-Path $repo 'verification\pleos-sdk-v16-runtime';New-Item -ItemType Directory -Path $logDir -Force | Out-Null
     # Keep the GUI engine: -no-window was unreliable for this validation environment.
-    Start-Process -FilePath (Join-Path $SdkRoot 'emulator\emulator.exe') -ArgumentList @('-avd',$avd,'-port',"$Port",'-no-snapshot','-gpu','swiftshader','-feature','-Vulkan','-memory','4096','-cores','4') -WindowStyle Hidden -RedirectStandardOutput (Join-Path $logDir 'launcher-emulator.log') -RedirectStandardError (Join-Path $logDir 'launcher-emulator-error.log') | Out-Null
+    Start-Process -FilePath (Join-Path $SdkRoot 'emulator\emulator.exe') -ArgumentList @('-avd',$avd,'-port',"$Port",'-no-snapshot','-no-audio','-gpu','swiftshader','-feature','-Vulkan','-memory','4096','-cores','4') -WindowStyle Hidden -RedirectStandardOutput (Join-Path $logDir 'launcher-emulator.log') -RedirectStandardError (Join-Path $logDir 'launcher-emulator-error.log') | Out-Null
 }
 Write-Output 'Waiting for cold boot. Existing AVDs, app data and services are preserved.'
 $deadline=(Get-Date).AddMinutes(8);$boot=''

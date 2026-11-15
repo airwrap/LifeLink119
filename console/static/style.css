@@ -9,6 +9,24 @@
   --warn: #fff1d9;
   --danger: #a82832;
 }
+.experience-view header{display:flex;justify-content:space-between;gap:24px;align-items:center;padding:16px max(24px,calc((100vw - 1280px)/2));flex-wrap:wrap}
+.experience-view header a{color:#b8e9e2}
+.experience-view main{max-width:1328px;margin:0 auto;padding:28px 24px}
+.experience-view .experience-notice{padding:18px 22px;background:#e0eeed;border-left:4px solid var(--teal);border-radius:4px 12px 12px 4px}
+.experience-view #status{color:var(--muted);font-size:15px}
+.experience-view .emergency-card{padding:26px;margin:20px 0;background:white;border:1px solid var(--line);border-radius:20px}
+.experience-view .emergency-card h2{margin:0 0 12px}
+.experience-view .emergency-card h3{margin:0 0 12px;font-size:20px}
+.experience-view .emergency-card p{margin:10px 0}
+.experience-view .emergency-card small{color:var(--muted)}
+.experience-view .emergency-badge{display:inline-block;padding:6px 14px;border-radius:8px;background:#dcefea;color:#175b52;font-weight:700}
+.experience-view .emergency-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;margin:22px 0}
+.experience-view .emergency-grid>div{padding:20px;background:#f1f5f8;border-radius:12px}
+.experience-view .emergency-patient{padding:20px;background:#f7f9fb;border-radius:12px;margin-bottom:18px}
+.experience-view .emergency-patient ol{padding-left:24px;margin:8px 0}
+.experience-view .emergency-patient li{margin:8px 0}
+.experience-view .emergency-escalation{padding:12px 16px;background:#fff0e7;color:#743919;border-radius:8px;font-weight:700}
+@media(max-width:700px){.experience-view .emergency-grid{grid-template-columns:1fr}.experience-view .emergency-card{padding:18px}}
 .signal-panel{margin:24px 0;border:2px solid #c6d7df}
 .signal-panel label{display:block;margin:16px 0}.signal-panel select{min-height:48px;max-width:100%;padding:8px}
 .signal-visual{display:flex;align-items:center;gap:16px;min-height:56px;margin-bottom:14px}

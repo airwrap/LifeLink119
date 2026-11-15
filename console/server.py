@@ -9,15 +9,22 @@ from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 import json
 import math
+import os
+import logging
+import traceback
 from pathlib import Path
 import re
 import secrets
+import socket
+import sys
 import threading
 import time
 from urllib.parse import urlsplit
 
 from jsonschema import Draft202012Validator
 from experience import ExperienceStore, ExperienceError
+from emergency import EmergencyStore, PhraseProxy
+from llm_config import load_settings
 from cooperation import CooperationStore, CoopError, RUN_ID as COOP_ID, CATALOG as COOP_CATALOG
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -27,6 +34,20 @@ SCHEMA = json.loads((ROOT / "docs/contracts/demo-session-request.schema.json").r
 VALIDATOR = Draft202012Validator(SCHEMA)
 MANUAL_FILE = ROOT / "app/src/main/assets/emergency-manual.json"
 SIGNAL_TTL = 120
+MAX_TIMELINE = 10
+VERSION = re.search(r'versionName\s*=\s*"([^"]+)"', (ROOT / 'app/build.gradle.kts').read_text(encoding='utf-8')).group(1)
+LOGGER = logging.getLogger('lifelink.console')
+
+
+class LoopbackHttpServer(ThreadingHTTPServer):
+    # Windows SO_REUSEADDR can bind a second live listener to an occupied port.
+    # Reserve it exclusively so an old console cannot silently receive new API calls.
+    allow_reuse_address = sys.platform != 'win32'
+
+    def server_bind(self):
+        if sys.platform == 'win32':
+            self.socket.setsockopt(socket.SOL_SOCKET, socket.SO_EXCLUSIVEADDRUSE, 1)
+        super().server_bind()
 
 
 def new_signal():
@@ -55,6 +76,11 @@ class ApiError(Exception):
 
 
 class SessionStore:
+    @staticmethod
+    def _event(session, event):
+        session['timeline'].append(event)
+        del session['timeline'][:-MAX_TIMELINE]
+
     def __init__(self, limit=50, ttl=3600, clock=time.monotonic, namespace=None):
         self.limit, self.ttl, self.clock = limit, ttl, clock
         self.lock = threading.RLock()
@@ -80,7 +106,7 @@ class SessionStore:
         if signal["state"] not in {"OFF", "REVOKED", "EXPIRED", "REJECTED"}:
             signal.update(state=state, previewEnabled=False, remainingSeconds=0)
             session["updatedAt"] = now()
-            session["timeline"].append({"status":session["status"], "label":label,
+            self._event(session, {"status":session["status"], "label":label,
                 "message":"화면의 표시등 시연을 중단했습니다. 실제 차량 등화와 연결하지 않습니다.", "at":now()})
 
     def create(self, payload, key):
@@ -117,7 +143,7 @@ class SessionStore:
                            route=None, signalPreview=new_signal())
             if session["videoLink"]:
                 session["videoLink"] = "demo://video/" + ticket
-            self.items[ticket] = {"born": self.clock(), "session": session}
+            self.items[ticket] = {"born": self.clock(), "session": session, "signalSequence": 0}
             self.keys[key] = {"id": ticket, "payload": canonical}
             return copy.deepcopy(session), True
 
@@ -148,7 +174,7 @@ class SessionStore:
                 raise ApiError(409, "INVALID_TRANSITION", "현재 단계에서 수행할 수 없습니다. 새로고침 후 순서대로 진행하세요.")
             stamp = now()
             session["status"], session["updatedAt"] = status, stamp
-            session["timeline"].append({"status": status, "label": label, "message": message, "at": stamp})
+            self._event(session, {"status": status, "label": label, "message": message, "at": stamp})
             if action == "GUIDANCE" and session["consent"]["location"]:
                 session["route"] = {"coordinateSystem": "DEMO_GRID", "destination": "가상 만남 지점 B", "points": [[120,80],[180,80],[180,160],[240,160]], "simulationOnly": True}
             if action == "CLOSE":
@@ -162,7 +188,7 @@ class SessionStore:
             session.update(consent={"vehicle":False,"location":False,"video":False}, vehicle=None, location=None, videoLink=None, route=None, updatedAt=now())
             self._stop_signal(session)
             if not any(x["label"] == "모의 공유 철회" for x in session["timeline"]):
-                session["timeline"].append({"status":session["status"],"label":"모의 공유 철회","message":"차량·위치·합성 영상 예시를 메모리에서 제거했습니다.","at":now()})
+                self._event(session, {"status":session["status"],"label":"모의 공유 철회","message":"차량·위치·합성 영상 예시를 메모리에서 제거했습니다.","at":now()})
             return copy.deepcopy(session)
 
     def signal_action(self, ticket, role, body):
@@ -215,7 +241,8 @@ class SessionStore:
                 if state != "CONFIRMED":
                     raise ApiError(409,"SIGNAL_CONFIRM_REQUIRED","비상상황 확인 후에만 모의 표시를 승인할 수 있습니다.")
                 entry["signalDeadline"] = self.clock()+SIGNAL_TTL
-                signal.update(state="APPROVED",approvalId=f"SIM-LIGHT-{ticket}-{len(session['timeline'])}",remainingSeconds=SIGNAL_TTL)
+                self.items[ticket]['signalSequence'] += 1
+                signal.update(state="APPROVED",approvalId=f"SIM-LIGHT-{ticket}-{self.items[ticket]['signalSequence']}",remainingSeconds=SIGNAL_TTL)
                 label = "120초 표시 승인 (모의)"
             elif action == "ACTIVATE":
                 if state == "PREVIEW_ACTIVE": return self.get(ticket)
@@ -229,7 +256,7 @@ class SessionStore:
                 signal.update(state="REJECTED",authority=authority,previewEnabled=False,remainingSeconds=0)
                 label = "표시 요청 거절 (모의)"
             session["updatedAt"] = now()
-            session["timeline"].append({"status":session["status"], "label":label,
+            self._event(session, {"status":session["status"], "label":label,
                 "message":"localhost 역할 연습입니다. 실제 기관 승인·긴급자동차 지정·차량 등화 제어가 아닙니다.", "at":now()})
             return self.get(ticket)
 
@@ -244,6 +271,8 @@ def make_server(port=8781, store=None, read_delay=0):
     store = store or SessionStore()
     cooperation = CooperationStore()
     experience = ExperienceStore()
+    emergency = EmergencyStore()
+    phrases = PhraseProxy()
 
     class Handler(BaseHTTPRequestHandler):
         protocol_version = "HTTP/1.1"
@@ -310,10 +339,12 @@ def make_server(port=8781, store=None, read_delay=0):
             self.boundary()
             path = urlsplit(self.path).path
             if self.command == "GET":
+                if path == "/api/demo/emergency/snapshots":
+                    return self.send_data(200, {"syntheticOnly": True, "items": emergency.listing()})
                 if path == "/api/demo/expansion/snapshots":
                     return self.send_data(200, {"syntheticOnly":True,"items":experience.listing()})
                 if path == "/api/demo/health":
-                    return self.send_data(200, {"mode":"DEMO","syntheticOnly":True,"version":"0.6.0-demo","bind":"loopback","sessions":len(store.listing())})
+                    return self.send_data(200, {"mode":"DEMO","syntheticOnly":True,"version":VERSION,"bind":"loopback","sessions":len(store.listing())})
                 if path == "/api/demo/cooperation/catalog":
                     return self.send_data(200, COOP_CATALOG)
                 if path == "/api/demo/cooperation/runs":
@@ -339,6 +370,14 @@ def make_server(port=8781, store=None, read_delay=0):
                     return self.send_data(200, (STATIC/name).read_bytes(), mime)
             elif self.command == "POST":
                 body = self.body()
+                if path == "/api/demo/emergency/snapshots":
+                    return self.send_data(200, emergency.publish(body))
+                if path == "/api/demo/emergency/revoke":
+                    return self.send_data(200, emergency.revoke(body))
+                if path == "/api/demo/emergency/phrase":
+                    return self.send_data(200, phrases.select(body))
+                if path == "/api/demo/emergency/interpret":
+                    return self.send_data(200, phrases.interpret(body))
                 if path == "/api/demo/expansion/snapshots":
                     return self.send_data(200,experience.publish(body))
                 if path == "/api/demo/expansion/revoke":
@@ -354,6 +393,9 @@ def make_server(port=8781, store=None, read_delay=0):
                     return self.send_data(201 if created else 200, session)
                 if path == "/api/demo/reset" and body == {"syntheticOnly": True}:
                     store.reset()
+                    cooperation.reset()
+                    experience.reset()
+                    emergency.reset()
                     return self.send_data(200, {"mode":"DEMO","cleared":True})
                 signal_match = re.fullmatch(r"/api/demo/sessions/(DEMO-[0-9]{4,})/signal/(passenger|operator)",path)
                 if signal_match:
@@ -388,8 +430,11 @@ def make_server(port=8781, store=None, read_delay=0):
                 self.send_data(error.status,{"mode":"DEMO","code":error.code,"message":error.message})
             except (BrokenPipeError, ConnectionResetError, TimeoutError):
                 self.close_connection = True
-            except Exception:
+            except Exception as error:
                 self.close_connection = True
+                # Log location/type, never exception text, request body, headers or identifiers.
+                frames = [(frame.filename, frame.lineno, frame.name) for frame in traceback.extract_tb(error.__traceback__)]
+                LOGGER.error('Unhandled console failure: %s; frames=%s', type(error).__name__, frames)
                 self.send_data(500,{"mode":"DEMO","code":"DEMO_ERROR","message":"로컬 데모 오류입니다. 다시 시도하세요."})
 
         do_POST = do_GET
@@ -398,7 +443,7 @@ def make_server(port=8781, store=None, read_delay=0):
             self.close_connection = True
             self.send_data(405,{"mode":"DEMO","code":"METHOD_NOT_ALLOWED","message":"외부 CORS 요청은 지원하지 않습니다."})
 
-    server = ThreadingHTTPServer(("127.0.0.1", port), Handler)
+    server = LoopbackHttpServer(("127.0.0.1", port), Handler)
     server.daemon_threads = True
     return server
 
@@ -407,14 +452,18 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--port", type=int, default=8781)
     parser.add_argument("--read-delay", type=float, default=0, help="0..2 seconds, local connection recovery testing only")
+    parser.add_argument("--env-file", type=Path, help="Optional server-only LLM dotenv file; values are never logged")
     args = parser.parse_args()
     if not 0 <= args.read_delay <= 2:
         parser.error("read-delay must be between 0 and 2 seconds")
+    root = Path(__file__).resolve().parents[1]
+    settings = load_settings(os.environ, [args.env_file] if args.env_file else [root.parent/'.env', root/'.env'])
+    os.environ.update(settings)
     try:
         server = make_server(args.port, read_delay=args.read_delay)
     except OSError as error:
         raise SystemExit("Local demo port unavailable; preserve the existing process and choose another port. " + str(error))
-    print(f"LifeLink119 DEMO 0.6.0-demo http://127.0.0.1:{server.server_port} (synthetic only)", flush=True)
+    print(f"LifeLink119 DEMO {VERSION} http://127.0.0.1:{server.server_port} (synthetic only)", flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

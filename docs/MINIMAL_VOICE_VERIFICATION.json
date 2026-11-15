@@ -1,0 +1,170 @@
+{
+  "verifiedAt": "2026-11-15T01:42:18+09:00",
+  "version": "0.18.0-demo",
+  "apkSha256": "199b66f650c90b92adb4698eeb716fbf1fdf33403d0a33374d6e21a8c7d0055e",
+  "apkBytes": 159344248,
+  "device": {
+    "serial": "emulator-5584",
+    "avd": "LifeLink119_QA_API_34",
+    "androidApi": 34,
+    "pleosConnect": "2.1.0"
+  },
+  "buildAndTest": "PASS (debug, demo, release, spotlessCheck, Kotlin, debug/demo lint)",
+  "kotlin": {
+    "tests": 272,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "python": {
+    "tests": 95,
+    "status": "PASS"
+  },
+  "contract": {
+    "schemas": 2,
+    "positiveResponses": 3,
+    "positiveRequests": 3,
+    "invalidCasesRejected": 11,
+    "status": "PASS"
+  },
+  "minimalVoiceUi": {
+    "status": "PASS",
+    "apkSha256": "199b66f650c90b92adb4698eeb716fbf1fdf33403d0a33374d6e21a8c7d0055e",
+    "checks": [
+      "One visible external-AI choice survives application restart; no repeated onboarding",
+      "One action from the 119 screen starts spoken questions without consent/start interstitials",
+      "Saved permission reaches the real LLM; voice can still be stopped immediately",
+      "Six synthetic voice answers advance automatically and produce a clearly simulated handover",
+      "Revocation is persistent; declining external AI does not repeat onboarding or disable local voice",
+      "Automatic demo stops on request; confirmed operator call still blocks voice"
+    ],
+    "actualCalls": 0,
+    "humanVoiceRecorded": false,
+    "scriptedAnswers": true,
+    "firstRunScreenObserved": false,
+    "protectedCaptureSkipped": true
+  },
+  "voiceLifecycleUi": {
+    "status": "PASS",
+    "apkSha256": "199b66f650c90b92adb4698eeb716fbf1fdf33403d0a33374d6e21a8c7d0055e",
+    "checks": [
+      "One start begins spoken question; answer controls are collapsed by default",
+      "TTS completion automatically starts on-device microphone recognition",
+      "Real configured LLM chooses approved question through app and loopback proxy",
+      "Two unanswered turns pause; no invented patient observation",
+      "Visible stop cancels playback and recognition immediately",
+      "Confirmed operator call blocks voice start; emergency retry remains available"
+    ],
+    "actualCalls": 0,
+    "humanVoiceRecorded": false
+  },
+  "emergencyRegressionUi": {
+    "status": "PASS",
+    "apkSha256": "199b66f650c90b92adb4698eeb716fbf1fdf33403d0a33374d6e21a8c7d0055e",
+    "checks": [
+      "Vehicle collection remains opt-in; emergency retry remains accessible",
+      "Scenario 1: synthetic airbag and location automatically populate packet",
+      "Synthetic PC roundtrip and revocation; real data cannot enter PC payload",
+      "Scenario 2: no airbag does not imply no accident or no injury",
+      "Scenario 3: minimal moving UI, details only after synthetic stop plus platform permission",
+      "Scenario 4: delay/callback confirmation and retry retain the incident summary",
+      "Scenario 5: dispatch-wait report, one-question flow, worsening escalation and handover summary",
+      "Loopback LLM proxy accepts consented step codes and returns only an approved phrase",
+      "Scenario 6: failed LLM keeps offline guidance and emergency retry available",
+      "Operator-confirmed call blocks automatic TTS/microphone without changing call status",
+      "SDK/location unavailable scenario contains no invented values",
+      "Summary export is gated by separate explicit consent"
+    ],
+    "actualCalls": 0,
+    "privateDataCreated": false
+  },
+  "totalUiChecks": 24,
+  "androidInstrumentation": {
+    "tests": 2,
+    "status": "PASS",
+    "persistentConsentAndRevocation": "PASS",
+    "syntheticSpeech": [
+      {
+        "expected": "CONSCIOUS_YES",
+        "actual": "CONSCIOUS_YES",
+        "confidence": 1
+      },
+      {
+        "expected": "CONSCIOUS_NO",
+        "actual": "CONSCIOUS_NO",
+        "confidence": 0.693366
+      },
+      {
+        "expected": "CONSCIOUS_NO",
+        "actual": "UNRECOGNIZED",
+        "confidence": 0.506136
+      },
+      {
+        "expected": "BREATHING_NO",
+        "actual": "BREATHING_NO",
+        "confidence": 1
+      },
+      {
+        "expected": "CHEST_PAIN",
+        "actual": "UNRECOGNIZED",
+        "confidence": 0.581625
+      },
+      {
+        "expected": "STOP",
+        "actual": "STOP",
+        "confidence": 1
+      },
+      {
+        "expected": "UNRECOGNIZED",
+        "actual": "UNRECOGNIZED",
+        "confidence": 0.887022
+      }
+    ]
+  },
+  "lint": {
+    "debug": {
+      "errors": 0,
+      "warnings": [
+        "A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0",
+        "A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
+      ]
+    },
+    "demo": {
+      "errors": 0,
+      "warnings": [
+        "A newer version of androidx.test:runner than 1.6.2 is available: 1.7.0",
+        "A newer version of androidx.test.ext:junit than 1.2.1 is available: 1.3.0"
+      ]
+    }
+  },
+  "apkSecretsCheck": [
+    {
+      "variant": "debug",
+      "configuredSecretsFound": false,
+      "dotenvPackaged": false
+    },
+    {
+      "variant": "demo",
+      "configuredSecretsFound": false,
+      "dotenvPackaged": false
+    },
+    {
+      "variant": "release",
+      "configuredSecretsFound": false,
+      "dotenvPackaged": false
+    }
+  ],
+  "interaction": {
+    "externalAiChoice": "Once on first run; saved for later launches/incidents; change in More > Voice AI settings.",
+    "microphonePermission": "OS permission once; grant resumes a requested voice session without another start tap.",
+    "voiceStart": "One button from the 119 screen. No intermediate external-AI checkbox/start screen.",
+    "automaticDemo": "More > automatic voice demo. Six authored answers, zero microphone input, automatic handover display, replay button."
+  },
+  "limits": [
+    "Emergency calls, reception and dispatch are still simulation.",
+    "Scripted spoken answers are explicitly labelled; they do not demonstrate human speech recognition accuracy.",
+    "Clinical guidance remains authored content pending expert review.",
+    "Android runtime microphone permission cannot be bypassed by app consent.",
+    "External model uses the existing debug/demo loopback proxy; API credentials remain only on the server."
+  ]
+}

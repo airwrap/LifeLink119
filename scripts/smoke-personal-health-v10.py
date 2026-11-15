@@ -2,16 +2,12 @@
 import json,os,secrets,subprocess,time,xml.etree.ElementTree as ET
 from pathlib import Path
 from ui_snapshot_client import SnapshotClient,verify_installed_apk
+from qa_avd_guard import QaAvdGuard, android_sdk
 
 root=Path(__file__).resolve().parents[1];out=root/'verification/v10';out.mkdir(parents=True,exist_ok=True)
-sdk=Path(os.environ['LOCALAPPDATA'])/'Android/Sdk';adb=[str(sdk/'platform-tools/adb.exe'),'-s','emulator-5580']
-assert subprocess.check_output(adb+['emu','avd','name'],timeout=20).decode().splitlines()[0]=='LifeLink119_Verify_20261101'
-user=subprocess.check_output(adb+['shell','am','get-current-user'],timeout=20).decode().strip()
-assert user.isdigit()
-for pref,keys in [('lifelink_medical_lock_v1',{'pin_salt','pin_verifier'}),('lifelink_personal_health_v1',{'record_cipher'}),('lifelink_synthetic_profiles_v05',{'profiles','profiles_cipher'})]:
- existing=subprocess.run(adb+['shell','run-as','com.lifelink119.app','--user',user,'cat','shared_prefs/'+pref+'.xml'],capture_output=True,timeout=20)
- if existing.returncode==0:
-  assert not any(n.get('name') in keys for n in ET.fromstring(existing.stdout)), 'Use a clean dedicated AVD; existing data was left untouched'
+sdk=android_sdk();adb=[str(sdk/'platform-tools/adb.exe'),'-s','emulator-5580']
+qa_guard=QaAvdGuard(adb).acquire_clean()
+user=qa_guard.verify_target()
 pin=''.join(str(secrets.randbelow(10)) for _ in range(8));c=SnapshotClient(adb);checks=[];result={'status':'FAIL'}
 def node(k):return ET.fromstring(c.node(k)).find('.//node')
 def wait(k,word='',seconds=40):
@@ -58,6 +54,7 @@ try:
  tap('x_home');tap('x_emergency');wait('x_session_status','가상 상담원 응답');assert node('privacy_pin') is None
  mark('119 request stays accessible without medical authentication')
  # This dedicated AVD had no medical preferences at the start. Clear only the QA PIN.
+ qa_guard.before_cleanup()
  tap('x_home');tap('x_more');tap('x_tools');tap('privacy_settings');tap('privacy_reset')
  assert c.request('CLICK android:id/button1').get('clicked')=='true';wait('x_family')
  result={'status':'PASS','checks':checks,'apkSha256':verify_installed_apk(adb,root/'app/build/outputs/apk/debug/app-debug.apk',sdk,'0.10.0-demo'),

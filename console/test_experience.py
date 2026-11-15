@@ -63,7 +63,7 @@ class ExperienceTests(unittest.TestCase):
         root=Path(__file__).resolve().parents[1]
         for path in root.glob('app/src/*/AndroidManifest.xml'):
             text=path.read_text(encoding='utf-8')
-            for forbidden in ['CALL_PHONE','SEND_SMS','android.permission.CAMERA','RECORD_AUDIO','ACCESS_FINE_LOCATION','distractionOptimized']:
+            for forbidden in ['CALL_PHONE','SEND_SMS','android.permission.CAMERA','ACCESS_FINE_LOCATION','distractionOptimized']:
                 self.assertNotIn(forbidden,text)
 
 

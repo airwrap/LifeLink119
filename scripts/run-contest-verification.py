@@ -14,20 +14,22 @@ import time
 import xml.etree.ElementTree as ET
 from contest_ui import ContestUI
 from ui_snapshot_client import verify_installed_apk
+from qa_avd_guard import QaAvdGuard, android_sdk
 
 parser=argparse.ArgumentParser(description=__doc__);parser.add_argument('--resume',action='store_true',help='Reuse only PASS evidence for the identical APK bytes; reset QA profiles/PIN regardless');args=parser.parse_args()
 root=Path(__file__).resolve().parents[1];os.chdir(root);out=root/'verification/v06';env=os.environ.copy();env['LIFELINK_TEST_PIN']=str(secrets.randbelow(90_000_000)+10_000_000);os.environ['LIFELINK_TEST_PIN']=env['LIFELINK_TEST_PIN']
 apk=root/'app/build/outputs/apk/debug/app-debug.apk'
 source_inputs=[p for p in (root/'app/src/main').rglob('*') if p.is_file()]+[root/'app/build.gradle.kts']
-assert apk.stat().st_mtime>=max(p.stat().st_mtime for p in source_inputs),'Build the current sources before running the native gate'
-sdk=Path(os.environ['LOCALAPPDATA'])/'Android/Sdk';adb=[str(sdk/'platform-tools/adb.exe'),'-s','emulator-5580'];stages=[];result={'status':'FAIL'}
-avd=subprocess.check_output(adb+['emu','avd','name'],timeout=15).decode().splitlines()
-assert 'Pleos_Connect_API_34' in avd,'Use the isolated synthetic-data Pleos AVD only'
+if apk.stat().st_mtime<max(p.stat().st_mtime for p in source_inputs):
+    raise RuntimeError('Build the current sources before running the native gate')
+sdk=android_sdk();adb=[str(sdk/'platform-tools/adb.exe'),'-s','emulator-5580'];stages=[];result={'status':'FAIL'}
+qa_guard=QaAvdGuard(adb).acquire_clean()
 apk_hash=verify_installed_apk(adb,apk,sdk,'0.6.0-demo')
 def launch():
     subprocess.run(adb+['shell','am','force-stop','com.lifelink119.verify'],capture_output=True,check=True,timeout=15)
     subprocess.run(adb+['shell','am','start','-W','--display','0','-f','0x10008000','-n','com.lifelink119.app/.MainActivity'],capture_output=True,check=True,timeout=40)
 def clear_qa_lock():
+    qa_guard.before_cleanup()
     launch()
     with ContestUI(adb,out/'cleanup') as ui:
         ui.client.request('CLICK android:id/button2')
@@ -41,7 +43,8 @@ def clear_qa_lock():
     user=subprocess.check_output(adb+['shell','am','get-current-user'],timeout=10).decode().strip()
     for file,forbidden in [('lifelink_medical_lock_v1',{'pin_salt','pin_verifier'}),('lifelink_synthetic_profiles_v05',{'profiles','profiles_cipher'})]:
         raw=subprocess.check_output(adb+['shell','run-as','com.lifelink119.app','--user',user,'cat','shared_prefs/'+file+'.xml'],timeout=15)
-        assert not ({n.get('name') for n in ET.fromstring(raw)} & forbidden),'QA credentials or medical profiles were not erased'
+        if {n.get('name') for n in ET.fromstring(raw)} & forbidden:
+            raise RuntimeError('QA credentials or medical profiles were not erased')
 def execute(name,script,script_args=()):
     proof={'privacy':'privacy.json','native':'contest-native.json','regression':'regression/native-smoke.json','recovery':'recovery.json','driving':'driving.json','pc-sdk':'pc-sdk.json'}[name]
     if args.resume:
