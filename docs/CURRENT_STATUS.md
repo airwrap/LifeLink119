@@ -1,5 +1,7 @@
 # 현재 개발 상태
 
+2026-11-16 개발 브랜치 **v0.18.2-browser**: [공식 사이트 내장 웹](IN_APP_OFFICIAL_BROWSER_20261116.md)을 추가했다. 아래 내용과 `apk/`의 파일은 11월 15일 제출 확정본의 기록이다. 개발 APK는 `artifacts/development/`에 별도로 만들며 제출 APK와 Release를 덮어쓰지 않는다.
+
 기준일: 2026-11-15. 앱 버전: **0.18.1**. 과거 버전별 기록은 [개발 이력](../HISTORY.md)에 보존한다.
 
 [공모전 제출 release](SUBMISSION_RELEASE_20261115.md)는 전용 인증서로 서명하고 디버깅을 비활성화했다. 한국어 오프라인 모델·고정 음성을 포함하며 모의 기능은 `-PlifelinkSubmission=true`로 명시적으로 활성화한다. 제출 안내에 맞춰 **[`apk/LifeLink119_LifeLink119_release.apk`](../apk/LifeLink119_LifeLink119_release.apk)**에 Git LFS로 배치한다. 원본 Release와 동일한 APK다.

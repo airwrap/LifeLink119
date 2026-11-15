@@ -8,6 +8,8 @@
     <uses-permission android:name="pleos.car.permission.FUSED_LOCATION" />
     <uses-permission android:name="pleos.car.permission.NAVI_ROUTE" />
     <uses-permission android:name="android.permission.RECORD_AUDIO" />
+    <!-- Official HTTPS websites in the embedded browser; no native login/data extraction. -->
+    <uses-permission android:name="android.permission.INTERNET" />
     <uses-feature android:name="android.hardware.type.automotive" android:required="false" tools:replace="android:required" />
 
     <!-- No calling/SMS/camera permission. Location/microphone require explicit opt-in. -->
@@ -26,6 +28,12 @@
         android:usesCleartextTraffic="false"
         android:theme="@style/Theme.LifeLink">
         <uses-library android:name="android.car" android:required="false" />
+        <activity
+            android:name=".ui.OfficialHealthBrowserActivity"
+            android:exported="false"
+            android:process=":official_web"
+            android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode"
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".MainActivity"
             android:configChanges="orientation|screenSize|smallestScreenSize|screenLayout|uiMode"

@@ -26,8 +26,8 @@ android {
         applicationId = "com.lifelink119.app"
         minSdk = 28
         targetSdk = 34
-        versionCode = 21
-        versionName = "0.18.1"
+        versionCode = 22
+        versionName = "0.18.2-browser"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("boolean", "DEMO_FEATURES", "false")
     }

@@ -1,5 +1,7 @@
 # LifeLink 119
 
+> **개발 브랜치 v0.18.2-browser (2026-11-16):** 외부 브라우저가 없는 기기에서 공식 사이트를 여는 [내장 웹 기능](docs/IN_APP_OFFICIAL_BROWSER_20261116.md)을 추가했습니다. 아래 `apk/`·Release·공모전 설명자료는 제출 확정본 v0.18.1입니다. 심사 기준 커밋은 `3cae1de57e266815f93f13440c89d87bc3da54f3`으로 보존합니다.
+
 **나와 내 가족을 위한 안전 동행** — 차량·위치·가족 건강정보로 긴급상황 전달을 돕고, 119 연결이 늦어지거나 구조대를 기다리는 동안 음성으로 상태를 확인하는 Pleos Connect 앱입니다.
 
 > 공모전 제출본의 119·112·109 연결과 PC 상황실은 **모의 시연**입니다. 실제 전화·문자를 발신하거나 기관 접수·출동을 요청하지 않습니다.
@@ -103,7 +105,7 @@ python scripts/prepare-offline-speech.py
 
 `Build-Release.cmd`는 포매터 검사, debug/release 빌드·단위 테스트, release lint, 인증서와 `debuggable=false` 검사를 수행합니다. 서명키는 기본적으로 저장소 옆 `.tools/release-signing/`에 두고 비밀번호는 현재 Windows 계정의 DPAPI로 보호합니다. **이 폴더를 비공개로 백업**해야 동일 인증서 업데이트가 가능합니다. 다른 개발자가 생성한 새 키는 배포 APK와 서명이 다릅니다.
 
-고급 CI 빌드는 `-PlifelinkSubmission=true`와 `LIFELINK_RELEASE_KEYSTORE`, `LIFELINK_RELEASE_STORE_PASSWORD`, `LIFELINK_RELEASE_KEY_ALIAS`, `LIFELINK_RELEASE_KEY_PASSWORD` 환경변수를 사용합니다. 자격증명이 빠지면 제출 빌드를 중단합니다. 일반 `release`는 모의 네트워크를 끄고, **제출 release**만 모의 기능과 ADB 루프백 프록시를 명시적으로 켭니다. 두 경우 모두 디버깅은 비활성화합니다.
+고급 CI 빌드는 `-PlifelinkSubmission=true`와 `LIFELINK_RELEASE_KEYSTORE`, `LIFELINK_RELEASE_STORE_PASSWORD`, `LIFELINK_RELEASE_KEY_ALIAS`, `LIFELINK_RELEASE_KEY_PASSWORD` 환경변수를 사용합니다. 자격증명이 빠지면 제출 빌드를 중단합니다. 일반 `release`는 모의 네트워크를 끄고, **제출 release**만 모의 기능과 ADB 루프백 프록시를 명시적으로 켭니다. 두 경우 모두 디버깅은 비활성화합니다. v0.18.2 개발 소스에는 공식 HTTPS 사이트를 위한 INTERNET 권한이 공통으로 추가되어 있습니다.
 
 ## 구현 범위와 자료
 

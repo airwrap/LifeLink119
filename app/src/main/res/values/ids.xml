@@ -104,4 +104,13 @@
     <item name="x_health_guardian_sms" type="id" />
     <item name="x_health_guardian_call_confirm" type="id" />
     <item name="x_health_guardians_reset" type="id" />
+    <item name="official_web_back" type="id" />
+    <item name="official_web_close" type="id" />
+    <item name="official_web_copy" type="id" />
+    <item name="official_web_origin" type="id" />
+    <item name="official_web_content" type="id" />
+    <item name="official_web_status" type="id" />
+    <item name="official_web_retry" type="id" />
+    <item name="official_web_page" type="id" />
+    <item name="official_web_popup" type="id" />
 </resources>

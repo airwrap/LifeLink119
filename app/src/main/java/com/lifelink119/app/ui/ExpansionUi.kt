@@ -3646,7 +3646,7 @@ else->"아직 목적지 없음"}}",
             )
             add(
                 text(
-                    "공식 사이트를 별도 브라우저로 엽니다. 이 앱의 이름·전화번호·병력은 전달하지 않습니다. 돌아와도 가입 완료로 자동 처리하지 않습니다.",
+                    "공식 사이트를 앱 안에서 엽니다. 사이트에서 직접 로그인하며, 차량에 저장한 이름·전화번호·병력은 자동으로 전달하지 않습니다. 닫으면 임시 웹 로그인 정보를 정리합니다.",
                     19f,
                     muted,
                 ),
@@ -3700,7 +3700,7 @@ else->"아직 목적지 없음"}}",
         if (!OfficialHealthNavigation.open(host, site)) {
             AlertDialog.Builder(host)
                 .setTitle("휴대전화·PC에서 열어주세요")
-                .setMessage(site.url + "\n\n이 기기에 연결 가능한 브라우저가 없습니다. 개인정보는 전송하지 않았습니다.")
+                .setMessage(site.url + "\n\n내장 웹 화면을 시작하지 못했습니다. 휴대전화나 PC에서 공식 사이트를 이용해 주세요.")
                 .setPositiveButton("확인", null)
                 .show()
         }

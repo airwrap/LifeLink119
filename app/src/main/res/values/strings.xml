@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LifeLink 119</string>
+    <string name="official_web_origin">HTTPS · %1$s</string>
 </resources>
