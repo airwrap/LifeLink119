@@ -69,7 +69,7 @@ def main():
         if not match or 'SECURE' not in match.group(1): raise AssertionError('Secure browser window missing')
         mark('Official SafeCall homepage -> login form via real touch; secure window retained')
         tap('official_web_import')
-        wait('android:id/message', '정보를 가져오지 못했습니다')
+        wait('android:id/message', 'FORM_NOT_READY')
         tap('android:id/button1')
         wait('mf_wfm_container_ibx_id')
         mark('Import from an unauthenticated login form is rejected without leaving the website or saving data')

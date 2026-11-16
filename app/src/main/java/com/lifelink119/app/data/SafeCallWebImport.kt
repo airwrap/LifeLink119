@@ -113,12 +113,14 @@ object SafeCallWebImport {
                 "" -> OptionalAnswer.UNSPECIFIED
                 in yes -> OptionalAnswer.YES
                 in no -> OptionalAnswer.NO
-                else -> error("Unsupported choice")
+                else -> throw SafeCallImportFailure("VALIDATION", key)
             }
         val name = value("name")
         val phone = value("registeredPhone")
-        require(name.isNotBlank() && name.length <= 80 && !name.contains(Regex("[*●•]")))
-        require(phone.isNotBlank() && SafeCallDetailsCodec.validPhone(phone))
+        if (name.isBlank() || name.length > 80 || name.contains(Regex("[*●•]")))
+            throw SafeCallImportFailure("VALIDATION", "name")
+        if (phone.isBlank() || !SafeCallDetailsCodec.validPhone(phone))
+            throw SafeCallImportFailure("VALIDATION", "registeredPhone")
         val base = existing ?: PersonalHealthRecord()
         require(base.id == "SELF" && base.role == RegistrationRole.SELF)
         val identityConflict =
@@ -160,7 +162,7 @@ object SafeCallWebImport {
                                     "미입력" -> LivingArrangement.UNSPECIFIED
                                     "동거" -> LivingArrangement.TOGETHER
                                     "별거" -> LivingArrangement.SEPARATE
-                                    else -> error("Unsupported choice")
+                                    else -> throw SafeCallImportFailure("VALIDATION", "guardians")
                                 },
                             smsPreference =
                                 when (s("smsPreference")) {
@@ -171,7 +173,7 @@ object SafeCallWebImport {
                                     "아니요",
                                     "아니오",
                                     "미수신" -> OptionalAnswer.NO
-                                    else -> error("Unsupported choice")
+                                    else -> throw SafeCallImportFailure("VALIDATION", "guardians")
                                 },
                         )
                         .also { require(!it.name.contains(Regex("[*●•]"))) }
@@ -184,7 +186,8 @@ object SafeCallWebImport {
         val elevator = optional("elevator", setOf("있음", "예"), setOf("없음", "아니요"))
         val canCall = optional("canCall", setOf("가능", "예"), setOf("불가능", "아니요"))
         val blood = value("bloodGroup").removeSuffix("형")
-        require(blood in setOf("", "A", "B", "AB", "O"))
+        if (blood !in setOf("", "A", "B", "AB", "O"))
+            throw SafeCallImportFailure("VALIDATION", "bloodGroup")
         val rh =
             when (val v = value("rhesus")) {
                 "",
@@ -196,7 +199,7 @@ object SafeCallWebImport {
                 "Rh-",
                 "RH-",
                 "Rh(-)" -> "-"
-                else -> error("Unsupported choice")
+                else -> throw SafeCallImportFailure("VALIDATION", "rhesus")
             }
         val details =
             d.copy(

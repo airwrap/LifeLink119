@@ -21,6 +21,7 @@ import com.lifelink119.app.core.DrivingRestrictions
 import com.lifelink119.app.core.OfficialBrowserPolicy
 import com.lifelink119.app.core.OfficialHealthSite
 import com.lifelink119.app.data.MedicalCrypto
+import com.lifelink119.app.data.SafeCallImportFailure
 import com.lifelink119.app.data.SafeCallImportSession
 import com.lifelink119.app.data.SafeCallWebImport
 import com.lifelink119.app.vehicle.DrivingRestrictionsGateway
@@ -449,16 +450,23 @@ class OfficialHealthBrowserActivity : Activity() {
                     )
                         return@evaluateJavascript
                     extracting = false
+                    var stage = "READ"
                     runCatching {
                             require(encoded.length <= SafeCallImportSession.MAX_CIPHER_CHARS)
                             val raw =
                                 JSONTokener(encoded).nextValue() as? String ?: error("No form")
                             val result = JSONObject(raw)
-                            require(!result.has("error"))
+                            if (result.has("error"))
+                                throw SafeCallImportFailure(
+                                    result.optString("error"),
+                                    result.optString("field"),
+                                )
                             val retrievedAt = System.currentTimeMillis()
                             // Validate before crossing processes. This does not save or authorize
                             // sharing.
+                            stage = "VALIDATION"
                             SafeCallWebImport.prepare(raw, retrievedAt, null)
+                            stage = "ENCRYPTION"
                             val cipher =
                                 MedicalCrypto.encrypt(
                                     SafeCallImportSession.wrap(raw, nonce, retrievedAt)
@@ -470,9 +478,10 @@ class OfficialHealthBrowserActivity : Activity() {
                             )
                             finish()
                         }
-                        .onFailure {
+                        .onFailure { error ->
                             showNotice(
-                                "정보를 가져오지 못했습니다. 본인 인증을 마치고 병력정보 화면을 열어주세요. 가려진 정보·지원하지 않는 항목 형식은 가져오지 않으며 기존 저장 정보는 유지됩니다."
+                                (error as? SafeCallImportFailure ?: SafeCallImportFailure(stage))
+                                    .userMessage()
                             )
                         }
                 }

@@ -11,6 +11,8 @@ class SafeCallImportSession(private val elapsed: () -> Long) {
         const val EXTRA_CIPHER = "safeCallImportCipher"
         const val MAX_CIPHER_CHARS = 140_000
         const val TTL_MS = 10 * 60 * 1000L
+        // Two website SMS checks can take longer than the review of an already-read payload.
+        const val AUTH_WAIT_MS = 60 * 60 * 1000L
 
         fun wrap(raw: String, nonce: String, retrievedAt: Long): String {
             require(nonce.matches(Regex("[a-f0-9-]{36}")))
@@ -42,10 +44,12 @@ class SafeCallImportSession(private val elapsed: () -> Long) {
         }
         received = true
         cipher = value
+        started = elapsed()
         return true
     }
 
-    private fun active() = nonce != null && elapsed() - started in 0..TTL_MS
+    private fun active() =
+        nonce != null && elapsed() - started in 0..(if (received) TTL_MS else AUTH_WAIT_MS)
 
     fun preview(
         existing: PersonalHealthRecord?,

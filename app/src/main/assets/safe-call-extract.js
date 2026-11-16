@@ -3,7 +3,8 @@
  * IDs/labels were inspected in the user-supplied 2026-11-16 MHT. */
 (() => {
   'use strict';
-  const fail = code => JSON.stringify({schema: 1, error: code});
+  let currentField = '';
+  const fail = code => JSON.stringify({schema: 1, error: code, field: currentField});
   if (location.origin !== 'https://u119.nfa.go.kr' || window !== window.top) return fail('ORIGIN');
   const prefix = 'mf_wfm_container_wfm_userInfo_';
   const fields = {}, missing = [];
@@ -31,7 +32,11 @@
     // .value includes live form values; MHT value attributes may be empty.
     return clean(e.value);
   };
-  const put = (key, value) => value === null ? missing.push(key) : fields[key] = value;
+  const put = (key, read) => {
+    currentField = key;
+    const value = read();
+    if (value === null) missing.push(key); else fields[key] = value;
+  };
   const phone = suffixes => {
     const parts = suffixes.map(input);
     if (parts.some(x => x === null)) return null;
@@ -99,30 +104,35 @@
     return rows.length <= 8 ? rows : null;
   };
   try {
+    currentField = 'name';
     const name = node('ibx_name');
     if (!name || !visible(name)) return fail('FORM_NOT_READY');
+    currentField = '';
     if ([...document.querySelectorAll('[role="dialog"],.w2window')].some(visible)) return fail('DIALOG_OPEN');
     for (const [key, suffix] of Object.entries({
       name:'ibx_name', medicationHistory:'ibx_takngDrfstfCn',
       callUnavailableReason:'ibx_tlphonImposblRsn', pastHistory:'ibx_hstcsInfoCn',
       facilityName:'ibx_mdlcnstNm', discomfort:'ibx_incnvnncMttr', constitution:'ibx_excptnPhysgCn',
       responderRequests:'ibx_relifMemberDemandMttr', frequentPlace:'ibx_rcntVstRgnNm'
-    })) put(key, input(suffix));
-    put('registeredPhone', phone(['ibx_phone1','ibx_phone2','ibx_phone3']));
+    })) put(key, () => input(suffix));
+    put('registeredPhone', () => phone(['ibx_phone1','ibx_phone2','ibx_phone3']));
     if (!fields.name || !fields.registeredPhone || /[*●•]/.test(fields.name)) return fail('IDENTITY_NOT_READY');
     for (const [key, suffix] of Object.entries({applicationType:'sbx_propTp', applicationDetail:'sbx_propTpCode',
       mobility:'sbx_bhaveSeCode', bloodGroup:'sbx_bldtyCd', rhesus:'sbx_bldtySeCd', specialty:'sbx_mdlcnstMdexmSbjctCd'
-    })) put(key, choice(suffix));
-    put('dayPhone', phone(['ibx_mediInstTelNum1','ibx_mediInstTelNum2','ibx_mediInstTelNum3']));
-    put('nightPhone', phone(['ibx_mediInstTelNumNight1','ibx_mediInstTelNumNight2','ibx_mediInstTelNumNight3']));
-    put('elevator', radio('승강기설치여부'));
-    put('canCall', radio('전화통화가능여부'));
-    put('currentConditions', list(['gen_setDiss','gen_firstDiss']));
-    put('disabilities', list(['gen_setFirstDsblty','gen_firstDsblty']));
-    const infection = input('ibx_contDissNm');
+    })) put(key, () => choice(suffix));
+    put('dayPhone', () => phone(['ibx_mediInstTelNum1','ibx_mediInstTelNum2','ibx_mediInstTelNum3']));
+    put('nightPhone', () => phone(['ibx_mediInstTelNumNight1','ibx_mediInstTelNumNight2','ibx_mediInstTelNumNight3']));
+    put('elevator', () => radio('승강기설치여부'));
+    put('canCall', () => radio('전화통화가능여부'));
+    put('currentConditions', () => list(['gen_setDiss','gen_firstDiss']));
+    put('disabilities', () => list(['gen_setFirstDsblty','gen_firstDsblty']));
     // Keep the displayed disease name intact: never guess medical delimiters/code mappings.
-    put('infectiousDiseases', infection === null ? null : infection ? [infection] : []);
-    put('guardians', guardians());
+    put('infectiousDiseases', () => {
+      const infection = input('ibx_contDissNm');
+      return infection === null ? null : infection ? [infection] : [];
+    });
+    put('guardians', guardians);
+    currentField = '';
     const result = JSON.stringify({schema:1, origin:location.origin, fields, missing});
     return result.length <= 32000 ? result : fail('TOO_LARGE');
   } catch (_) { return fail('UNSUPPORTED_FORM'); }

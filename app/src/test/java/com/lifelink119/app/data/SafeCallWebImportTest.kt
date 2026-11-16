@@ -221,4 +221,31 @@ class SafeCallWebImportTest {
         assertFalse(s.accept("cipher".repeat(20)))
         assertThrows(Exception::class.java) { s.preview(null) { "" } }
     }
+
+    @Test
+    fun twoSmsChecksHaveSeparateDeadlineFromReviewAndBothStillExpire() {
+        var now = 1L
+        val s = SafeCallImportSession { now }
+        val nonce = s.begin()
+        now += SafeCallImportSession.TTL_MS + 1
+        assertTrue(s.accept("cipher".repeat(20)))
+        val envelope = SafeCallImportSession.wrap(payload(), nonce, 1234)
+        assertEquals("QA 본인", s.preview(null) { envelope }.record.name)
+        now += SafeCallImportSession.TTL_MS + 1
+        assertThrows(Exception::class.java) { s.preview(null) { envelope } }
+        s.begin()
+        now += SafeCallImportSession.AUTH_WAIT_MS + 1
+        assertFalse(s.accept("cipher".repeat(20)))
+    }
+
+    @Test
+    fun diagnosticsNeverEchoUntrustedCodesFieldsOrMedicalValues() {
+        val secret = "NEVER_SHOW_PRIVATE_VALUE"
+        val failure = SafeCallImportFailure(secret, secret)
+        assertEquals("READ", failure.code)
+        assertNull(failure.field)
+        assertFalse(failure.userMessage().contains(secret))
+        assertFalse(failure.toString().contains(secret))
+        assertTrue(SafeCallImportFailure("VALIDATION", "bloodGroup").userMessage().contains("혈액형"))
+    }
 }
