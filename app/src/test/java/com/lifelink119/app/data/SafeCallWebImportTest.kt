@@ -36,6 +36,24 @@ class SafeCallWebImportTest {
     }
 
     @Test
+    fun optionalBlankMedicalFormCanBeImportedWithoutAssumingHealthOrDeletingOldData() {
+        val raw = payload { it.put("medicationHistory", "").put("pastHistory", "") }
+        val blank = SafeCallWebImport.prepare(raw, 1234, null)
+        assertEquals(listOf("name", "registeredPhone"), blank.record.webSource?.fields)
+        assertEquals(OptionalAnswer.UNSPECIFIED, blank.record.safeCall.canCall)
+        assertEquals(LocalRegistration.UNKNOWN, blank.record.registration)
+        assertEquals(
+            blank.record,
+            PersonalHealthCodec.decode(PersonalHealthCodec.encode(blank.record)),
+        )
+        val existing = PersonalHealthRecord(medicationHistory = "기존 QA 약")
+        assertEquals(
+            "기존 QA 약",
+            SafeCallWebImport.prepare(raw, 1234, existing).record.medicationHistory,
+        )
+    }
+
+    @Test
     fun absentAndBlankFieldsPreserveExistingDataAndLists() {
         val old =
             PersonalHealthRecord(

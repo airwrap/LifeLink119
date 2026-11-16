@@ -1,6 +1,7 @@
 /* Read only the user's current u119 form, on an explicit native button press.
  * No fetch, cookies, WebSquare data models, credentials, form submission or JS bridge.
- * IDs/labels were inspected in the user-supplied 2026-11-16 MHT. */
+ * IDs/labels were inspected in the user-supplied 2026-11-16 MHT and the public
+ * WebSquare native-select renderer used by the Android website. */
 (() => {
   'use strict';
   let currentField = '';
@@ -44,10 +45,27 @@
     if (parts.some(x => !x || !/^[0-9]+$/.test(x))) return null;
     return parts.join('-');
   };
+  const nativeChoice = select => {
+    // WebSquare mobile uses *_input_0 <select>. Values can be internal codes:
+    // read ONLY the selected option's displayed label, never all options or .value.
+    if (!select || select.tagName !== 'SELECT' || select.multiple ||
+        !select.classList.contains('w2selectbox_native_select') || select.selectedOptions.length !== 1) return null;
+    return clean(select.selectedOptions[0].textContent);
+  };
   const choice = suffix => {
-    const root = node(suffix), label = node(suffix + '_label');
-    if (!root || root.getAttribute('role') !== 'combobox' || !label || !root.contains(label)) return null;
-    const value = clean(label.textContent);
+    const root = node(suffix);
+    if (!root) return null;
+    let value;
+    if (root.classList.contains('w2selectbox_native')) {
+      const select = node(suffix + '_input_0');
+      if (!select || !root.contains(select) || root.querySelectorAll('select').length !== 1) return null;
+      value = nativeChoice(select);
+      if (value === null) return null;
+    } else {
+      const label = node(suffix + '_label');
+      if (root.getAttribute('role') !== 'combobox' || !label || !root.contains(label)) return null;
+      value = clean(label.textContent);
+    }
     return /^(선택|선택하세요|선택해 주세요|미선택)$/.test(value) ? '' : value;
   };
   const radio = heading => {
@@ -72,9 +90,11 @@
       // Only selected labels in the known disease/disability containers. Unknown row shapes
       // are omitted rather than interpreting arbitrary page text as a medical condition.
       for (const row of root.children) {
-        const labels = [...row.querySelectorAll('.w2selectbox_label')];
+        const labels = [...row.querySelectorAll('.w2selectbox_label,select.w2selectbox_native_select')];
         if (!labels.length || row.querySelector('input,textarea')) return null;
-        const selected = labels.map(e => clean(e.textContent)).filter(x => x && !/^(선택|선택하세요|선택해 주세요|(?:질환|질병|장애유형|대분류|중분류|소분류)\s*선택)$/.test(x));
+        const displayed = labels.map(e => e.tagName === 'SELECT' ? nativeChoice(e) : clean(e.textContent));
+        if (displayed.some(x => x === null)) return null;
+        const selected = displayed.filter(x => x && !/^(선택|선택하세요|선택해 주세요|미선택|(?:질환|질병|장애유형|대분류|중분류|소분류)\s*선택)$/.test(x));
         if (selected.length) values.push(selected.join(' / '));
       }
     }

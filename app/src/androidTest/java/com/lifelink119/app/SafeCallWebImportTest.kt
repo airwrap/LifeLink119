@@ -128,6 +128,85 @@ class SafeCallWebImportTest {
         assertFalse(r.toString().contains("NEVER_EXPORT"))
     }
 
+    private fun nativeSelect(suffix: String, label: String): String =
+        "<div id='$prefix$suffix' class='w2selectbox_native w2selectbox_native_mobile'>" +
+            "<div class='w2selectbox_native_innerDiv'>" +
+            "<select class='w2selectbox_native_select' id='$prefix${suffix}_input_0'>" +
+            "<option value='UNSELECTED_SECRET_CODE'>선택</option>" +
+            "<option value='SELECTED_SECRET_CODE' selected>$label</option>" +
+            "</select></div></div>"
+
+    @Test
+    fun androidNativeSelectLabelsAreImportedWithoutOptionCodesOrUnselectedValues() {
+        val html =
+            fixture()
+                .replace(
+                    "</body>",
+                    nativeSelect("sbx_propTp", "질병외") +
+                        nativeSelect("sbx_propTpCode", "고령자") +
+                        nativeSelect("sbx_bldtyCd", "선택") +
+                        nativeSelect("sbx_bldtySeCd", "선택") +
+                        "</body>",
+                )
+        val r =
+            extract(
+                html = html,
+                before =
+                    "document.getElementById('${prefix}ibx_hstcsInfoCn').value='';" +
+                        "document.getElementById('${prefix}sbx_bhaveSeCode').outerHTML=" +
+                        JSONObject.quote(nativeSelect("sbx_bhaveSeCode", "정상")) +
+                        ";",
+            )
+        val p = SafeCallWebImport.prepare(r.toString(), 1234, null)
+        assertEquals("질병외", p.record.safeCall.applicationType)
+        assertEquals("고령자", p.record.safeCall.applicationDetail)
+        assertEquals("정상", p.record.safeCall.mobility)
+        assertEquals("", p.record.safeCall.bloodGroup)
+        assertEquals("", p.record.safeCall.rhesus)
+        assertFalse(p.missing.contains("신청유형"))
+        assertFalse(r.toString().contains("SECRET_CODE"))
+    }
+
+    @Test
+    fun nativeDiseaseListReadsSelectedLabelsAndRejectsAmbiguousMultipleSelect() {
+        val row = "<div>" + nativeSelect("qa_condition", "QA 질환") + "</div>"
+        val before =
+            "document.getElementById('${prefix}gen_setDiss').innerHTML=" +
+                JSONObject.quote(row) +
+                ";"
+        val r = extract(before = before)
+        assertEquals(
+            listOf("QA 질환"),
+            SafeCallWebImport.prepare(r.toString(), 1234, null).record.safeCall.currentConditions,
+        )
+        assertFalse(r.toString().contains("SECRET_CODE"))
+        val ambiguous =
+            extract(
+                before =
+                    before +
+                        "document.getElementById('${prefix}qa_condition_input_0').multiple=true;"
+            )
+        assertFalse(ambiguous.getJSONObject("fields").has("currentConditions"))
+    }
+
+    @Test
+    fun emptyOptionalMedicalFieldsDoNotPreventImportOrInventNegativeAnswers() {
+        val r =
+            extract(
+                before =
+                    "document.getElementById('${prefix}ibx_hstcsInfoCn').value='';" +
+                        "document.getElementById('${prefix}sbx_bhaveSeCode_label').textContent='선택';" +
+                        "document.querySelectorAll('input[type=radio]').forEach(x=>x.checked=false);"
+            )
+        val p = SafeCallWebImport.prepare(r.toString(), 1234, null)
+        assertEquals("QA 본인", p.record.name)
+        assertEquals("", p.record.safeCall.pastHistory)
+        assertEquals(OptionalAnswer.UNSPECIFIED, p.record.safeCall.canCall)
+        assertEquals(OptionalAnswer.UNSPECIFIED, p.record.safeCall.elevator)
+        assertEquals(listOf("name", "registeredPhone"), p.record.webSource?.fields)
+        assertEquals(p.record, PersonalHealthCodec.decode(PersonalHealthCodec.encode(p.record)))
+    }
+
     @Test
     fun wrongOriginLoginDialogHiddenFormAndDuplicateIdsFailClosed() {
         assertTrue(extract(base = "https://other.invalid/").has("error"))

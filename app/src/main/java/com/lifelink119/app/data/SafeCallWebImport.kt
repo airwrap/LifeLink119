@@ -240,7 +240,11 @@ object SafeCallWebImport {
                         else -> false
                     }
             }
-        require(imported.any { it !in setOf("name", "registeredPhone") })
+        // Medical details are optional. A loaded, blank medical form is legitimate and must
+        // not require users to invent a condition to import their own identity/contact.
+        // Identity-only payloads with no recognized medical form controls remain rejected.
+        if (!f.keys().asSequence().any { it !in setOf("name", "registeredPhone") })
+            throw SafeCallImportFailure("FORM_NOT_READY")
         val record =
             base.copy(
                 name = name,
